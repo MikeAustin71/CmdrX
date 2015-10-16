@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Commands>
+	<ExectuteCommand>
+		<CommandDisplayName>jshint and jscs</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-jshint gulp-jscs jshint-stylish</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>gulp util</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>yargs gulp-util gulp-load-plugins gulp-if</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>gulp plumber</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>del gulp-plumber</CommandArguments>
+	</ExectuteCommand>
+</Commands>
