@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using LibLoader.Helpers;
 using LibLoader.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -56,6 +57,18 @@ namespace LibLoadTests
 		}
 
 		[TestMethod]
+		public void TwoDotDirectoryShouldProcessCorrectly()
+		{
+			var dir1 = new DirectoryDto("..\\..");
+			var targetDir = "LibLoadTests";
+			var dir2 = TestDirectories.GetTestExeDir();
+			var idx = dir2.DirInfo.FullName.IndexOf(targetDir, StringComparison.Ordinal);
+			var expectedResult = dir2.DirInfo.FullName.Substring(0, idx + targetDir.Length);
+			Assert.IsTrue(dir1.DirInfo.FullName==expectedResult);
+
+		}
+
+		[TestMethod]
 		public void PathSeparatorsShouldMatchOpSystem()
 		{
 			var pathSep1 = PathHelper.PrimaryPathDelimiter;
@@ -108,6 +121,37 @@ namespace LibLoadTests
 
 			Assert.IsTrue(dir1.DirInfo.FullName == expectedResult);
 		}
+
+		[TestMethod]
+		public void Test005CorrectlyCombineTwoDirectories()
+		{
+			var dirStr1 = @"D:\Level1\Level2\";
+			var dirStr2 = @"D:\Level1\Level2\Level3";
+			var result = Path.Combine(dirStr1, dirStr2);
+			Assert.IsTrue(result==dirStr2);
+		}
+
+		[TestMethod]
+		public void Test006CorrectlyCombinePathAndFileName()
+		{
+			var dirStr1 = @"D:\Level1\Level2\"; // Directory has trailing slash
+			var dirStr2 = @"SomeFile.txt";
+			var result = Path.Combine(dirStr1, dirStr2);
+			var expectedResult = @"D:\Level1\Level2\SomeFile.txt";
+            Assert.IsTrue(result==expectedResult);
+		}
+
+		[TestMethod]
+		public void Test007CombinePathAndFileNameVariant()
+		{
+			var dirStr1 = @"D:\Level1\Level2"; // No trailing slash
+			var dirStr2 = @"SomeFile.txt";
+			var result = Path.Combine(dirStr1, dirStr2);
+			var expectedResult = @"D:\Level1\Level2\SomeFile.txt";
+            Assert.IsTrue(result==expectedResult);
+		}
+
+
 
 	}
 }

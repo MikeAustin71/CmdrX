@@ -116,7 +116,7 @@ namespace LibLoader.Helpers
 
 	    public static int GetLastCharIndex(string str, char c)
 	    {
-		    if (str == null || c == null)
+		    if (str == null || c == 0)
 		    {
 			    return -1;
 		    }

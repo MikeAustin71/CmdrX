@@ -60,6 +60,7 @@
     <Compile Include="Constants\JobParametersDeliveryMode.cs" />
     <Compile Include="GlobalConstants\AppConstants.cs" />
     <Compile Include="Helpers\AppInfoHelper.cs" />
+    <Compile Include="Helpers\DateHelper.cs" />
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\ErrorLogger.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
