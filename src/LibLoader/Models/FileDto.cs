@@ -1,10 +1,13 @@
 ﻿using System;
 using System.IO;
+using LibLoader.Helpers;
 
 namespace LibLoader.Models
 {
 	public class FileDto
 	{
+		private FilePathDto _filePathDto;
+
 		public string FileExtension { get; set; }
 		public string FileNameAndExtension { get; set; }
 		public string FilePath { get; set; }
@@ -26,7 +29,7 @@ namespace LibLoader.Models
 
 		public FileDto(DirectoryDto dirDto, string fileNameAndExtension)
 		{
-			if (dirDto?.DirInfo == null || string.IsNullOrWhiteSpace(fileNameAndExtension))
+			if (dirDto?.DirInfo == null)
 			{
 				SetDtoToEmpty();
 				return;
@@ -132,7 +135,7 @@ namespace LibLoader.Models
 
 		private void ConfigureDto(string fileName)
 		{
-			if (string.IsNullOrWhiteSpace(fileName))
+			if (!ValidateFileInputString(fileName))
 			{
 				SetDtoToEmpty();
 				return;
@@ -150,6 +153,23 @@ namespace LibLoader.Models
 				FullPathAndFileName = FileXinfo.FullName;
 			}
 
+		}
+
+		private bool ValidateFileInputString(string fileStr)
+		{
+			if (string.IsNullOrWhiteSpace(fileStr))
+			{
+				return false;
+			}
+
+			_filePathDto = new FilePathDto(fileStr);
+
+			if (_filePathDto.FileNameAndExtension == string.Empty)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		private void SetDtoToEmpty()

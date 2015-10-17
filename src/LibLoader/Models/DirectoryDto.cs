@@ -20,10 +20,17 @@ namespace LibLoader.Models
 			
 	    public DirectoryDto(string directoryPath)
 	    {
-			SetDirectory(directoryPath);
+		    if (!ValidateInputDirString(directoryPath))
+		    {
+			    SetDirectoryEmpty();
+			    return;
+		    }
+
+			SetDirectory(AnalyzeRawDirectoryPath(directoryPath));
 	    }
 
-	    public DirectoryDto(FileInfo fInfo)
+
+		public DirectoryDto(FileInfo fInfo)
 	    {
 		    SetDirectory(fInfo.DirectoryName);
 	    }
@@ -133,6 +140,31 @@ namespace LibLoader.Models
 		    return wrkDir.Substring(++idx, wrkDir.Length - idx);
 
 	    }
+
+		private bool ValidateInputDirString(string directoryPath)
+		{
+			if (string.IsNullOrWhiteSpace(directoryPath))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		private string AnalyzeRawDirectoryPath(string directoryPath)
+		{
+			var dirComponent = PathHelper.ExtractDirectoryComponent(directoryPath);
+			var fileComponent = PathHelper.ExtractFileNameOnlyComponent(directoryPath);
+			var extComponent = PathHelper.ExtractFileExtensionComponent(directoryPath);
+
+			if (extComponent == string.Empty)
+			{
+				return directoryPath;
+			}
+
+			return dirComponent;
+
+		}
 
 	}
 }

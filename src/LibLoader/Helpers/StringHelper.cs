@@ -131,5 +131,16 @@ namespace LibLoader.Helpers
 
 		    return -1;
 	    }
+
+	    public static string TrimStringEnds(string str)
+	    {
+		    if (string.IsNullOrWhiteSpace(str))
+		    {
+			    return string.Empty;
+		    }
+
+		    return str.TrimStart().TrimEnd();
+
+	    }
     }
 }

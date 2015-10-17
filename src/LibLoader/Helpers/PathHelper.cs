@@ -167,5 +167,36 @@ namespace LibLoader.Helpers
 
 			throw new ArgumentException("ReplacePathDelimiter: INVALID newDelimiter!");
 		}
+
+		public static string ExtractDirectoryComponent(string pathString)
+		{
+			return Path.GetDirectoryName(pathString);
+		}
+
+		public static string ExtractFileNameOnlyComponent(string pathFileName)
+		{
+			return Path.GetFileNameWithoutExtension(pathFileName);
+		}
+
+		public static string ExtractFileExtensionComponent(string pathFileName)
+		{
+			return Path.GetExtension(pathFileName);
+		}
+
+		public static string ExtractFileNameAndExtension(string pathFileName)
+		{
+			return Path.GetFileName(pathFileName);
+		}
+
+		public static string ExtractFullPathAndFileName(string pathFileName)
+		{
+			return Path.GetFullPath(pathFileName);
+		}
+
+		public static bool FilePathHasExtension(string pathFileName)
+		{
+			return Path.HasExtension(pathFileName);
+		}
+
 	}
 }

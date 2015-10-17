@@ -76,7 +76,7 @@ namespace LibLoader.Models
 			}
 		}
 
-		public string AssembleComletedCommand()
+		public string AssembleCommandSyntax()
 		{
 			var sb = new StringBuilder();
 

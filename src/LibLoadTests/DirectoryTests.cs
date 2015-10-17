@@ -64,5 +64,50 @@ namespace LibLoadTests
 			Assert.IsTrue(pathSep1 == '\\');
 			Assert.IsTrue(pathSep2 == '/');
 		}
+
+		[TestMethod]
+		public void Test001IncompletePathForDtoCreation()
+		{
+			var testStr = @"D:\Level1\Level2\SomefileName.txt";
+			var expectedResult = @"D:\Level1\Level2";
+
+			var dir1 = new DirectoryDto(testStr);
+
+			Assert.IsTrue(dir1.DirInfo.FullName == expectedResult);
+		}
+
+		[TestMethod]
+		public void Test002IncompletePathForDtoCreation()
+		{
+			var testStr = @"D:\Level1\Level2\";
+			var expectedResult = @"D:\Level1\Level2";
+
+			var dir1 = new DirectoryDto(testStr);
+
+			Assert.IsTrue(dir1.DirInfo.FullName == expectedResult);
+		}
+
+		[TestMethod]
+		public void Test003IncompletePathForDtoCreation()
+		{
+			var testStr = @"D:\Level1\Level2";
+			var expectedResult = @"D:\Level1\Level2";
+
+			var dir1 = new DirectoryDto(testStr);
+
+			Assert.IsTrue(dir1.DirInfo.FullName == expectedResult);
+		}
+
+		[TestMethod]
+		public void Test004RelativePathForDtoCreation()
+		{
+			var testStr = @".\Level2";
+			var expectedResult = TestDirectories.GetTestExeDir().DirInfo.FullName + "\\Level2";
+
+			var dir1 = new DirectoryDto(testStr);
+
+			Assert.IsTrue(dir1.DirInfo.FullName == expectedResult);
+		}
+
 	}
 }

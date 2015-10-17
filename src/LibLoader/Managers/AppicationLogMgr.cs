@@ -50,8 +50,7 @@ namespace LibLoader.Managers
 
 				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				ErrorMgr.WriteErrorMsg(err);
-
-				throw ex;
+				return false;
 			}
 
 			if (!LogDirectoryDto.DirInfo.Exists)

@@ -51,6 +51,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DirectoryTests.cs" />
+    <Compile Include="FilePathDtoTests.cs" />
+    <Compile Include="FileTests.cs" />
+    <Compile Include="PathHelperTests.cs" />
     <Compile Include="StringHelperTests.cs" />
     <Compile Include="TestDirectories.cs" />
     <Compile Include="WorkingDirectoryMgrTests.cs" />
