@@ -1,11 +1,22 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using LibLoader.Constants;
+using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
 
 namespace LibLoader.Models
 {
 	public class FileDto
 	{
+		private bool _disposed;
+
 		private FilePathDto _filePathDto;
+
+		public ErrorLogger ErrorMgr = new
+			ErrorLogger(3267000,
+						"FilePathDto",
+						AppConstants.LoggingStatus,
+						AppConstants.LoggingMode);
 
 		public string FileExtension { get; set; }
 		public string FileNameAndExtension { get; set; }
@@ -37,6 +48,49 @@ namespace LibLoader.Models
 
 			ConfigureDto(Path.Combine(dirDto.DirInfo.FullName, StringHelper.TrimStringEnds(fileNameAndExtension)));
 		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			// Check to see if Dispose has already been called.
+			if (!_disposed)
+			{
+				// If disposing equals true, dispose all managed
+				// and unmanaged resources.
+				if (disposing)
+				{
+					// Dispose managed resources.
+					if (FileXinfo != null)
+					{
+						FileXinfo = null;
+						IsFileDtoEmpty = true;
+					}
+
+					if (DirDto != null)
+					{
+						DirDto.Dispose();
+						DirDto = null;
+					}
+
+				}
+
+
+				// Note disposing has been done.
+				_disposed = true;
+
+			}
+		}
+
 
 		public override int GetHashCode()
 		{
@@ -140,18 +194,49 @@ namespace LibLoader.Models
 
 			if (!ValidateFileInputString(fName))
 			{
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 10,
+					ErrorMessage = "Validation failed on FileDto input file path!",
+					ErrSourceMethod = "ValidateFileInputString()",
+					FileName = fileName,
+					LoggerLevel = LogLevel.ERROR
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
 				SetDtoToEmpty();
 				return;
 			}
 
-			FileXinfo = new FileInfo(fName);
-
-			DirDto = new DirectoryDto(FileXinfo.DirectoryName);
-
-			if (FileXinfo == null)
+			try
 			{
+				FileXinfo = new FileInfo(fName);
+
+				DirDto = new DirectoryDto(FileXinfo.DirectoryName);
+
+			}
+			catch(Exception ex) 
+			{
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 30,
+					ErrorMessage = "Failue creating FileInfo and DirectoryInfo objects!",
+					ErrSourceMethod = "ConfigureDto()",
+					ErrException = ex,
+					FileName = fileName,
+					LoggerLevel = LogLevel.ERROR
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
 				SetDtoToEmpty();
 				return;
+
 			}
 
 			FileExtension = FileXinfo.Extension;
@@ -168,9 +253,17 @@ namespace LibLoader.Models
 				return false;
 			}
 
-			_filePathDto = new FilePathDto(fileStr);
+			try
+			{
+				_filePathDto = new FilePathDto(fileStr);
 
-			if (_filePathDto.FileNameAndExtension == string.Empty)
+				if (_filePathDto.FileNameAndExtension == string.Empty)
+				{
+					return false;
+				}
+
+			}
+			catch
 			{
 				return false;
 			}

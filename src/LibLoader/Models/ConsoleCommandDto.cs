@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
@@ -9,10 +8,11 @@ namespace LibLoader.Models
 {
 	public class ConsoleCommandDto
 	{
-		private string _commandDisplayName = string.Empty;
+		private bool _disposed;
 
-		public DirectoryDto OutputCmdLogDirectoryDto { get; private set; }
 		public FileDto OutputCmdLogFileDto { get; private set; }
+
+		private string _commandDisplayName = string.Empty;
 
 		public string CommandDisplayName
 		{
@@ -20,13 +20,7 @@ namespace LibLoader.Models
 
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					_commandDisplayName = string.Empty;
-					return;
-				}
-
-				_commandDisplayName = value.TrimStart().TrimEnd();
+				_commandDisplayName = StringHelper.TrimStringEnds(value);
 			}
 
 		}
@@ -41,13 +35,7 @@ namespace LibLoader.Models
 
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					_executeInDir = string.Empty;
-					return;
-				}
-
-				_executeInDir = value.TrimStart().TrimEnd();
+				_executeInDir = StringHelper.TrimStringEnds(value);
 			}
 		}
 
@@ -59,13 +47,7 @@ namespace LibLoader.Models
 
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					_executableTarget = string.Empty;
-					return;
-				}
-
-				_executableTarget = value.TrimStart().TrimEnd();
+				_executableTarget = StringHelper.TrimStringEnds(value);
 			}
 
 		}
@@ -78,13 +60,7 @@ namespace LibLoader.Models
 
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					_commandToExecute = string.Empty;
-					return;
-				}
-
-				_commandToExecute = value.TrimStart().TrimEnd();
+				_commandToExecute = StringHelper.TrimStringEnds(value);
 			}
 
 		}
@@ -97,13 +73,7 @@ namespace LibLoader.Models
 
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					_commandModifier = string.Empty;
-					return;
-				}
-
-				_commandModifier = value.TrimStart().TrimEnd();
+				_commandModifier = StringHelper.TrimStringEnds(value);
 			}
 		}
 
@@ -115,13 +85,7 @@ namespace LibLoader.Models
 
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					_commandArguments = string.Empty;
-					return;
-				}
-
-				_commandArguments = value.TrimStart().TrimEnd();
+				_commandArguments = StringHelper.TrimStringEnds(value);
 			}
 		}
 
@@ -129,21 +93,53 @@ namespace LibLoader.Models
 		public string CommandLineExecutionSyntax { get; set; } = string.Empty;
 
 		private string _outputCmdLogFile = string.Empty;
+
 		public string OutputCmdLogFile
 		{
 			get { return _outputCmdLogFile; }
 
 			set
 			{
-				if (string.IsNullOrWhiteSpace(value))
-				{
-					_outputCmdLogFile = string.Empty;
-					return;
-				}
+				_outputCmdLogFile = StringHelper.TrimStringEnds(value);
 
-				_outputCmdLogFile = value.TrimStart().TrimEnd();
 			}
 		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			// Check to see if Dispose has already been called.
+			if (!_disposed)
+			{
+				// If disposing equals true, dispose all managed
+				// and unmanaged resources.
+				if (disposing)
+				{
+					// Dispose managed resources.
+					if (OutputCmdLogFileDto != null)
+					{
+						OutputCmdLogFileDto.Dispose();
+						OutputCmdLogFileDto = null;
+					}
+
+				}
+
+				// Note disposing has been done.
+				_disposed = true;
+
+			}
+		}
+
 
 		public string AssembleCommandLineSyntax()
 		{
@@ -181,21 +177,7 @@ namespace LibLoader.Models
 				outputDirCmdFileName = AppConstants.CommandOutputLogFileName;
 			}
 
-			var dirName = Path.GetDirectoryName(outputDirCmdFileName);
-
-			if (string.IsNullOrWhiteSpace(dirName))
-			{
-				OutputCmdLogDirectoryDto =
-					DirectoryHelper.GetCurrentApplicationDirectoryLocation();
-
-				OutputCmdLogFileDto = new FileDto(OutputCmdLogDirectoryDto, outputDirCmdFileName);
-			}
-			else
-			{
-				OutputCmdLogDirectoryDto = new DirectoryDto();
-				OutputCmdLogFileDto = new FileDto(outputDirCmdFileName);
-
-			}
+			OutputCmdLogFileDto = new FileDto(outputDirCmdFileName);
 
 			return true;
 		}

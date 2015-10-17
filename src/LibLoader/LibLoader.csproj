@@ -77,10 +77,8 @@
     <Compile Include="Models\DirectoryDto.cs" />
     <Compile Include="Models\ExecuteCommandDto.cs" />
     <Compile Include="Models\FileDto.cs" />
-    <Compile Include="Models\FileOperationDto.cs" />
     <Compile Include="Models\FileOpsErrorMessageDto.cs" />
     <Compile Include="Models\FilePathDto.cs" />
-    <Compile Include="Models\FileTransferDto.cs" />
     <Compile Include="Models\JobsGroupDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

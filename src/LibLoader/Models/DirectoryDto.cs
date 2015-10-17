@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using LibLoader.Constants;
+using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
 
 namespace LibLoader.Models
@@ -9,7 +11,17 @@ namespace LibLoader.Models
 	/// </summary>
     public class DirectoryDto
     {
-        public DirectoryInfo DirInfo { get; set; }
+		private bool _disposed;
+
+		public ErrorLogger ErrorMgr = new
+			ErrorLogger(2143000,
+						"DirectoryDto",
+						AppConstants.LoggingStatus,
+						AppConstants.LoggingMode);
+
+
+
+		public DirectoryInfo DirInfo { get; set; }
         public bool DirInfoIsValid { get; set; }
         public string DirectoryName { get; set; }
 
@@ -22,7 +34,19 @@ namespace LibLoader.Models
 	    {
 		    if (!ValidateInputDirString(directoryPath))
 		    {
-			    SetDirectoryEmpty();
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = directoryPath,
+					ErrId = 10,
+					ErrorMessage = "Directory Path Invalid! Dto set to empty.",
+					ErrSourceMethod = "ValidateInputDirString()",
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.ERROR
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+				SetDirectoryEmpty();
 			    return;
 		    }
 
@@ -34,6 +58,41 @@ namespace LibLoader.Models
 	    {
 		    SetDirectory(fInfo.DirectoryName);
 	    }
+
+		public void Dispose()
+		{
+			Dispose(true);
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			// Check to see if Dispose has already been called.
+			if (!_disposed)
+			{
+				// If disposing equals true, dispose all managed
+				// and unmanaged resources.
+				if (disposing)
+				{
+					// Dispose managed resources.
+					if (DirInfo != null)
+					{
+						DirInfo = null;
+						DirInfoIsValid = false;
+					}
+
+				}
+
+				// Note disposing has been done.
+				_disposed = true;
+
+			}
+		}
 
 		public string GetDirectoryFullNameWithTrailingDelimiter()
 		{
@@ -102,11 +161,33 @@ namespace LibLoader.Models
 
 		private void SetDirectory(string directoryPath)
 		{
-			var formattedDir = PathHelper.RemoveTrailingDelimiter(directoryPath);
-			DirInfo = new DirectoryInfo(formattedDir);
-			DirInfoIsValid = DirInfo.Exists;
-		    DirectoryName = GetBaseDirectoryName(directoryPath);
 
+			try
+			{
+				var formattedDir = PathHelper.RemoveTrailingDelimiter(directoryPath);
+				DirInfo = new DirectoryInfo(formattedDir);
+				DirInfoIsValid = DirInfo.Exists;
+				DirectoryName = GetBaseDirectoryName(directoryPath);
+
+			}
+			catch (Exception ex)
+			{
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = directoryPath,
+					ErrId = 20,
+					ErrorMessage = "Exception thrown while setting Directory Path",
+					ErrSourceMethod = "SetDirectory()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.ERROR
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				SetDirectoryEmpty();
+			}
 	    }
 
 		private void SetDirectoryEmpty()
@@ -154,7 +235,6 @@ namespace LibLoader.Models
 		private string AnalyzeRawDirectoryPath(string directoryPath)
 		{
 			var dirComponent = PathHelper.ExtractDirectoryComponent(directoryPath);
-			var fileComponent = PathHelper.ExtractFileNameOnlyComponent(directoryPath);
 			var extComponent = PathHelper.ExtractFileExtensionComponent(directoryPath);
 
 			if (extComponent == string.Empty)

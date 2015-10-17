@@ -11,7 +11,6 @@ namespace LibLoader.Commands
 {
     public class PurgeLogCommand
     {
-        //private readonly FileTransferDto _fileTransferInfo;
 		public ErrorLogger ErrorMgr = new ErrorLogger(120000, 
 			"PurgeLogCommand",
 			AppConstants.LoggingStatus,
