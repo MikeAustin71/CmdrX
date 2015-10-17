@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using LibLoader.Helpers;
 
 namespace LibLoader.Models
@@ -14,6 +13,7 @@ namespace LibLoader.Models
 		public string FullPathAndFileName { get; set; }
 		public DirectoryDto DirDto { get; set; }
 		public FileInfo FileXinfo { get; set; }
+		public bool IsFileDtoEmpty { get; private set; }
 
 		public FileDto()
 		{
@@ -23,7 +23,7 @@ namespace LibLoader.Models
 		public FileDto(string fileName)
 		{
 
-			ConfigureDto(fileName);
+			ConfigureDto(StringHelper.TrimStringEnds(fileName));
 
 		}
 
@@ -35,7 +35,7 @@ namespace LibLoader.Models
 				return;
 			}
 
-			ConfigureDto(Path.Combine(dirDto.DirInfo.FullName, fileNameAndExtension));
+			ConfigureDto(Path.Combine(dirDto.DirInfo.FullName, StringHelper.TrimStringEnds(fileNameAndExtension)));
 		}
 
 		public override int GetHashCode()
@@ -44,7 +44,7 @@ namespace LibLoader.Models
 		}
 
 
-		public override bool Equals(System.Object obj)
+		public override bool Equals(object obj)
 		{
 			// If parameter is null return false.
 			if (obj == null)
@@ -55,7 +55,7 @@ namespace LibLoader.Models
 			// If parameter cannot be cast to Point return false.
 			FileDto p = obj as FileDto;
 
-			if ((System.Object)p == null)
+			if ((object)p == null)
 			{
 				return false;
 			}
@@ -76,7 +76,7 @@ namespace LibLoader.Models
 		public static bool operator ==(FileDto a, FileDto b)
 		{
 			// ReSharper disable once BuiltInTypeReferenceStyle
-			if (Object.ReferenceEquals(a, b))
+			if (ReferenceEquals(a, b))
 			{
 				return true;
 			} // this handles a==null && b==null
@@ -102,11 +102,12 @@ namespace LibLoader.Models
 		public static bool operator !=(FileDto a, FileDto b)
 		{
 			// ReSharper disable once BuiltInTypeReferenceStyle
-			if (!Object.ReferenceEquals(a, b))
+			if (!ReferenceEquals(a, b))
 			{
 				return true;
 			} // this handles a==null && b==null
 
+			// ReSharper disable once ConditionIsAlwaysTrueOrFalse
 			if (a == null && b == null)
 			{
 				return false;
@@ -135,24 +136,29 @@ namespace LibLoader.Models
 
 		private void ConfigureDto(string fileName)
 		{
-			if (!ValidateFileInputString(fileName))
+			var fName = StringHelper.TrimStringEnds(fileName);
+
+			if (!ValidateFileInputString(fName))
 			{
 				SetDtoToEmpty();
 				return;
 			}
 
-			FileXinfo = new FileInfo(fileName);
+			FileXinfo = new FileInfo(fName);
 
 			DirDto = new DirectoryDto(FileXinfo.DirectoryName);
 
-			if (FileXinfo != null)
+			if (FileXinfo == null)
 			{
-				FileExtension = FileXinfo.Extension;
-				FileNameAndExtension = FileXinfo.Name;
-				FilePath = FileXinfo.DirectoryName;
-				FullPathAndFileName = FileXinfo.FullName;
+				SetDtoToEmpty();
+				return;
 			}
 
+			FileExtension = FileXinfo.Extension;
+			FileNameAndExtension = FileXinfo.Name;
+			FilePath = FileXinfo.DirectoryName;
+			FullPathAndFileName = FileXinfo.FullName;
+			IsFileDtoEmpty = false;
 		}
 
 		private bool ValidateFileInputString(string fileStr)
@@ -180,6 +186,7 @@ namespace LibLoader.Models
 			FullPathAndFileName = string.Empty;
 			DirDto = null;
 			FileXinfo = null;
+			IsFileDtoEmpty = true;
 		}
 	}
 }
