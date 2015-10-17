@@ -49,7 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\CommandLineParameterBuilder.cs" />
-    <Compile Include="Builders\ExecuteCommandBuilder.cs" />
     <Compile Include="Builders\XmlParameterBuilder.cs" />
     <Compile Include="Commands\ExecuteConsoleCommand.cs" />
     <Compile Include="Commands\PurgeLogCommand.cs" />
@@ -72,6 +71,8 @@
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\XmlValueExtractor.cs" />
     <Compile Include="Managers\AppicationLogMgr.cs" />
+    <Compile Include="Managers\ConsoleCommandLogMgr.cs" />
+    <Compile Include="Managers\CommandExectutionMgr.cs" />
     <Compile Include="Managers\WorkingDirectoryMgr.cs" />
     <Compile Include="Models\ConsoleCommandDto.cs" />
     <Compile Include="Models\DirectoryDto.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Models\FileOpsErrorMessageDto.cs" />
     <Compile Include="Models\FilePathDto.cs" />
     <Compile Include="Models\JobsGroupDto.cs" />
+    <Compile Include="Models\StreamWriterDto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

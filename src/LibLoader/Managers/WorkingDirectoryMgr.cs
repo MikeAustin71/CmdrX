@@ -11,6 +11,12 @@ namespace LibLoader.Managers
 		public DirectoryDto OriginalCurrentWorkingDirectory { get; private set; } 
 		public DirectoryDto TargetWorkingDirectory { get; set; }
 
+		public WorkingDirectoryMgr()
+		{
+			SetCurrentWorkingDirectory();
+			TargetWorkingDirectory = new DirectoryDto(OriginalCurrentWorkingDirectory.DirInfo.FullName);
+		}
+
 		public WorkingDirectoryMgr(DirectoryDto targetWorkingDirectory)
 		{
 			TargetWorkingDirectory = targetWorkingDirectory;

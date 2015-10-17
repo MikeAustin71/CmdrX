@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using LibLoader.Constants;
@@ -73,55 +74,6 @@ namespace LibLoader.Helpers
 			// Gets The Current Working Directory of this application!
 			return new DirectoryDto(Directory.GetCurrentDirectory());
 		}
-
-		public static bool DeleteADirectory(string dir)
-		{
-			if (String.IsNullOrEmpty(dir))
-			{
-				return true;
-			}
-
-			try
-			{
-				if (!Directory.Exists(dir))
-				{
-					return true;
-				}
-
-				var files = Directory.GetFiles(dir);
-
-				if (files.Length < 1)
-				{
-					Directory.Delete(dir);
-				}
-
-				if (Directory.Exists(dir))
-				{
-					return false;
-				}
-			}
-			catch(Exception ex)
-			{
-				var err = new FileOpsErrorMessageDto
-				{
-					DirectoryPath = String.Empty,
-					ErrId = 2,
-					ErrorMessage = "Directory Deletion Failed!",
-					ErrSourceMethod = "DeleteADirectory",
-					ErrException = ex,
-					FileName = "Target Dir: " + dir,
-					LoggerLevel = LogLevel.FATAL
-				};
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				return false;
-			}
-
-			return true;
-		}
-
 
 		public static bool CreateDirectoryIfNecessary(DirectoryDto dirDto)
 		{
@@ -214,5 +166,136 @@ namespace LibLoader.Helpers
 			return targetDirDto == newCurrentDirectory;
 
 		}
+
+		public static Stack<string> GetAllRelativeSubDirectoriesInTree(string parentDirectory)
+		{
+			var dirStack = new Stack<string>();
+			var stack = new Stack<string>();
+			var dirs = Directory.GetDirectories(parentDirectory);
+			string pDir = PathHelper.RemoveTrailingDelimiter(parentDirectory);
+			string relDir;
+
+			foreach (var dir in dirs)
+			{
+
+				relDir = dir.Substring(pDir.Length);
+
+				stack.Push(relDir);
+			}
+
+			while (stack.Count > 0)
+			{
+				var dir = stack.Pop();
+
+				dirStack.Push(dir);
+
+				dirs = Directory.GetDirectories(pDir + dir);
+
+				foreach (var d in dirs)
+				{
+					relDir = d.Substring(pDir.Length);
+
+					stack.Push(relDir);
+				}
+
+			}
+
+			return dirStack;
+		}
+
+		public static Stack<string> GetAllSubdirectoriesInTree(string parentDirectory)
+		{
+			var dirStack = new Stack<string>();
+			var stack = new Stack<string>();
+			var dirs = Directory.GetDirectories(parentDirectory);
+
+			foreach (var dir in dirs)
+			{
+				stack.Push(dir);
+			}
+
+			while (stack.Count > 0)
+			{
+				var dir = stack.Pop();
+
+				dirStack.Push(dir);
+
+				dirs = Directory.GetDirectories(dir);
+
+				foreach (var d in dirs)
+				{
+					stack.Push(d);
+				}
+
+			}
+
+			return dirStack;
+		}
+
+
+		public static bool DeleteDirectoryFromFilePath(string filePathNameExt)
+		{
+			if (string.IsNullOrEmpty(filePathNameExt))
+			{
+				return true;
+			}
+
+
+			var dir = Path.GetDirectoryName(filePathNameExt);
+
+			return DeleteADirectory(dir);
+
+
+		}
+
+		public static bool DeleteADirectory(string dir)
+		{
+			if (String.IsNullOrEmpty(dir))
+			{
+				return true;
+			}
+
+			try
+			{
+				if (!Directory.Exists(dir))
+				{
+					return true;
+				}
+
+				var files = Directory.GetFiles(dir);
+
+				if (files.Length < 1)
+				{
+					Directory.Delete(dir);
+				}
+
+				if (Directory.Exists(dir))
+				{
+					return false;
+				}
+			}
+			catch (Exception ex)
+			{
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = dir,
+					ErrId = 2,
+					ErrorMessage = "Directory Deletion Failed!",
+					ErrSourceMethod = "DeleteADirectory",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				return false;
+			}
+
+			return true;
+		}
+
+
 	}
 }

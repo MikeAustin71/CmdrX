@@ -19,49 +19,50 @@ namespace LibLoader
 		static void Main(string[] args)
 		{
 
-			// Setup Application Logging
-			AppConstants.LoggingStatus = ErrorLoggingStatus.On;
-			AppConstants.LoggingMode = ErrorLoggingMode.Verbose;
-			ErrorMgr = new
-				ErrorLogger(1000,
-							"Program",
-							AppConstants.LoggingStatus,
-							AppConstants.LoggingMode);
-
-			if (!AppConstants.AppLogMgr.CreateApplicaitonLogDirectory())
-			{
-				Console.WriteLine("Application Log Directory Invalid!");
-				Environment.ExitCode = -1;
-				return;
-			}
-
-
-			AppConstants.AppLogMgr.PurgeLogCmd.Execute();
-			LogUtil.ExeAssemblyVersionNo = AppInfoHelper.GetThisAssemblyVersion();
-
 			JobsGroupDto cmdJobs;
 
-			if (!ProcessCmdArgs(args)
+			if (!SetUpLogging()
+				|| !ProcessCmdArgs(args)
 				|| !ValidateXmlCommandFile()
-				|| !ParseCommandJobsFromXml(out cmdJobs)
-				|| !ExecuteConsoleCommands(cmdJobs))
+				|| !ParseCommandJobsFromXml(out cmdJobs))
 			{
 				return;
 			}
 
-
+			ExecuteConsoleCommands(cmdJobs);
 
 		}
 
-		private static bool ExecuteConsoleCommands(JobsGroupDto cmdJobs)
+		private static bool SetUpLogging()
 		{
 			try
 			{
+				// Setup Application Logging
+				AppConstants.LoggingStatus = ErrorLoggingStatus.On;
+				AppConstants.LoggingMode = ErrorLoggingMode.Verbose;
+				ErrorMgr = new
+					ErrorLogger(1000,
+						"Program",
+						AppConstants.LoggingStatus,
+						AppConstants.LoggingMode);
+
+				if (!AppConstants.AppLogMgr.CreateApplicaitonLogDirectory())
+				{
+					Console.WriteLine("Application Log Directory Invalid!");
+					Environment.ExitCode = -2;
+					return false;
+				}
+
+				LogUtil.ExeAssemblyVersionNo = AppInfoHelper.GetThisAssemblyVersion();
+
+				AppConstants.AppLogMgr.PurgeLogCmd.Execute();
 
 			}
-			catch
+			catch (Exception)
 			{
-				Environment.ExitCode = -1;
+
+				Console.WriteLine("Application Log Setup Failure!");
+				Environment.ExitCode = -2;
 				return false;
 			}
 
@@ -70,24 +71,82 @@ namespace LibLoader
 
 		private static bool ParseCommandJobsFromXml(out JobsGroupDto jobsGroupDto)
 		{
-			var xmlParser = new XmlParameterBuilder(AppConstants.XmlCmdFileDto);
-			jobsGroupDto = xmlParser.BuildParmsFromXml();
+			jobsGroupDto = null;
 
-			if (jobsGroupDto == null || jobsGroupDto.NumberOfJobs < 1)
+			try
+			{
+				var xmlParser = new XmlParameterBuilder(AppConstants.XmlCmdFileDto);
+				jobsGroupDto = xmlParser.BuildParmsFromXml();
+
+				if (jobsGroupDto == null || jobsGroupDto.NumberOfJobs < 1)
+				{
+					var err = new FileOpsErrorMessageDto
+					{
+						DirectoryPath = string.Empty,
+						ErrId = 35,
+						ErrorMessage = "Zero jobs were extracted from the XmlCommands file!",
+						ErrSourceMethod = "ParseCommandJobsFromXml()",
+						FileName = string.Empty,
+						LoggerLevel = LogLevel.FATAL
+					};
+
+					ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+					ErrorMgr.WriteErrorMsg(err);
+					Environment.ExitCode = -3;
+					Console.WriteLine(err.ErrorMessage);
+					return false;
+				}
+
+			}
+			catch(Exception ex) 
 			{
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = string.Empty,
-					ErrId = 35,
+					ErrId = 37,
 					ErrorMessage = "Zero jobs were extracted from the XmlCommands file!",
-					ErrSourceMethod = "Main()",
+					ErrSourceMethod = "ParseCommandJobsFromXml()",
+					ErrException = ex,
 					FileName = string.Empty,
 					LoggerLevel = LogLevel.FATAL
 				};
 
 				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				ErrorMgr.WriteErrorMsg(err);
-				Environment.ExitCode = -1;
+
+				Console.WriteLine(err.ErrorMessage);
+				Environment.ExitCode = -3;
+				return false;
+			}
+
+			return true;
+		}
+
+
+
+		private static bool ExecuteConsoleCommands(JobsGroupDto cmdJobs)
+		{
+			try
+			{
+
+			}
+			catch(Exception ex)
+			{
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 45,
+					ErrorMessage = "Command Job Execution Failed!",
+					ErrSourceMethod = "Main()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+				Environment.ExitCode = -4;
+				Console.WriteLine(err.ErrorMessage);
 				return false;
 			}
 
@@ -112,7 +171,7 @@ namespace LibLoader
 				ErrorMgr.WriteErrorMsg(err);
 
 				AppInfoHelper.DisplayCmdLineParms();
-				Environment.ExitCode = -1;
+				Environment.ExitCode = -5;
 				return false;
 			}
 

@@ -3,6 +3,7 @@ using System.IO;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
+using LibLoader.Managers;
 using LibLoader.Models;
 
 namespace LibLoader.Commands
@@ -16,22 +17,25 @@ namespace LibLoader.Commands
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
-		public ConsoleCommandDto ExecuteCommand { get; private set; }
+		private ConsoleCommandDto _executeCommand;
+
+		private ConsoleCommandLogMgr _logMgr;
+
+		private WorkingDirectoryMgr _wrkDirectoryMgr;
 
 
-		public ExecuteConsoleCommand(ConsoleCommandDto cmdDto)
+		public ExecuteConsoleCommand(ConsoleCommandDto cmdDto, ConsoleCommandLogMgr logMgr)
 		{
 
-			if (string.IsNullOrWhiteSpace(cmdDto?.CommandLineExecutionSyntax))
+			if (cmdDto == null)
 			{
-				var msg = "Console Command Execution Syntax Is Empty! Command Display Name: " + ExecuteCommand.CommandDisplayName;
+				var msg = "Console Command Dto is NULL!";
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = string.Empty,
 					ErrId = 1,
 					ErrorMessage = msg,
 					ErrSourceMethod = "Constructor",
-					CommandName = ExecuteCommand.CommandDisplayName,
 					LoggerLevel = LogLevel.FATAL
 				};
 
@@ -42,31 +46,61 @@ namespace LibLoader.Commands
 
 			}
 
-			ExecuteCommand = cmdDto;
+			if (cmdDto.AssembleCommandLineSyntax()==string.Empty )
+			{
+				var msg = "Console Command Execution Syntax Is Empty! Command Display Name: " + _executeCommand.CommandDisplayName;
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 2,
+					ErrorMessage = msg,
+					ErrSourceMethod = "Constructor",
+					CommandName = _executeCommand.CommandDisplayName,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw new ArgumentException(msg);
+
+			}
+
+			_executeCommand = cmdDto;
+			_logMgr = logMgr;
 
 		}
 
+		//System.Diagnostics.Process process = new System.Diagnostics.Process();
+		//System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+		//startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+		//startInfo.FileName = "cmd.exe";
+		//startInfo.Arguments = _executeCommand.CommandLineExecutionSyntax;
+		//process.StartInfo = startInfo;
+		//process.Start();
+
+		// http://www.codeproject.com/Articles/25983/How-to-Execute-a-Command-in-C
+
 		public int Execute()
 		{
-			//System.Diagnostics.Process process = new System.Diagnostics.Process();
-			//System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			//startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-			//startInfo.FileName = "cmd.exe";
-			//startInfo.Arguments = ExecuteCommand.CommandLineExecutionSyntax;
-			//process.StartInfo = startInfo;
-			//process.Start();
+			_wrkDirectoryMgr = string.IsNullOrWhiteSpace(_executeCommand.ExecuteInDir) ? 
+				new WorkingDirectoryMgr() : new WorkingDirectoryMgr(new DirectoryDto(_executeCommand.ExecuteInDir));
 
-			// http://www.codeproject.com/Articles/25983/How-to-Execute-a-Command-in-C
 
-			return ExecuteCommandSync(ExecuteCommand);
+			_logMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName);
 
+			_wrkDirectoryMgr.ChangeToTargetWorkingDirectory();
+
+            var result = ExecuteCommandSync(_executeCommand);
+
+			_wrkDirectoryMgr.ChangeBackToOriginalWorkingDirectory();
+
+			return 0;
 		}
 
 		private int MikeExecuteCommandSync(ConsoleCommandDto cmdDto)
 		{
 			var thisMethod = "MikeExecuteCommandSync()";
-            var originalWorkingDirectory = DirectoryHelper.GetCurrentEnvironmentDirectory();
-			var changedCurrentWorkingDirectory = false;
 			System.Diagnostics.Process proc = new System.Diagnostics.Process();
 			StreamReader outputReader;
 			//StreamWriter cmdLogFile = new StreamWriter();
@@ -76,7 +110,7 @@ namespace LibLoader.Commands
 				System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 				startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
 				startInfo.FileName = "cmd.exe";
-				startInfo.Arguments = "/c " + ExecuteCommand.CommandLineExecutionSyntax;
+				startInfo.Arguments = "/c " + _executeCommand.CommandLineExecutionSyntax;
 				// The following commands are needed to redirect the standard output.
 				// This means that it will be redirected to the Process.StandardOutput StreamReader.
 				startInfo.RedirectStandardOutput = true;
@@ -90,11 +124,6 @@ namespace LibLoader.Commands
 				 directory that contains the process to be started. 
 				*/
 				
-                if (!string.IsNullOrWhiteSpace(cmdDto.ExecuteInDir))
-                {
-	                changedCurrentWorkingDirectory = true;
-					Directory.SetCurrentDirectory(cmdDto.ExecuteInDir.TrimStart().TrimEnd());
-				}
 
 				// Now we create a process, assign its ProcessStartInfo and start it
 				
@@ -134,10 +163,6 @@ namespace LibLoader.Commands
 				proc.Close();
 				proc.Dispose();
 
-				if (changedCurrentWorkingDirectory)
-				{
-					Directory.SetCurrentDirectory(originalWorkingDirectory.DirInfo.FullName);
-				}
 
 
 			}
@@ -173,14 +198,14 @@ namespace LibLoader.Commands
 			}
 			catch (Exception e)
 			{
-				var msg = "Exception Thrown during Command Execution. Command Name: " + ExecuteCommand.CommandDisplayName;
+				var msg = "Exception Thrown during Command Execution. Command Name: " + _executeCommand.CommandDisplayName;
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = string.Empty,
 					ErrId = 3,
 					ErrorMessage = msg,
 					ErrSourceMethod = "Constructor",
-					CommandName = ExecuteCommand.CommandDisplayName,
+					CommandName = _executeCommand.CommandDisplayName,
 					ErrException = e,
 					LoggerLevel = LogLevel.FATAL
 				};

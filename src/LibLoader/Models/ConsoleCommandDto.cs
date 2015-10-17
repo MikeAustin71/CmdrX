@@ -92,18 +92,24 @@ namespace LibLoader.Models
 
 		public string CommandLineExecutionSyntax { get; set; } = string.Empty;
 
-		private string _outputCmdLogFile = string.Empty;
+		private string _outputCmdLogFileBaseName = string.Empty;
 
-		public string OutputCmdLogFile
+		public string OutputCmdLogFileBaseName
 		{
-			get { return _outputCmdLogFile; }
+			get { return _outputCmdLogFileBaseName; }
 
 			set
 			{
-				_outputCmdLogFile = StringHelper.TrimStringEnds(value);
+				_outputCmdLogFileBaseName = StringHelper.TrimStringEnds(value);
 
 			}
 		}
+
+		public DateTime CommandStartTime { get; set; }
+
+		public DateTime CommandExitTime { get; set; }
+
+		public int CommandExitCode { get; set; }
 
 		public void Dispose()
 		{
@@ -165,16 +171,14 @@ namespace LibLoader.Models
 				sb.Append(" " + CommandArguments);
 			}
 
-			CommandLineExecutionSyntax = sb.ToString();
-
-			return CommandLineExecutionSyntax;
+			return (CommandLineExecutionSyntax = StringHelper.TrimStringEnds(sb.ToString()));
 		}
 
 		public bool SetOutputCmdLogFile(string outputDirCmdFileName)
 		{
 			if (string.IsNullOrWhiteSpace(outputDirCmdFileName))
 			{
-				outputDirCmdFileName = AppConstants.CommandOutputLogFileName;
+				outputDirCmdFileName = AppConstants.CommandOutputLogFileBaseName;
 			}
 
 			OutputCmdLogFileDto = new FileDto(outputDirCmdFileName);

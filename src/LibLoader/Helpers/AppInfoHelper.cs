@@ -72,7 +72,7 @@ namespace LibLoader.Helpers
 				+ "\\" 
 				+ filePrefix 
 				+ "_" 
-				+ AppConstants.CommandOutputLogFileName);
+				+ AppConstants.CommandOutputLogFileBaseName);
 		}
 
 		public static void DisplayCmdLineParms()
