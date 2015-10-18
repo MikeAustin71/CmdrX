@@ -17,14 +17,19 @@ namespace LibLoader.Commands
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
-		private ConsoleCommandDto _executeCommand;
+		private readonly ConsoleCommandDto _executeCommand;
 
-		private ConsoleCommandLogMgr _logMgr;
+		private readonly ConsoleCommandLogMgr _logMgr;
 
-		private WorkingDirectoryMgr _wrkDirectoryMgr;
+		private readonly ConsoleCommandLogMgr _errLogMgr;
+
+		private readonly WorkingDirectoryMgr _wrkDirectoryMgr;
 
 
-		public ExecuteConsoleCommand(ConsoleCommandDto cmdDto, ConsoleCommandLogMgr logMgr)
+		public ExecuteConsoleCommand(ConsoleCommandDto cmdDto, 
+										ConsoleCommandLogMgr logMgr,
+											ConsoleCommandLogMgr errLogMgr,
+												WorkingDirectoryMgr wrkDirectoryMgr)
 		{
 
 			if (cmdDto == null)
@@ -63,11 +68,12 @@ namespace LibLoader.Commands
 				ErrorMgr.WriteErrorMsg(err);
 
 				throw new ArgumentException(msg);
-
 			}
 
 			_executeCommand = cmdDto;
 			_logMgr = logMgr;
+			_errLogMgr = errLogMgr;
+			_wrkDirectoryMgr = wrkDirectoryMgr;
 
 		}
 
@@ -83,15 +89,15 @@ namespace LibLoader.Commands
 
 		public int Execute()
 		{
-			_wrkDirectoryMgr = string.IsNullOrWhiteSpace(_executeCommand.ExecuteInDir) ? 
-				new WorkingDirectoryMgr() : new WorkingDirectoryMgr(new DirectoryDto(_executeCommand.ExecuteInDir));
-
-
 			_logMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName);
+			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName
+			                                   + AppConstants.ConsoleErrorLogFileNameSuffix);
+
+			_wrkDirectoryMgr.SetTargetDirectory(_executeCommand.ExecuteInDir);
 
 			_wrkDirectoryMgr.ChangeToTargetWorkingDirectory();
 
-            var result = ExecuteCommandSync(_executeCommand);
+            var result = MikeExecuteCommandSync(_executeCommand);
 
 			_wrkDirectoryMgr.ChangeBackToOriginalWorkingDirectory();
 
@@ -101,9 +107,9 @@ namespace LibLoader.Commands
 		private int MikeExecuteCommandSync(ConsoleCommandDto cmdDto)
 		{
 			var thisMethod = "MikeExecuteCommandSync()";
+			cmdDto.CommandStartTime = DateTime.Now;
 			System.Diagnostics.Process proc = new System.Diagnostics.Process();
 			StreamReader outputReader;
-			//StreamWriter cmdLogFile = new StreamWriter();
 
 			try
 			{

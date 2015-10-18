@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LibLoader.Builders;
-using LibLoader.Commands;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
+using LibLoader.Managers;
 using LibLoader.Models;
 
 namespace LibLoader
 {
 	class Program
 	{
-		private static ErrorLogger ErrorMgr;
+		private static ErrorLogger _errorMgr;
 
 		static void Main(string[] args)
 		{
@@ -40,7 +36,7 @@ namespace LibLoader
 				// Setup Application Logging
 				AppConstants.LoggingStatus = ErrorLoggingStatus.On;
 				AppConstants.LoggingMode = ErrorLoggingMode.Verbose;
-				ErrorMgr = new
+				_errorMgr = new
 					ErrorLogger(1000,
 						"Program",
 						AppConstants.LoggingStatus,
@@ -90,8 +86,8 @@ namespace LibLoader
 						LoggerLevel = LogLevel.FATAL
 					};
 
-					ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-					ErrorMgr.WriteErrorMsg(err);
+					_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
+					_errorMgr.WriteErrorMsg(err);
 					Environment.ExitCode = -3;
 					Console.WriteLine(err.ErrorMessage);
 					return false;
@@ -111,8 +107,8 @@ namespace LibLoader
 					LoggerLevel = LogLevel.FATAL
 				};
 
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
+				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				_errorMgr.WriteErrorMsg(err);
 
 				Console.WriteLine(err.ErrorMessage);
 				Environment.ExitCode = -3;
@@ -124,11 +120,15 @@ namespace LibLoader
 
 
 
-		private static bool ExecuteConsoleCommands(JobsGroupDto cmdJobs)
+		private static void ExecuteConsoleCommands(JobsGroupDto cmdJobs)
 		{
 			try
 			{
+				var mgr = new CommandExectutionMgr(cmdJobs, 
+					AppConstants.CommandOutputLogFileBaseName,
+					DateHelper.NowYearMthDayHrsSecs());
 
+				mgr.ExecuteCommands();
 			}
 			catch(Exception ex)
 			{
@@ -143,14 +143,11 @@ namespace LibLoader
 					LoggerLevel = LogLevel.FATAL
 				};
 
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
+				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				_errorMgr.WriteErrorMsg(err);
 				Environment.ExitCode = -4;
 				Console.WriteLine(err.ErrorMessage);
-				return false;
 			}
-
-			return true;
 		}
 
 		private static bool ValidateXmlCommandFile()
@@ -167,8 +164,8 @@ namespace LibLoader
 					LoggerLevel = LogLevel.FATAL
 				};
 
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
+				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				_errorMgr.WriteErrorMsg(err);
 
 				AppInfoHelper.DisplayCmdLineParms();
 				Environment.ExitCode = -5;
@@ -197,8 +194,8 @@ namespace LibLoader
 					LoggerLevel = LogLevel.INFO
 				};
 
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
+				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				_errorMgr.WriteErrorMsg(err);
 
 				AppInfoHelper.DisplayCmdLineParms();
 				Environment.ExitCode = 0;

@@ -297,5 +297,18 @@ namespace LibLoader.Helpers
 		}
 
 
+
+		public static bool IsDirectoryDtoValid(DirectoryDto dirDto)
+		{
+			if (dirDto?.DirInfo == null 
+				|| string.IsNullOrWhiteSpace(dirDto.DirInfo.FullName)
+				|| dirDto.DirInfo.FullName.Length < 3)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 	}
 }

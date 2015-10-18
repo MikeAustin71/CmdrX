@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
@@ -10,17 +8,17 @@ namespace LibLoader.Managers
 {
 	public class ConsoleCommandLogMgr
 	{
+		private bool _disposed;
+
 		public ErrorLogger ErrorMgr = new
 			ErrorLogger(7388000,
 						"ConsoleCommandLogMgr",
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
-		private string _defaultCmdConsoleLogFileBaseName;
+		private readonly string _defaultCmdConsoleLogFileBaseName;
 
-		private string _logfileTimeStamp;
-
-		private string _currentCmdConsoleLogFileBaseName = string.Empty;
+		private readonly string _logfileTimeStamp;
 
 		private string _currentCmdConsoleLogFileNameAndExt = string.Empty;
 
@@ -28,7 +26,6 @@ namespace LibLoader.Managers
 
 		private StreamWriterDto _swDto;
 
-		private Dictionary<string, int> _logFilesHistory = new Dictionary<string, int>();
 
 		public ConsoleCommandLogMgr(string defaultCmdConsoleLogFileBaseName, string logFileTimeStamp)
 		{
@@ -39,10 +36,53 @@ namespace LibLoader.Managers
 
 		}
 
+		public void Dispose()
+		{
+			Dispose(true);
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			// Check to see if Dispose has already been called.
+			if (!_disposed)
+			{
+				// If disposing equals true, dispose all managed
+				// and unmanaged resources.
+				if (disposing)
+				{
+					// Dispose managed resources.
+					if (_swDto != null)
+					{
+						_swDto.GetStreamWriter().Flush();
+						_swDto.Close();
+						_swDto = null;
+					}
+
+					if (_currentLogfileDto != null)
+					{
+						_currentLogfileDto.Dispose();
+						_currentLogfileDto = null;
+					}
+
+				}
+
+
+				// Note disposing has been done.
+				_disposed = true;
+
+			}
+		}
+
+
+
 		private bool SetConsoleLog(string commandLogFileBaseName)
 		{
-			_currentCmdConsoleLogFileBaseName = commandLogFileBaseName;
-
 			if (string.IsNullOrWhiteSpace(commandLogFileBaseName))
 			{
 				_currentCmdConsoleLogFileNameAndExt = _defaultCmdConsoleLogFileBaseName
@@ -56,7 +96,7 @@ namespace LibLoader.Managers
 
 			_currentLogfileDto = new FileDto(_currentCmdConsoleLogFileNameAndExt);
 
-			if (_currentLogfileDto?.FileXinfo == null)
+			if (!FileHelper.IsFileDtoValid(_currentLogfileDto))
 			{
 				var msg = "Command Console Log File INVALID!";
 				var err = new FileOpsErrorMessageDto
@@ -76,18 +116,6 @@ namespace LibLoader.Managers
 
 			}
 
-			int count;
-
-			if (!_logFilesHistory.TryGetValue(_currentLogfileDto.FileXinfo.FullName, out count))
-			{
-				_logFilesHistory.Add(_currentLogfileDto.FileXinfo.FullName, 1);
-			}
-			else
-			{
-				count++;
-				_logFilesHistory[_currentLogfileDto.FileXinfo.FullName] = count;
-			}
-
 			return true;
 		}
 
@@ -99,7 +127,7 @@ namespace LibLoader.Managers
 				return false;
 			}
 
-			if (_currentLogfileDto?.FileXinfo == null)
+			if (!FileHelper.IsFileDtoValid(_currentLogfileDto))
 			{
 				var msg = "Command Console Log File INVALID!";
 				var err = new FileOpsErrorMessageDto

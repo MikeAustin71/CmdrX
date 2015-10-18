@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization.Formatters;
+﻿using System;
+using LibLoader.Constants;
+using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
 using LibLoader.Models;
 
@@ -6,22 +8,93 @@ namespace LibLoader.Managers
 {
 	public class WorkingDirectoryMgr
 	{
-		public bool IsSetToTargetDirectory { get; private set; } = false;
-		public bool IsCurrentAndTargetSameDirectory { get; private set; } = false;
+		private bool _disposed;
+
+		public ErrorLogger ErrorMgr = new
+			ErrorLogger(6492000,
+						"WorkingDirectoryMgr",
+						AppConstants.LoggingStatus,
+						AppConstants.LoggingMode);
+
+
+		public bool IsSetToTargetDirectory { get; private set; }
+		public bool IsCurrentAndTargetSameDirectory { get; private set; }
 		public DirectoryDto OriginalCurrentWorkingDirectory { get; private set; } 
 		public DirectoryDto TargetWorkingDirectory { get; set; }
 
 		public WorkingDirectoryMgr()
 		{
 			SetCurrentWorkingDirectory();
+
 			TargetWorkingDirectory = new DirectoryDto(OriginalCurrentWorkingDirectory.DirInfo.FullName);
+
+			if (!DirectoryHelper.IsDirectoryDtoValid(TargetWorkingDirectory))
+			{
+				var ex = new Exception("TargetWorkingDirectory Dto Invalid!");
+
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = OriginalCurrentWorkingDirectory.DirInfo.FullName,
+					ErrId = 1,
+					ErrorMessage = "Directory Deletion Failed!",
+					ErrSourceMethod = "Constructor()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw ex;
+
+			}
+
+
 		}
 
-		public WorkingDirectoryMgr(DirectoryDto targetWorkingDirectory)
+		public void Dispose()
 		{
-			TargetWorkingDirectory = targetWorkingDirectory;
-			SetCurrentWorkingDirectory();
+			Dispose(true);
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
 		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			// Check to see if Dispose has already been called.
+			if (!_disposed)
+			{
+				// If disposing equals true, dispose all managed
+				// and unmanaged resources.
+				if (disposing)
+				{
+					// Dispose managed resources.
+					if (OriginalCurrentWorkingDirectory != null)
+					{
+						OriginalCurrentWorkingDirectory.Dispose();
+						OriginalCurrentWorkingDirectory = null;
+					}
+
+					if (TargetWorkingDirectory != null)
+					{
+						TargetWorkingDirectory.Dispose();
+						TargetWorkingDirectory = null;
+					}
+
+				}
+
+
+				// Note disposing has been done.
+				_disposed = true;
+
+			}
+		}
+
 
 		public bool ChangeToTargetWorkingDirectory()
 		{
@@ -67,8 +140,42 @@ namespace LibLoader.Managers
 		{
 			OriginalCurrentWorkingDirectory = DirectoryHelper.GetCurrentDirectory();
 
+			if (!DirectoryHelper.IsDirectoryDtoValid(OriginalCurrentWorkingDirectory))
+			{
+				var ex = new Exception("OriginalCurrentWorkingDirectory Dto Invalid!");
+
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 50,
+					ErrorMessage = ex.Message,
+					ErrSourceMethod = "SetCurrentWorkingDirectory()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw ex;
+
+			}
+
 			return OriginalCurrentWorkingDirectory;
 			
+		}
+
+		public void SetTargetDirectory(string targetDir)
+		{
+			TargetWorkingDirectory.Dispose();
+			TargetWorkingDirectory = new DirectoryDto(targetDir);
+		}
+
+		public void SetTargetDirectory(DirectoryDto targetDto)
+		{
+			TargetWorkingDirectory.Dispose();
+			TargetWorkingDirectory = targetDto;
 		}
 
 	}

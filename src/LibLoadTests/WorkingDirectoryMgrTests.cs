@@ -14,7 +14,8 @@ namespace LibLoadTests
 
 			var target = TestDirectories.GetTest1Dir();
 
-            var dirMgr = new WorkingDirectoryMgr(target);
+            var dirMgr = new WorkingDirectoryMgr();
+			dirMgr.SetTargetDirectory(target);
 
 			var currDir = dirMgr.SetCurrentWorkingDirectory();
 
@@ -29,7 +30,8 @@ namespace LibLoadTests
 
 			var target = TestDirectories.GetTest1Dir();
 
-			var dirMgr = new WorkingDirectoryMgr(target);
+			var dirMgr = new WorkingDirectoryMgr();
+			dirMgr.SetTargetDirectory(target);
 
 			var originalDir = dirMgr.SetCurrentWorkingDirectory();
 
@@ -61,7 +63,8 @@ namespace LibLoadTests
 
 			var target = TestDirectories.GetTest1Dir();
 
-			var dirMgr = new WorkingDirectoryMgr(target);
+			var dirMgr = new WorkingDirectoryMgr();
+			dirMgr.SetTargetDirectory(target);
 
 			dirMgr.ChangeToTargetWorkingDirectory();
 

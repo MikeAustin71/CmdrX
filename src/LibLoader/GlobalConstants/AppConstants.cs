@@ -23,5 +23,7 @@ namespace LibLoader.GlobalConstants
 
 		public static string ConsoleCommandExecutor = ConfigurationManager.AppSettings["ConsoleCommandExecutor"];
 
+		public static string ConsoleErrorLogFileNameSuffix = "_Error";
+
 	}
 }

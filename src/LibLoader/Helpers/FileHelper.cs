@@ -235,5 +235,26 @@ namespace LibLoader.Helpers
             return false;
 
         }
+
+	    public static bool IsFileDtoValid(FileDto fileDto)
+	    {
+		    if (fileDto?.FileXinfo == null || fileDto.DirDto == null)
+		    {
+			    return false;
+		    }
+
+		    if (string.IsNullOrWhiteSpace(fileDto.FileXinfo.FullName) 
+				|| fileDto.FileXinfo.FullName.Length < 4)
+		    {
+			    return false;
+		    }
+
+		    if (DirectoryHelper.IsDirectoryDtoValid(fileDto.DirDto))
+		    {
+			    return false;
+		    }
+
+		    return true;
+	    }
     }
 }
