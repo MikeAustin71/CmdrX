@@ -23,6 +23,10 @@ namespace LibLoader.GlobalConstants
 
 		public static string ConsoleCommandExecutor = ConfigurationManager.AppSettings["ConsoleCommandExecutor"];
 
+		public static string ConsoleCommandExeArgs = ConfigurationManager.AppSettings["ConsoleCommandExeArguments"];
+
+		public static int NumberOfMinutesToWaitForExecution = int.Parse(ConfigurationManager.AppSettings["NumberOfMinutesToWaitForExecution"]);
+
 		public static string ConsoleErrorLogFileNameSuffix = "_Error";
 
 	}

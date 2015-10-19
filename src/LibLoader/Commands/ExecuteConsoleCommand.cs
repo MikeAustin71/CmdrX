@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
@@ -19,6 +20,8 @@ namespace LibLoader.Commands
 
 		private readonly ConsoleCommandDto _executeCommand;
 
+		private ConsoleExecutorDto _consoleExecutor;
+
 		private readonly ConsoleCommandLogMgr _logMgr;
 
 		private readonly ConsoleCommandLogMgr _errLogMgr;
@@ -26,10 +29,14 @@ namespace LibLoader.Commands
 		private readonly WorkingDirectoryMgr _wrkDirectoryMgr;
 
 
-		public ExecuteConsoleCommand(ConsoleCommandDto cmdDto, 
-										ConsoleCommandLogMgr logMgr,
-											ConsoleCommandLogMgr errLogMgr,
-												WorkingDirectoryMgr wrkDirectoryMgr)
+		private static bool _errorRedirect = false;
+		private static bool _errorsWritten = false;
+
+		public ExecuteConsoleCommand(ConsoleCommandDto cmdDto,
+										ConsoleExecutorDto consoleExecutor,
+											ConsoleCommandLogMgr logMgr,
+												ConsoleCommandLogMgr errLogMgr,
+													WorkingDirectoryMgr wrkDirectoryMgr)
 		{
 
 			if (cmdDto == null)
@@ -51,26 +58,9 @@ namespace LibLoader.Commands
 
 			}
 
-			if (cmdDto.AssembleCommandLineSyntax()==string.Empty )
-			{
-				var msg = "Console Command Execution Syntax Is Empty! Command Display Name: " + _executeCommand.CommandDisplayName;
-				var err = new FileOpsErrorMessageDto
-				{
-					DirectoryPath = string.Empty,
-					ErrId = 2,
-					ErrorMessage = msg,
-					ErrSourceMethod = "Constructor",
-					CommandName = _executeCommand.CommandDisplayName,
-					LoggerLevel = LogLevel.FATAL
-				};
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				throw new ArgumentException(msg);
-			}
 
 			_executeCommand = cmdDto;
+			_consoleExecutor = consoleExecutor;
 			_logMgr = logMgr;
 			_errLogMgr = errLogMgr;
 			_wrkDirectoryMgr = wrkDirectoryMgr;
@@ -93,55 +83,88 @@ namespace LibLoader.Commands
 			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName
 			                                   + AppConstants.ConsoleErrorLogFileNameSuffix);
 
+			_executeCommand.GetCommandExecutionSyntax(_consoleExecutor.ExeCmdArguments);
+
+			if (_executeCommand.NumberOfCommandElements == 0)
+			{
+				var msg = "Console Command Execution Syntax Is Empty! Command Display Name: " + _executeCommand.CommandDisplayName + " - Skipping this command.";
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 21,
+					ErrorMessage = msg,
+					ErrSourceMethod = "Execute()",
+					CommandName = _executeCommand.CommandDisplayName,
+					LoggerLevel = LogLevel.WARN
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				return 0;
+			}
+
 			_wrkDirectoryMgr.SetTargetDirectory(_executeCommand.ExecuteInDir);
-
-			_wrkDirectoryMgr.ChangeToTargetWorkingDirectory();
-
-            var result = MikeExecuteCommandSync(_executeCommand);
-
-			_wrkDirectoryMgr.ChangeBackToOriginalWorkingDirectory();
-
-			return 0;
+			
+			return MikeExecuteCommandSync(_executeCommand); ;
 		}
 
 		private int MikeExecuteCommandSync(ConsoleCommandDto cmdDto)
 		{
 			var thisMethod = "MikeExecuteCommandSync()";
 			cmdDto.CommandStartTime = DateTime.Now;
-			System.Diagnostics.Process proc = new System.Diagnostics.Process();
-			StreamReader outputReader;
+			var proc = new Process();
+			var exitCode = -1;
 
 			try
 			{
-				System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-				startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-				startInfo.FileName = "cmd.exe";
-				startInfo.Arguments = "/c " + _executeCommand.CommandLineExecutionSyntax;
-				// The following commands are needed to redirect the standard output.
-				// This means that it will be redirected to the Process.StandardOutput StreamReader.
-				startInfo.RedirectStandardOutput = true;
-				startInfo.UseShellExecute = false;
+				// No window will be displayed to the user
+				proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+
+				// Commands are set on the following two lines
+				proc.StartInfo.FileName = _consoleExecutor.ExeCommand;
+				proc.StartInfo.Arguments =  _executeCommand.CommandLineExecutionSyntax;
+
+				// Shell Execute must be false in order to 
+				// set the Working directory below
+				proc.StartInfo.UseShellExecute = false;
+				
 				// Do not create the black window.
-				startInfo.CreateNoWindow = true;
+				proc.StartInfo.CreateNoWindow = true;
 
 				/* startInfo.WorkingDirectory
 				 When the UseShellExecute property is false, gets or sets the working directory
-				 for the process to be started.When UseShellExecute is true, gets or sets the
+				 for the process to be started. When UseShellExecute is true, gets or sets the
 				 directory that contains the process to be started. 
 				*/
-				
+				proc.StartInfo.WorkingDirectory = _wrkDirectoryMgr.TargetWorkingDirectory.DirInfo.FullName;
 
-				// Now we create a process, assign its ProcessStartInfo and start it
-				
-				proc.StartInfo = startInfo;
+
+				// The following commands are needed to redirect the standard output.
+				// This means that it will be redirected to the Process.StandardOutput StreamReader.
+				proc.StartInfo.RedirectStandardOutput = true;
+				proc.OutputDataReceived += new DataReceivedEventHandler(CmdOutputDataHandler);
+
+				// The following commands are needed to redirect standard error output.
+				proc.StartInfo.RedirectStandardError = true;
+				proc.ErrorDataReceived += new DataReceivedEventHandler(CmdErrorDataHandler);
+
+
+				// Start Process
 				proc.Start();
 
-				outputReader = proc.StandardOutput;
-				
-				// To avoid deadlocks, always read the output stream first and then wait.
-				string output = outputReader.ReadToEnd();
+				// Start the asynchronous read of the standard output stream.
+				proc.BeginOutputReadLine();
 
-				proc.WaitForExit();
+				// Start the asynchronous read of the standard
+				// error stream.
+				proc.BeginErrorReadLine();
+
+				proc.WaitForExit(1000);
+
+				exitCode = proc.ExitCode;
+
+
 			}
 			catch (Exception ex)
 			{
@@ -168,59 +191,28 @@ namespace LibLoader.Commands
 
 				proc.Close();
 				proc.Dispose();
+				proc = null;
 
 
 
 			}
-			return -1;
+
+			return exitCode;
 		}
 
-		private int ExecuteCommandSync(ConsoleCommandDto cmdDto)
+		private void CmdOutputDataHandler(object sendingProcess,
+			DataReceivedEventArgs outLine)
 		{
-			try
-			{
-				// create the ProcessStartInfo using "cmd" as the program to be run,
-				// and "/c " as the parameters.
-				// Incidentally, /c tells cmd that we want it to execute the command that follows,
-				// and then exit.
-				System.Diagnostics.ProcessStartInfo procStartInfo =
-					new System.Diagnostics.ProcessStartInfo("cmd", "/c " + cmdDto.CommandLineExecutionSyntax);
+				// Write the text to the collected output.
+				_logMgr.LogWriteLine(outLine.Data);
+		}
 
-				// The following commands are needed to redirect the standard output.
-				// This means that it will be redirected to the Process.StandardOutput StreamReader.
-				procStartInfo.RedirectStandardOutput = true;
-				procStartInfo.UseShellExecute = false;
-				// Do not create the black window.
-				procStartInfo.CreateNoWindow = true;
-				// Now we create a process, assign its ProcessStartInfo and start it
-				System.Diagnostics.Process proc = new System.Diagnostics.Process();
-				proc.StartInfo = procStartInfo;
-				proc.Start();
-				// Get the output into a string
-				string result = proc.StandardOutput.ReadToEnd();
-				// Display the command output.
 
-				return proc.ExitCode;
-			}
-			catch (Exception e)
-			{
-				var msg = "Exception Thrown during Command Execution. Command Name: " + _executeCommand.CommandDisplayName;
-				var err = new FileOpsErrorMessageDto
-				{
-					DirectoryPath = string.Empty,
-					ErrId = 3,
-					ErrorMessage = msg,
-					ErrSourceMethod = "Constructor",
-					CommandName = _executeCommand.CommandDisplayName,
-					ErrException = e,
-					LoggerLevel = LogLevel.FATAL
-				};
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				throw new ArgumentException(msg);
-			}
+		private void CmdErrorDataHandler(object sendingProcess,
+			DataReceivedEventArgs errLine)
+		{
+			_errLogMgr.LogWriteLine(errLine.Data);
+			
 		}
 
 	}

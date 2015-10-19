@@ -24,9 +24,12 @@ namespace LibLoader.Managers
 
 		private WorkingDirectoryMgr _wrkDirMgr;
 
+		private ConsoleExecutorDto _consoleExecutor;
+
 		public CommandExectutionMgr(JobsGroupDto jobsGroup, 
 					string defaultCmdConsoleLogFileBaseName, 
-						string logFileTimeStamp)
+						string logFileTimeStamp,
+							ConsoleExecutorDto consoleCmdDto)
 		{
 			_commandJobs = jobsGroup;
 			_cmdLogMgr = new ConsoleCommandLogMgr(defaultCmdConsoleLogFileBaseName, logFileTimeStamp);
@@ -34,6 +37,8 @@ namespace LibLoader.Managers
 													+ AppConstants.ConsoleErrorLogFileNameSuffix, 
 													logFileTimeStamp);
 			_wrkDirMgr = new WorkingDirectoryMgr();
+
+			_consoleExecutor = consoleCmdDto;
 		}
 
 		public bool ExecuteCommands()
@@ -44,7 +49,7 @@ namespace LibLoader.Managers
 			{
 				foreach (var job in _commandJobs.Jobs)
 				{
-					var exeCmd = new ExecuteConsoleCommand(job, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
+					var exeCmd = new ExecuteConsoleCommand(job,_consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
 					var exitCode = exeCmd.Execute();
 
 					if (exitCode != 0)

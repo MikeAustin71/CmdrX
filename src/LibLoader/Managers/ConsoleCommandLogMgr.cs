@@ -10,11 +10,6 @@ namespace LibLoader.Managers
 	{
 		private bool _disposed;
 
-		public ErrorLogger ErrorMgr = new
-			ErrorLogger(7388000,
-						"ConsoleCommandLogMgr",
-						AppConstants.LoggingStatus,
-						AppConstants.LoggingMode);
 
 		private readonly string _defaultCmdConsoleLogFileBaseName;
 
@@ -26,6 +21,13 @@ namespace LibLoader.Managers
 
 		private StreamWriterDto _swDto;
 
+		public ErrorLogger ErrorMgr = new
+			ErrorLogger(7388000,
+						"ConsoleCommandLogMgr",
+						AppConstants.LoggingStatus,
+						AppConstants.LoggingMode);
+
+		public int NumberOfLogLinesWritten { get; set; }
 
 		public ConsoleCommandLogMgr(string defaultCmdConsoleLogFileBaseName, string logFileTimeStamp)
 		{
@@ -77,46 +79,6 @@ namespace LibLoader.Managers
 				_disposed = true;
 
 			}
-		}
-
-
-
-		private bool SetConsoleLog(string commandLogFileBaseName)
-		{
-			if (string.IsNullOrWhiteSpace(commandLogFileBaseName))
-			{
-				_currentCmdConsoleLogFileNameAndExt = _defaultCmdConsoleLogFileBaseName
-				                                      + "_" + _logfileTimeStamp + ".log";
-			}
-			else
-			{
-				_currentCmdConsoleLogFileNameAndExt = commandLogFileBaseName
-													  + "_" + _logfileTimeStamp + ".log";
-			}
-
-			_currentLogfileDto = new FileDto(_currentCmdConsoleLogFileNameAndExt);
-
-			if (!FileHelper.IsFileDtoValid(_currentLogfileDto))
-			{
-				var msg = "Command Console Log File INVALID!";
-				var err = new FileOpsErrorMessageDto
-				{
-					DirectoryPath = string.Empty,
-					ErrId = 10,
-					ErrorMessage = msg,
-					ErrSourceMethod = "SetConsoleLog()",
-					FileName = _currentCmdConsoleLogFileNameAndExt,
-                    LoggerLevel = LogLevel.FATAL
-				};
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				throw new Exception(msg);
-
-			}
-
-			return true;
 		}
 
 		public bool InitializeCmdConsoleLog(string commandLogFileBaseName)
@@ -176,6 +138,8 @@ namespace LibLoader.Managers
 				_swDto.SetStreamWriter(_currentLogfileDto);
 			}
 
+			NumberOfLogLinesWritten = 0;
+
 			return true;
 		}
 
@@ -186,6 +150,96 @@ namespace LibLoader.Managers
 
 			return FileHelper.DeleteAFile(fileDto);
 		}
+
+		public void LogWriteLine(string outputLine)
+		{
+
+			if (!IsStreamWriterValid())
+			{
+				var msg = "Stream Writer Dto Invalid!";
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 30,
+					ErrorMessage = msg,
+					ErrSourceMethod = "LogWriteLine()",
+					FileName = _currentCmdConsoleLogFileNameAndExt,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw new Exception(msg);
+
+			}
+
+			if (string.IsNullOrWhiteSpace(outputLine))
+			{
+				return;
+			}
+
+			NumberOfLogLinesWritten++;
+
+
+			_swDto.GetStreamWriter().WriteLine(Environment.NewLine + outputLine);
+		}
+
+
+		public void LogFlushStreamWriter()
+		{
+			_swDto.GetStreamWriter().Flush();
+		}
+
+		private bool IsStreamWriterValid()
+		{
+			if (_swDto?.GetStreamWriter() == null)
+			{
+				return false;
+			}
+
+
+			return true;
+		}
+
+		private bool SetConsoleLog(string commandLogFileBaseName)
+		{
+			if (string.IsNullOrWhiteSpace(commandLogFileBaseName))
+			{
+				_currentCmdConsoleLogFileNameAndExt = _defaultCmdConsoleLogFileBaseName
+													  + "_" + _logfileTimeStamp + ".log";
+			}
+			else
+			{
+				_currentCmdConsoleLogFileNameAndExt = commandLogFileBaseName
+													  + "_" + _logfileTimeStamp + ".log";
+			}
+
+			_currentLogfileDto = new FileDto(_currentCmdConsoleLogFileNameAndExt);
+
+			if (!FileHelper.IsFileDtoValid(_currentLogfileDto))
+			{
+				var msg = "Command Console Log File INVALID!";
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 10,
+					ErrorMessage = msg,
+					ErrSourceMethod = "SetConsoleLog()",
+					FileName = _currentCmdConsoleLogFileNameAndExt,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw new Exception(msg);
+
+			}
+
+			return true;
+		}
+
 
 	}
 }

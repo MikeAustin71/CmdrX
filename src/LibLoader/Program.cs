@@ -124,9 +124,15 @@ namespace LibLoader
 		{
 			try
 			{
+				var cmdExe = new ConsoleExecutorDto(AppConstants.ConsoleCommandExecutor,
+					AppConstants.ConsoleCommandExeArgs, 
+					AppConstants.NumberOfMinutesToWaitForExecution);
+
 				var mgr = new CommandExectutionMgr(cmdJobs, 
 					AppConstants.CommandOutputLogFileBaseName,
-					DateHelper.NowYearMthDayHrsSecs());
+					DateHelper.NowYearMthDayHrsSecs(),
+					cmdExe
+					);
 
 				mgr.ExecuteCommands();
 			}

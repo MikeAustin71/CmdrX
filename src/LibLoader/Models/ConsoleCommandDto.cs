@@ -92,6 +92,8 @@ namespace LibLoader.Models
 
 		public string CommandLineExecutionSyntax { get; set; } = string.Empty;
 
+		public int NumberOfCommandElements { get; set; }
+
 		private string _outputCmdLogFileBaseName = string.Empty;
 
 		public string OutputCmdLogFileBaseName
@@ -147,31 +149,83 @@ namespace LibLoader.Models
 		}
 
 
-		public string AssembleCommandLineSyntax()
+		public string GetCommandExecutionSyntax(string cmdExeArguments)
 		{
 			var sb = new StringBuilder();
+			bool hasFirstElement = false;
+			NumberOfCommandElements = 0;
+
+            if (!string.IsNullOrWhiteSpace(cmdExeArguments))
+			{
+				sb.Append(StringHelper.TrimStringEnds(cmdExeArguments));
+
+				hasFirstElement = true;
+			}
+
 
 			if (!string.IsNullOrWhiteSpace(ExecutableTarget))
 			{
+				if (hasFirstElement)
+				{
+					sb.Append(" ");
+				}
+				else
+				{
+					hasFirstElement = true;
+				}
+
 				sb.Append(ExecutableTarget);
+
+				NumberOfCommandElements++;
 			}
 
 			if (!string.IsNullOrWhiteSpace(CommandToExecute))
 			{
-				sb.Append(" " + CommandToExecute);
+				if (hasFirstElement)
+				{
+					sb.Append(" ");
+				}
+				else
+				{
+					hasFirstElement = true;
+				}
+
+				sb.Append(CommandToExecute);
+
+				NumberOfCommandElements++;
 			}
 
 			if (!string.IsNullOrWhiteSpace(CommandModifier))
 			{
-				sb.Append(" " + CommandModifier);
+				if (hasFirstElement)
+				{
+					sb.Append(" ");
+				}
+				else
+				{
+					hasFirstElement = true;
+				}
+
+				sb.Append(CommandModifier);
+
+				NumberOfCommandElements++;
 			}
 
 			if (!string.IsNullOrWhiteSpace(CommandArguments))
 			{
-				sb.Append(" " + CommandArguments);
+				if (hasFirstElement)
+				{
+					sb.Append(" ");
+				}
+
+				sb.Append(CommandArguments);
+
+				NumberOfCommandElements++;
 			}
 
-			return (CommandLineExecutionSyntax = StringHelper.TrimStringEnds(sb.ToString()));
+			CommandLineExecutionSyntax = StringHelper.TrimStringEnds(sb.ToString());
+
+            return (CommandLineExecutionSyntax);
 		}
 
 		public bool SetOutputCmdLogFile(string outputDirCmdFileName)

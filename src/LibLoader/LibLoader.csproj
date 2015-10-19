@@ -75,6 +75,7 @@
     <Compile Include="Managers\CommandExectutionMgr.cs" />
     <Compile Include="Managers\WorkingDirectoryMgr.cs" />
     <Compile Include="Models\ConsoleCommandDto.cs" />
+    <Compile Include="Models\ConsoleExecutorDto.cs" />
     <Compile Include="Models\DirectoryDto.cs" />
     <Compile Include="Models\ExecuteCommandDto.cs" />
     <Compile Include="Models\FileDto.cs" />
