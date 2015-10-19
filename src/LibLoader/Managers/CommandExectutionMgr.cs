@@ -24,18 +24,20 @@ namespace LibLoader.Managers
 
 		private WorkingDirectoryMgr _wrkDirMgr;
 
-		private ConsoleExecutorDto _consoleExecutor;
+		private readonly ConsoleExecutorDto _consoleExecutor;
 
-		public CommandExectutionMgr(JobsGroupDto jobsGroup, 
-					string defaultCmdConsoleLogFileBaseName, 
-						string logFileTimeStamp,
-							ConsoleExecutorDto consoleCmdDto)
+		public CommandExectutionMgr(JobsGroupDto jobsGroup,
+								ConsoleExecutorDto consoleCmdDto)
 		{
 			_commandJobs = jobsGroup;
-			_cmdLogMgr = new ConsoleCommandLogMgr(defaultCmdConsoleLogFileBaseName, logFileTimeStamp);
-			_errLogMgr = new ConsoleCommandLogMgr(defaultCmdConsoleLogFileBaseName 
-													+ AppConstants.ConsoleErrorLogFileNameSuffix, 
-													logFileTimeStamp);
+
+			_cmdLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCmdConsoleLogFilePathName,
+													string.Empty, 
+														consoleCmdDto.CmdConsoleLogFileTimeStamp);
+
+			_errLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCmdConsoleLogFilePathName,
+                                                        consoleCmdDto.CmdConsoleLogFileErrorSuffix,
+															consoleCmdDto.CmdConsoleLogFileTimeStamp);
 			_wrkDirMgr = new WorkingDirectoryMgr();
 
 			_consoleExecutor = consoleCmdDto;

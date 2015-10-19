@@ -10,6 +10,9 @@ namespace LibLoader.Models
 
 		private string _exeCommand;
 		private string _exeCmdArguments;
+		private string _defaultCmdConsoleLogFilePathName;
+		private string _cmdConsoleLogFileErrorSuffix;
+		private string _cmdConsoleLogFileTimeStamp;
 
 		public string ExeCommand
 		{
@@ -23,7 +26,26 @@ namespace LibLoader.Models
 			private set { _exeCmdArguments = StringHelper.TrimStringEnds(value); }
 		}
 
-		public int NumberOfMiliSecondsToWaitForExecution { get; set; }
+		public int NumberOfMiliSecondsToWaitForExecution { get; private set; }
+
+
+		public string DefaultCmdConsoleLogFilePathName
+		{
+			get { return _defaultCmdConsoleLogFilePathName; }
+			private set { _defaultCmdConsoleLogFilePathName = StringHelper.TrimStringEnds(value); }
+		}
+
+		public string CmdConsoleLogFileErrorSuffix
+		{
+			get { return _cmdConsoleLogFileErrorSuffix; }
+			set { _cmdConsoleLogFileErrorSuffix = StringHelper.TrimStringEnds(value); }
+		}
+
+		public string CmdConsoleLogFileTimeStamp
+		{
+			get { return _cmdConsoleLogFileTimeStamp; }
+			set { _cmdConsoleLogFileTimeStamp = StringHelper.TrimStringEnds(value); }
+		}
 
 		public ErrorLogger ErrorMgr = new
 			ErrorLogger(9148000,
@@ -32,7 +54,13 @@ namespace LibLoader.Models
 						AppConstants.LoggingMode);
 
 
-		public ConsoleExecutorDto(string exeCommand, string exeCmdArguments, int NumberOfMinutesToWaitForExecution)
+		public ConsoleExecutorDto(
+					string exeCommand, 
+						string exeCmdArguments, 
+							int numberOfMinutesToWaitForExecution,
+								string defaultCmdConsoleLogFilePathName,
+									string cmdConsoleLogFileErrorSuffix,
+										string cmdConsoleLogFileTimeStamp)
 		{
 
 			if (string.IsNullOrWhiteSpace(exeCommand))
@@ -59,6 +87,15 @@ namespace LibLoader.Models
 			ExeCommand = exeCommand;
 
 			ExeCmdArguments = exeCmdArguments;
+
+			NumberOfMiliSecondsToWaitForExecution = numberOfMinutesToWaitForExecution*60000;
+
+			_defaultCmdConsoleLogFilePathName = defaultCmdConsoleLogFilePathName;
+
+			_cmdConsoleLogFileErrorSuffix = cmdConsoleLogFileErrorSuffix;
+
+			_cmdConsoleLogFileTimeStamp = cmdConsoleLogFileTimeStamp;
+
 		}
 
 	}

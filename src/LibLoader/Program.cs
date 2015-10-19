@@ -25,7 +25,15 @@ namespace LibLoader
 				return;
 			}
 
-			ExecuteConsoleCommands(cmdJobs);
+			var cmdExe = new ConsoleExecutorDto(AppConstants.ConsoleCommandExecutor,
+								AppConstants.ConsoleCommandExeArgs,
+									AppConstants.NumberOfMinutesToWaitForExecution,
+										AppConstants.CommandOutputLogFileBaseName,
+											AppConstants.ConsoleErrorLogFileNameSuffix,
+												DateHelper.NowYearMthDayHrsSecs());
+
+
+			ExecuteConsoleCommands(cmdJobs, cmdExe);
 
 		}
 
@@ -120,19 +128,12 @@ namespace LibLoader
 
 
 
-		private static void ExecuteConsoleCommands(JobsGroupDto cmdJobs)
+		private static void ExecuteConsoleCommands(JobsGroupDto cmdJobs, ConsoleExecutorDto cmdExe)
 		{
 			try
 			{
-				var cmdExe = new ConsoleExecutorDto(AppConstants.ConsoleCommandExecutor,
-					AppConstants.ConsoleCommandExeArgs, 
-					AppConstants.NumberOfMinutesToWaitForExecution);
 
-				var mgr = new CommandExectutionMgr(cmdJobs, 
-					AppConstants.CommandOutputLogFileBaseName,
-					DateHelper.NowYearMthDayHrsSecs(),
-					cmdExe
-					);
+				var mgr = new CommandExectutionMgr(cmdJobs,cmdExe);
 
 				mgr.ExecuteCommands();
 			}

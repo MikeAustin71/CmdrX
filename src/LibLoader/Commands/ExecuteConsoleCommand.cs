@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
@@ -20,7 +19,7 @@ namespace LibLoader.Commands
 
 		private readonly ConsoleCommandDto _executeCommand;
 
-		private ConsoleExecutorDto _consoleExecutor;
+		private readonly ConsoleExecutorDto _consoleExecutor;
 
 		private readonly ConsoleCommandLogMgr _logMgr;
 
@@ -28,9 +27,6 @@ namespace LibLoader.Commands
 
 		private readonly WorkingDirectoryMgr _wrkDirectoryMgr;
 
-
-		private static bool _errorRedirect = false;
-		private static bool _errorsWritten = false;
 
 		public ExecuteConsoleCommand(ConsoleCommandDto cmdDto,
 										ConsoleExecutorDto consoleExecutor,
@@ -80,8 +76,7 @@ namespace LibLoader.Commands
 		public int Execute()
 		{
 			_logMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName);
-			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName
-			                                   + AppConstants.ConsoleErrorLogFileNameSuffix);
+			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName);
 
 			_executeCommand.GetCommandExecutionSyntax(_consoleExecutor.ExeCmdArguments);
 
@@ -106,14 +101,16 @@ namespace LibLoader.Commands
 
 			_wrkDirectoryMgr.SetTargetDirectory(_executeCommand.ExecuteInDir);
 			
-			return MikeExecuteCommandSync(_executeCommand); ;
+			return ExecuteCommand(_executeCommand);
 		}
 
-		private int MikeExecuteCommandSync(ConsoleCommandDto cmdDto)
+		private int ExecuteCommand(ConsoleCommandDto cmdDto)
 		{
-			var thisMethod = "MikeExecuteCommandSync()";
+			var thisMethod = "ExecuteCommand()";
 			cmdDto.CommandStartTime = DateTime.Now;
 			var proc = new Process();
+
+			// ReSharper disable once RedundantAssignment
 			var exitCode = -1;
 
 			try
@@ -143,11 +140,11 @@ namespace LibLoader.Commands
 				// The following commands are needed to redirect the standard output.
 				// This means that it will be redirected to the Process.StandardOutput StreamReader.
 				proc.StartInfo.RedirectStandardOutput = true;
-				proc.OutputDataReceived += new DataReceivedEventHandler(CmdOutputDataHandler);
+				proc.OutputDataReceived += CmdOutputDataHandler;
 
 				// The following commands are needed to redirect standard error output.
 				proc.StartInfo.RedirectStandardError = true;
-				proc.ErrorDataReceived += new DataReceivedEventHandler(CmdErrorDataHandler);
+				proc.ErrorDataReceived += CmdErrorDataHandler;
 
 
 				// Start Process
@@ -160,7 +157,14 @@ namespace LibLoader.Commands
 				// error stream.
 				proc.BeginErrorReadLine();
 
-				proc.WaitForExit(1000);
+				var status = proc.WaitForExit(_consoleExecutor.NumberOfMiliSecondsToWaitForExecution);
+
+				if (!status)
+				{
+					// ReSharper disable once RedundantAssignment
+					exitCode = -11;
+					throw new Exception("Process timeout occurred!");
+				}
 
 				exitCode = proc.ExitCode;
 
@@ -189,11 +193,11 @@ namespace LibLoader.Commands
 			finally
 			{
 
+				proc.Kill();
 				proc.Close();
 				proc.Dispose();
+				// ReSharper disable once RedundantAssignment
 				proc = null;
-
-
 
 			}
 

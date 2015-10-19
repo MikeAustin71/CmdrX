@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
@@ -10,33 +12,66 @@ namespace LibLoader.Managers
 	{
 		private bool _disposed;
 
-
-		private readonly string _defaultCmdConsoleLogFileBaseName;
-
 		private readonly string _logfileTimeStamp;
 
-		private string _currentCmdConsoleLogFileNameAndExt = string.Empty;
+		private readonly string _cmdConsoleFileErrorSuffix;
 
 		private FileDto _currentLogfileDto;
 
+		private readonly FileDto _defautlLogFileDto;
+
 		private StreamWriterDto _swDto;
 
-		public ErrorLogger ErrorMgr = new
+		public ErrorLogger ErrorMgr ;
+
+		public int NumberOfLogLinesWritten { get; set; }
+
+		public ConsoleCommandLogMgr(
+				string defaultCmdConsoleLogPathFileName, 
+					string cmdConsoleFileErrorSuffix,
+						string logFileTimeStamp)
+		{
+			ErrorMgr = new
 			ErrorLogger(7388000,
 						"ConsoleCommandLogMgr",
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
-		public int NumberOfLogLinesWritten { get; set; }
-
-		public ConsoleCommandLogMgr(string defaultCmdConsoleLogFileBaseName, string logFileTimeStamp)
-		{
-			_defaultCmdConsoleLogFileBaseName = defaultCmdConsoleLogFileBaseName;
 			_logfileTimeStamp = logFileTimeStamp;
 
-			DeleteDefaultConsoleCommandLogFile();
+			_cmdConsoleFileErrorSuffix = cmdConsoleFileErrorSuffix;
+
+			_defautlLogFileDto = ExtractLogFileDto(defaultCmdConsoleLogPathFileName,
+														_cmdConsoleFileErrorSuffix,
+															_logfileTimeStamp);
+
+
+			if (!FileHelper.IsFileDtoValid(_defautlLogFileDto))
+			{
+				var msg = "Default Command Console Log File is INVALID!";
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 1,
+					ErrorMessage = msg,
+					ErrSourceMethod = "Constructor()",
+					FileName = defaultCmdConsoleLogPathFileName,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw new Exception(msg);
+
+			}
+
+			_logfileTimeStamp = logFileTimeStamp;
+
+			FileHelper.DeleteAFile(_defautlLogFileDto);
 
 		}
+
 
 		public void Dispose()
 		{
@@ -81,32 +116,25 @@ namespace LibLoader.Managers
 			}
 		}
 
-		public bool InitializeCmdConsoleLog(string commandLogFileBaseName)
+		public bool InitializeCmdConsoleLog(string commandLogFilePathName)
 		{
 
-			if (!SetConsoleLog(commandLogFileBaseName))
+			if (string.IsNullOrWhiteSpace(commandLogFilePathName))
 			{
-				return false;
+				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
+
+				return true;
 			}
+
+			_currentLogfileDto = ExtractLogFileDto(commandLogFilePathName,
+														_cmdConsoleFileErrorSuffix,
+															_logfileTimeStamp);
 
 			if (!FileHelper.IsFileDtoValid(_currentLogfileDto))
 			{
-				var msg = "Command Console Log File INVALID!";
-				var err = new FileOpsErrorMessageDto
-				{
-					DirectoryPath = string.Empty,
-					ErrId = 10,
-					ErrorMessage = msg,
-					ErrSourceMethod = "InitializeCmdConsoleLog()",
-					FileName = _currentCmdConsoleLogFileNameAndExt,
-					LoggerLevel = LogLevel.FATAL
-				};
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				throw new Exception(msg);
-
+				_currentLogfileDto.Dispose();
+				
+				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
 			}
 
 			if (!FileHelper.CreateAFile(_currentLogfileDto) )
@@ -143,14 +171,6 @@ namespace LibLoader.Managers
 			return true;
 		}
 
-		public bool DeleteDefaultConsoleCommandLogFile()
-		{
-			var fileDto =  new FileDto(_defaultCmdConsoleLogFileBaseName
-													  + "_" + _logfileTimeStamp + ".log");
-
-			return FileHelper.DeleteAFile(fileDto);
-		}
-
 		public void LogWriteLine(string outputLine)
 		{
 
@@ -163,7 +183,7 @@ namespace LibLoader.Managers
 					ErrId = 30,
 					ErrorMessage = msg,
 					ErrSourceMethod = "LogWriteLine()",
-					FileName = _currentCmdConsoleLogFileNameAndExt,
+					FileName = _currentLogfileDto.FileXinfo.FullName,
 					LoggerLevel = LogLevel.FATAL
 				};
 
@@ -202,42 +222,47 @@ namespace LibLoader.Managers
 			return true;
 		}
 
-		private bool SetConsoleLog(string commandLogFileBaseName)
+
+		public FileDto ExtractLogFileDto(string defaultCmdConsoleLogPathFileName, 
+													string errorSuffix,
+														string logFileTimeStamp)
 		{
-			if (string.IsNullOrWhiteSpace(commandLogFileBaseName))
+			var filePath = new FilePathDto(defaultCmdConsoleLogPathFileName);
+
+			var sb = new StringBuilder();
+
+			if (filePath.HasDirectoryPath)
 			{
-				_currentCmdConsoleLogFileNameAndExt = _defaultCmdConsoleLogFileBaseName
-													  + "_" + _logfileTimeStamp + ".log";
+				sb.Append(Path.Combine(filePath.DirectoryPath, filePath.FileNameOnly));
 			}
 			else
 			{
-				_currentCmdConsoleLogFileNameAndExt = commandLogFileBaseName
-													  + "_" + _logfileTimeStamp + ".log";
+				sb.Append(filePath.FileNameOnly);
 			}
 
-			_currentLogfileDto = new FileDto(_currentCmdConsoleLogFileNameAndExt);
-
-			if (!FileHelper.IsFileDtoValid(_currentLogfileDto))
+			if (!string.IsNullOrWhiteSpace(errorSuffix))
 			{
-				var msg = "Command Console Log File INVALID!";
-				var err = new FileOpsErrorMessageDto
-				{
-					DirectoryPath = string.Empty,
-					ErrId = 10,
-					ErrorMessage = msg,
-					ErrSourceMethod = "SetConsoleLog()",
-					FileName = _currentCmdConsoleLogFileNameAndExt,
-					LoggerLevel = LogLevel.FATAL
-				};
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				throw new Exception(msg);
-
+				sb.Append("_" + errorSuffix);
 			}
 
-			return true;
+			sb.Append("_" + logFileTimeStamp);
+
+
+			if (filePath.HasExtensinon)
+			{
+				if (filePath.Extension.Contains("."))
+				{
+					sb.Append(filePath.Extension);
+				}
+				else
+				{
+					sb.Append(".");
+					sb.Append(filePath.Extension);
+				}
+			}
+
+
+			return new FileDto(sb.ToString());
 		}
 
 

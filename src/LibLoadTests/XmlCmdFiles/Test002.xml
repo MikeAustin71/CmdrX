@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Commands>
+	<ExectuteCommand>
+		<CommandDisplayName>Copy1</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>Copy</ExecutableTarget>
+		<CommandToExecute></CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>D:\T06\*.*</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Copy2</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>Copy</ExecutableTarget>
+		<CommandToExecute></CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>D:\T06\*.*</CommandArguments>
+	</ExectuteCommand>
+</Commands>

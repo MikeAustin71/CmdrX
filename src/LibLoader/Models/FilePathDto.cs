@@ -12,6 +12,9 @@ namespace LibLoader.Models
 		public string FileNameAndExtension { get; private set; }
 		public string FullPathAndFileName { get; private set; }
 		public bool HasExtensinon { get; private set; }
+		public bool HasFileNameAndExtension { get; private set; }
+		public bool HasDirectoryPath { get; private set; }
+		public bool HasFileNameOnly { get; private set; }
 
 		public FilePathDto(string filePath)
 		{
@@ -38,6 +41,30 @@ namespace LibLoader.Models
 			FileNameAndExtension = PathHelper.ExtractFileNameAndExtension(filePath);
 			FullPathAndFileName = PathHelper.ExtractFullPathAndFileName(filePath);
 			HasExtensinon = PathHelper.FilePathHasExtension(filePath);
+
+			if (!string.IsNullOrWhiteSpace(FileNameAndExtension)
+			    && HasExtensinon)
+			{
+				HasFileNameAndExtension = true;
+			}
+
+			if (!string.IsNullOrWhiteSpace(DirectoryPath))
+			{
+				var dirDto = new DirectoryDto(DirectoryPath);
+				if (DirectoryHelper.IsDirectoryDtoValid(dirDto))
+				{
+					HasDirectoryPath = true;
+				}
+
+				dirDto.Dispose();
+				
+			}
+
+			if (!string.IsNullOrWhiteSpace(FileNameOnly))
+			{
+				HasFileNameOnly = true;
+			}
+
 		}
 
 	}
