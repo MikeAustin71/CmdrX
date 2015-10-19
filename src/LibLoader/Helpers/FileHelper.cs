@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using LibLoader.GlobalConstants;
@@ -13,9 +14,47 @@ namespace LibLoader.Helpers
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
+	    public static bool CreateDirectoryAndFile(FileDto fileDto)
+	    {
+			if (!IsFileDtoValid(fileDto))
+			{
+				return false;
+			}
+
+			fileDto.DirDto.DirInfo.Refresh();
+
+			if (fileDto.FileXinfo.Exists)
+		    {
+			    return true;
+		    }
+
+
+		    if (!fileDto.DirDto.DirInfo.Exists)
+		    {
+			    try
+			    {
+				    fileDto.DirDto.DirInfo.Create();
+
+					fileDto.DirDto.DirInfo.Refresh();
+
+				    if (!fileDto.DirDto.DirInfo.Exists)
+				    {
+					    return false;
+				    }
+			    }
+			    catch
+			    {
+				    return false;
+			    }
+				
+		    }
+
+			return CreateAFile(fileDto);
+	    }
+
 	    public static bool CreateAFile(FileDto fileDto)
 	    {
-		    if (fileDto?.FileXinfo == null)
+		    if (!IsFileDtoValid(fileDto))
 		    {
 			    return false;
 		    }
@@ -37,6 +76,25 @@ namespace LibLoader.Helpers
 		    }
 
 		    return true;
+	    }
+
+	    public static FileDto CombineDirSubDirWithFile(DirectoryDto dirDto, string subdirFile)
+	    {
+		    if (!DirectoryHelper.IsDirectoryDtoValid(dirDto))
+		    {
+			    return null;
+		    }
+
+		    if (string.IsNullOrWhiteSpace(subdirFile))
+		    {
+			    return null;
+		    }
+
+		    var dir = PathHelper.AddTrailingDelimiter(dirDto);
+
+		    var subDir = PathHelper.RemovePrefixDelimiter(subdirFile);
+
+		    return new FileDto(dir + subDir);
 	    }
 
 		public static List<string> GetAllFilesInDirectoryStructure(string parentDirectory)
@@ -238,7 +296,8 @@ namespace LibLoader.Helpers
 
 	    public static bool IsFileDtoValid(FileDto fileDto)
 	    {
-		    if (fileDto?.FileXinfo == null || fileDto.DirDto == null)
+		    if (fileDto?.FileXinfo == null 
+				|| fileDto.DirDto == null)
 		    {
 			    return false;
 		    }
@@ -249,7 +308,7 @@ namespace LibLoader.Helpers
 			    return false;
 		    }
 
-		    if (DirectoryHelper.IsDirectoryDtoValid(fileDto.DirDto))
+		    if (!DirectoryHelper.IsDirectoryDtoValid(fileDto.DirDto))
 		    {
 			    return false;
 		    }

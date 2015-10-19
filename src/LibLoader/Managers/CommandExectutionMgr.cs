@@ -32,12 +32,12 @@ namespace LibLoader.Managers
 			_commandJobs = jobsGroup;
 
 			_cmdLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCmdConsoleLogFilePathName,
-													string.Empty, 
-														consoleCmdDto.CmdConsoleLogFileTimeStamp);
+													consoleCmdDto.CmdConsoleLogFileTimeStamp,
+														string.Empty);
 
 			_errLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCmdConsoleLogFilePathName,
-                                                        consoleCmdDto.CmdConsoleLogFileErrorSuffix,
-															consoleCmdDto.CmdConsoleLogFileTimeStamp);
+                                                        consoleCmdDto.CmdConsoleLogFileTimeStamp,
+															consoleCmdDto.CmdConsoleLogFileErrorSuffix);
 			_wrkDirMgr = new WorkingDirectoryMgr();
 
 			_consoleExecutor = consoleCmdDto;

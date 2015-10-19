@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 using LibLoader.Constants;
@@ -18,28 +19,32 @@ namespace LibLoader.Managers
 
 		private FileDto _currentLogfileDto;
 
-		private readonly FileDto _defautlLogFileDto;
+		private FileDto _defautlLogFileDto;
+
+		public FileDto DefaultLogFileDto => _defautlLogFileDto;
+
+		public FileDto CurrentLogFileDto => _currentLogfileDto;
 
 		private StreamWriterDto _swDto;
 
-		public ErrorLogger ErrorMgr ;
-
-		public int NumberOfLogLinesWritten { get; set; }
-
-		public ConsoleCommandLogMgr(
-				string defaultCmdConsoleLogPathFileName, 
-					string cmdConsoleFileErrorSuffix,
-						string logFileTimeStamp)
-		{
-			ErrorMgr = new
+		public ErrorLogger ErrorMgr = new
 			ErrorLogger(7388000,
 						"ConsoleCommandLogMgr",
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
-			_logfileTimeStamp = logFileTimeStamp;
 
-			_cmdConsoleFileErrorSuffix = cmdConsoleFileErrorSuffix;
+		public int NumberOfLogLinesWritten { get; set; }
+
+		public ConsoleCommandLogMgr(
+				string defaultCmdConsoleLogPathFileName, 
+						string logFileTimeStamp,
+						string cmdConsoleFileErrorSuffix)
+		{
+
+			_logfileTimeStamp = StringHelper.TrimStringEnds(logFileTimeStamp);
+
+			_cmdConsoleFileErrorSuffix = StringHelper.TrimStringEnds(cmdConsoleFileErrorSuffix);
 
 			_defautlLogFileDto = ExtractLogFileDto(defaultCmdConsoleLogPathFileName,
 														_cmdConsoleFileErrorSuffix,
@@ -66,12 +71,50 @@ namespace LibLoader.Managers
 
 			}
 
-			_logfileTimeStamp = logFileTimeStamp;
+			try
+			{
+				_logfileTimeStamp = logFileTimeStamp;
 
-			FileHelper.DeleteAFile(_defautlLogFileDto);
+				FileHelper.DeleteAFile(_defautlLogFileDto);
+
+				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
+
+				CreateNewStreamWriter(_currentLogfileDto);
+
+			}
+			catch (Exception ex)
+			{
+				var msg = "Consold Command Log Setup Failed! " + ex.Message;
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 3,
+					ErrorMessage = msg,
+					ErrSourceMethod = "Constructor()",
+					FileName = defaultCmdConsoleLogPathFileName,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw;
+			}
+
 
 		}
 
+		public void CreateNewStreamWriter(FileDto fileDto)
+		{
+			_swDto = new StreamWriterDto(_currentLogfileDto);
+
+		}
+
+		public void CloseStreamWriter()
+		{
+			_swDto.Close();
+			_swDto = null;
+		}
 
 		public void Dispose()
 		{
@@ -101,6 +144,12 @@ namespace LibLoader.Managers
 						_swDto = null;
 					}
 
+					if (_defautlLogFileDto != null)
+					{
+						_defautlLogFileDto.Dispose();
+						_defautlLogFileDto = null;
+					}
+
 					if (_currentLogfileDto != null)
 					{
 						_currentLogfileDto.Dispose();
@@ -118,13 +167,22 @@ namespace LibLoader.Managers
 
 		public bool InitializeCmdConsoleLog(string commandLogFilePathName)
 		{
+			if (_disposed)
+			{
+				return false;
+			}
 
 			if (string.IsNullOrWhiteSpace(commandLogFilePathName))
 			{
-				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
+				if (!IsStreamWriterValid())
+				{
+					CreateNewStreamWriter(_currentLogfileDto);						
+				}
 
 				return true;
 			}
+
+			_currentLogfileDto.Dispose();
 
 			_currentLogfileDto = ExtractLogFileDto(commandLogFilePathName,
 														_cmdConsoleFileErrorSuffix,
@@ -137,9 +195,9 @@ namespace LibLoader.Managers
 				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
 			}
 
-			if (!FileHelper.CreateAFile(_currentLogfileDto) )
+			if (!DirectoryHelper.CreateDirectoryIfNecessary(_currentLogfileDto.DirDto) )
 			{
-				var ex = new Exception("Failure Creating Command Console Log File: " +_currentLogfileDto.FileXinfo.Name);
+				var ex = new Exception("Failure Creating Command Console Log File Directory: " +_currentLogfileDto.DirDto.DirInfo.FullName);
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = _currentLogfileDto.FileXinfo.DirectoryName,
@@ -157,14 +215,9 @@ namespace LibLoader.Managers
 			}
 
 
-			if (_swDto == null)
-			{
-				_swDto = new StreamWriterDto(_currentLogfileDto);
-			}
-			else
-			{
-				_swDto.SetStreamWriter(_currentLogfileDto);
-			}
+			CloseStreamWriter();
+
+			CreateNewStreamWriter(_currentLogfileDto);
 
 			NumberOfLogLinesWritten = 0;
 
@@ -202,7 +255,7 @@ namespace LibLoader.Managers
 			NumberOfLogLinesWritten++;
 
 
-			_swDto.GetStreamWriter().WriteLine(Environment.NewLine + outputLine);
+			_swDto.GetStreamWriter().WriteLine(outputLine);
 		}
 
 

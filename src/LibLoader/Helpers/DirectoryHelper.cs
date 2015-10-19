@@ -75,9 +75,31 @@ namespace LibLoader.Helpers
 			return new DirectoryDto(Directory.GetCurrentDirectory());
 		}
 
+		public static bool CreateDirectoryIfNecessary(FileDto fileDto)
+		{
+			if (!FileHelper.IsFileDtoValid(fileDto))
+			{
+				return false;
+			}
+
+			return CreateDirectoryIfNecessary(fileDto.DirDto);
+		}
+
 		public static bool CreateDirectoryIfNecessary(DirectoryDto dirDto)
 		{
-			return CreateADirectory(dirDto.DirInfo.FullName);
+			if (!IsDirectoryDtoValid(dirDto))
+			{
+				return false;
+			}
+
+			if (CreateADirectory(dirDto.DirInfo.FullName))
+			{
+				dirDto.DirInfo.Refresh();
+
+				return true;
+			}
+
+			return false;
 		}
 
 		public static bool CreateDirectoryIfNecessary(string targetFile)
@@ -248,9 +270,19 @@ namespace LibLoader.Helpers
 
 		}
 
+		public static bool DeleteADirectory(DirectoryDto dirDto)
+		{
+			if (dirDto?.DirInfo == null)
+			{
+				return false;
+			}
+
+			return DeleteADirectory(dirDto.DirInfo.FullName);
+		}
+
 		public static bool DeleteADirectory(string dir)
 		{
-			if (String.IsNullOrEmpty(dir))
+			if (string.IsNullOrEmpty(dir))
 			{
 				return true;
 			}
@@ -262,12 +294,7 @@ namespace LibLoader.Helpers
 					return true;
 				}
 
-				var files = Directory.GetFiles(dir);
-
-				if (files.Length < 1)
-				{
-					Directory.Delete(dir);
-				}
+				Directory.Delete(dir, true);
 
 				if (Directory.Exists(dir))
 				{

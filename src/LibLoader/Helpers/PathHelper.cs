@@ -38,8 +38,12 @@ namespace LibLoader.Helpers
 
 		public static string RemovePrefixDelimiter(string directory)
 		{
-
 			var fChar = directory[0];
+
+			if (fChar == '.')
+			{
+				directory = directory.Substring(1, directory.Length - 1);
+			}
 
 			if (fChar == PrimaryPathDelimiter || fChar == AlternatePathDelimiter)
 			{

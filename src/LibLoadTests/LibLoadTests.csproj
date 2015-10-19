@@ -65,7 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CmdFile001.xml">
+    <Content Include="LibLoadCmds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XmlCmdFiles\CmdFile001.xml" />
