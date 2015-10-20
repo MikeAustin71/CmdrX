@@ -168,14 +168,24 @@ namespace LibLoader.Managers
 
 		public void SetTargetDirectory(string targetDir)
 		{
+			if (string.IsNullOrWhiteSpace(targetDir))
+			{
+				return;
+			}
+
 			TargetWorkingDirectory.Dispose();
 			TargetWorkingDirectory = new DirectoryDto(targetDir);
 		}
 
 		public void SetTargetDirectory(DirectoryDto targetDto)
 		{
+			if (!DirectoryHelper.IsDirectoryDtoValid(targetDto))
+			{
+				return;
+			}
+
 			TargetWorkingDirectory.Dispose();
-			TargetWorkingDirectory = targetDto;
+			TargetWorkingDirectory = new DirectoryDto(targetDto.DirInfo.FullName);
 		}
 
 	}

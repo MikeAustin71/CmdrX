@@ -133,7 +133,7 @@ namespace LibLoader
 			try
 			{
 
-				var mgr = new CommandExectutionMgr(cmdJobs,cmdExe);
+				var mgr = new CommandExecutionMgr(cmdJobs,cmdExe);
 
 				mgr.ExecuteCommands();
 			}

@@ -7,12 +7,12 @@ using LibLoader.Models;
 
 namespace LibLoader.Managers
 {
-	public class CommandExectutionMgr
+	public class CommandExecutionMgr
 	{
 
 		public ErrorLogger ErrorMgr = new
 			ErrorLogger(1677000,
-						"CommandExectutionMgr",
+						"CommandExecutionMgr",
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
@@ -26,7 +26,7 @@ namespace LibLoader.Managers
 
 		private readonly ConsoleExecutorDto _consoleExecutor;
 
-		public CommandExectutionMgr(JobsGroupDto jobsGroup,
+		public CommandExecutionMgr(JobsGroupDto jobsGroup,
 								ConsoleExecutorDto consoleCmdDto)
 		{
 			_commandJobs = jobsGroup;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
@@ -108,6 +109,7 @@ namespace LibLoader.Commands
 		{
 			var thisMethod = "ExecuteCommand()";
 			cmdDto.CommandStartTime = DateTime.Now;
+			bool procStatus = false;
 			var proc = new Process();
 
 			// ReSharper disable once RedundantAssignment
@@ -150,6 +152,7 @@ namespace LibLoader.Commands
 				// Start Process
 				proc.Start();
 
+
 				// Start the asynchronous read of the standard output stream.
 				proc.BeginOutputReadLine();
 
@@ -157,17 +160,9 @@ namespace LibLoader.Commands
 				// error stream.
 				proc.BeginErrorReadLine();
 
-				var status = proc.WaitForExit(_consoleExecutor.NumberOfMiliSecondsToWaitForExecution);
-
-				if (!status)
-				{
-					// ReSharper disable once RedundantAssignment
-					exitCode = -11;
-					throw new Exception("Process timeout occurred!");
-				}
+				procStatus = proc.WaitForExit(_consoleExecutor.NumberOfMiliSecondsToWaitForExecution);
 
 				exitCode = proc.ExitCode;
-
 
 			}
 			catch (Exception ex)
@@ -192,8 +187,19 @@ namespace LibLoader.Commands
 			}
 			finally
 			{
-
-				proc.Kill();
+				try
+				{
+					if (!procStatus)
+					{
+						proc.Kill();
+					}
+					
+				}
+				catch
+				{
+					;
+				}
+				
 				proc.Close();
 				proc.Dispose();
 				// ReSharper disable once RedundantAssignment

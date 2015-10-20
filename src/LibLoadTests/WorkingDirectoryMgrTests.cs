@@ -12,7 +12,7 @@ namespace LibLoadTests
 		{
 			var appExeDir = TestDirectories.GetTestExeDir();
 
-			var target = TestDirectories.GetTest1Dir();
+			var target = TestDirectories.GetMainLibLoadTestDir();
 
             var dirMgr = new WorkingDirectoryMgr();
 			dirMgr.SetTargetDirectory(target);
@@ -28,7 +28,7 @@ namespace LibLoadTests
 		{
 			var appExeDir = TestDirectories.GetTestExeDir();
 
-			var target = TestDirectories.GetTest1Dir();
+			var target = TestDirectories.GetMainLibLoadTestDir();
 
 			var dirMgr = new WorkingDirectoryMgr();
 			dirMgr.SetTargetDirectory(target);
@@ -61,7 +61,7 @@ namespace LibLoadTests
 
 			var appExeDir = TestDirectories.GetTestExeDir();
 
-			var target = TestDirectories.GetTest1Dir();
+			var target = TestDirectories.GetMainLibLoadTestDir();
 
 			var dirMgr = new WorkingDirectoryMgr();
 			dirMgr.SetTargetDirectory(target);

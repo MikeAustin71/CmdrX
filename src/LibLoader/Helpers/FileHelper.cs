@@ -204,6 +204,35 @@ namespace LibLoader.Helpers
             return result;
         }
 
+	    public static bool DeleteAllFilesInDirectoryTree(DirectoryDto dirDto)
+	    {
+		    if (!DirectoryHelper.IsDirectoryDtoValid(dirDto))
+		    {
+			    return false;
+		    }
+
+			try
+			{
+				foreach (var file in dirDto.DirInfo.GetFiles())
+				{
+					file.Delete();
+				}
+
+				foreach (var dir in dirDto.DirInfo.GetDirectories())
+				{
+					dir.Delete(true);
+				}
+
+			}
+			catch
+			{
+				return false;
+			}
+
+		    return true;
+
+	    }
+
 	    public static bool DeleteAFile(FileDto fileDto)
 	    {
 		    if (fileDto?.FileXinfo == null)

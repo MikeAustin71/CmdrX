@@ -30,7 +30,7 @@ namespace LibLoadTests
 		public void DifferentDirectoryDtosAreNotEqual()
 		{
 			var dir1 = TestDirectories.GetTestExeDir();
-			var dir2 = TestDirectories.GetTest1Dir();
+			var dir2 = TestDirectories.GetMainLibLoadTestDir();
 			Assert.IsFalse(dir1==dir2);
 		}
 

@@ -72,7 +72,7 @@
     <Compile Include="Helpers\XmlValueExtractor.cs" />
     <Compile Include="Managers\AppicationLogMgr.cs" />
     <Compile Include="Managers\ConsoleCommandLogMgr.cs" />
-    <Compile Include="Managers\CommandExectutionMgr.cs" />
+    <Compile Include="Managers\CommandExecutionMgr.cs" />
     <Compile Include="Managers\WorkingDirectoryMgr.cs" />
     <Compile Include="Models\ConsoleCommandDto.cs" />
     <Compile Include="Models\ConsoleExecutorDto.cs" />
