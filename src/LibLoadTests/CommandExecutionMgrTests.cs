@@ -1,4 +1,6 @@
-﻿using LibLoader.Helpers;
+﻿using System.Configuration;
+using LibLoader.Constants;
+using LibLoader.Helpers;
 using LibLoader.Managers;
 using LibLoader.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,14 +20,19 @@ namespace LibLoadTests
 			var dirT3 = TestDirectories.GetTestDirectory003();
             FileHelper.DeleteAllFilesInDirectoryTree(dirT3);
 
-			var consoleExeDto = new ConsoleExecutorDto(
-				TestDirectories.GetConsoleCommandExecutor(),
-				TestDirectories.GetConsoleCommandExeArguments(),
-				5,
-				".\\logdir\\installLog.log",
-				"Error",
-				DateHelper.NowYearMthDayHrsSecs()
-				);
+			var consoleExeDto = new ConsoleExecutorDto
+			{
+				DefaultConsoleCommandExecutor = TestDirectories.GetConsoleCommandExecutor(),
+				DefaultConsoleCommandExeArgs = TestDirectories.GetConsoleCommandExeArguments(),
+				CmdConsoleLogFileErrorSuffix = "Error",
+				CmdConsoleLogFileTimeStamp = DateHelper.NowYearMthDayHrsSecs(),
+				CommandDefaultTimeOutInMinutes = 5.0M,
+				CommandMaxTimeOutInMinutes = 45.0M,
+				CommandMinTimeOutInMinutes = 1.0M,
+				DefaultCmdConsoleLogFilePathName = ".\\logdir\\installLog.log",
+				XmlCmdFileDto = TestDirectories.GetXmlCmdFileDto(),
+				DefaultConsoleCommandType = ConsoleCommandType.Console
+			};
 
 			var jobs = TestDirectories.GetTestJobGroup();
 

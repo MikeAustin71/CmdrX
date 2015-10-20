@@ -9,8 +9,9 @@ namespace LibLoader.Models
 	public class ConsoleCommandDto
 	{
 		private bool _disposed;
+		private ConsoleExecutorDto _cmdExeDto;
 
-#region CommandExeControl
+		#region CommandExeControl
 		private string _commandDisplayName = string.Empty;
 
 		public string CommandDisplayName
@@ -24,21 +25,21 @@ namespace LibLoader.Models
 
 		}
 
-		public ConsoleCommandType ComandType { get; set; } = ConsoleCommandType.Console;
+		public ConsoleCommandType CommandType { get; set; } = ConsoleCommandType.None;
 
-		private string _commandOutputLogFileName = string.Empty;
+		private string _commandOutputLogFilePathBaseName = string.Empty;
 
-		public string CommandOutputLogFileName
+		public string CommandOutputLogFilePathBaseName
 		{
-			get { return _commandOutputLogFileName; }
+			get { return _commandOutputLogFilePathBaseName; }
 
-			set { _commandOutputLogFileName = StringHelper.TrimStringEnds(value); }
+			set { _commandOutputLogFilePathBaseName = StringHelper.TrimStringEnds(value); }
 		}
 
 
 		public decimal CommandTimeOutInMinutes { get; set; }
 
-		public int CommandTimeOutInMiliseconds => (int) ((decimal) CommandTimeOutInMinutes*60000.0M);
+		public int CommandTimeOutInMiliseconds => (int) (CommandTimeOutInMinutes*60000.0M);
 
 		#endregion CommandExeControl
 
@@ -153,6 +154,11 @@ namespace LibLoader.Models
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
+		public ConsoleCommandDto(ConsoleExecutorDto cmdExeDto)
+		{
+			_cmdExeDto = cmdExeDto;
+		}
+
 
 		public void Dispose()
 		{
@@ -174,7 +180,7 @@ namespace LibLoader.Models
 				// and unmanaged resources.
 				if (disposing)
 				{
-
+					_cmdExeDto = null;
 				}
 
 				// Note disposing has been done.
@@ -183,6 +189,30 @@ namespace LibLoader.Models
 			}
 		}
 
+		public void NormalizeCommandParameters()
+		{
+			if (string.IsNullOrWhiteSpace(CommandOutputLogFilePathBaseName))
+			{
+				CommandOutputLogFilePathBaseName = _cmdExeDto.DefaultCmdConsoleLogFilePathName;
+			}
+
+			if (CommandType == ConsoleCommandType.None)
+			{
+				CommandType = _cmdExeDto.DefaultConsoleCommandType;
+			}
+
+			if (string.IsNullOrWhiteSpace(CommandOutputLogFilePathBaseName))
+			{
+				CommandOutputLogFilePathBaseName = _cmdExeDto.DefaultCmdConsoleLogFilePathName;
+			}
+
+			if (CommandTimeOutInMinutes < _cmdExeDto.CommandMinTimeOutInMinutes
+				 || CommandTimeOutInMinutes > _cmdExeDto.CommandMaxTimeOutInMinutes)
+			{
+				CommandTimeOutInMinutes = _cmdExeDto.CommandDefaultTimeOutInMinutes;
+			}
+
+		}
 
 		public void ConfigureCommandExecutionSyntax()
 		{
@@ -265,17 +295,6 @@ namespace LibLoader.Models
 			}
 
 			ProcFileArguments = sb.ToString();
-		}
-
-		public void SetOutputCmdLogFile(string defaultOutputDirCmdFileName)
-		{
-			
-            if (string.IsNullOrWhiteSpace(CommandOutputLogFileName))
-            {
-				CommandOutputLogFileName = defaultOutputDirCmdFileName;
-
-            }
-
 		}
 
 

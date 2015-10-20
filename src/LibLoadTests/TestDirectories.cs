@@ -1,6 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Net.NetworkInformation;
+using System.Configuration;
 using LibLoader.Constants;
 using LibLoader.Helpers;
 using LibLoader.Models;
@@ -35,6 +34,19 @@ namespace LibLoadTests
 			return dirDto;
 		}
 
+		public static FileDto GetXmlCmdFileDto()
+		{
+			var fileName = ConfigurationManager.AppSettings["DefaultXmlCmdFile"];
+			var testDir = GetMainLibLoadTestDir();
+			var result = new FileDto(testDir.DirInfo.FullName + "\\" + fileName);
+			if (!FileHelper.IsFileDtoValid(result))
+			{
+				throw new Exception("Invalid FileDto created for XmlCmdFile: " + fileName);
+			}
+
+			return result;
+		}
+
 		public static DirectoryDto GetTestDirectory001()
 		{
 			var mainLoadTestDir = GetMainLibLoadTestDir();
@@ -64,6 +76,26 @@ namespace LibLoadTests
 			return dirDto;
 		}
 
+		public static ConsoleExecutorDto GetConsoleExecutorDto()
+		{
+			return new ConsoleExecutorDto
+			{
+				DefaultConsoleCommandExecutor = GetConsoleCommandExecutor(),
+				DefaultConsoleCommandExeArgs = GetConsoleCommandExeArguments(),
+				CmdConsoleLogFileErrorSuffix = "Error",
+				CmdConsoleLogFileTimeStamp = DateHelper.NowYearMthDayHrsSecs(),
+				CommandDefaultTimeOutInMinutes = 5.0M,
+				CommandMaxTimeOutInMinutes = 45.0M,
+				CommandMinTimeOutInMinutes = 1.0M,
+				DefaultCmdConsoleLogFilePathName = 
+					ConfigurationManager.AppSettings["CommandOutputBaseLogFileName"],
+				XmlCmdFileDto = GetXmlCmdFileDto(),
+				DefaultConsoleCommandType = ConsoleCommandType.Console
+
+			};
+
+		}
+
 		public static string GetConsoleCommandExecutor()
 		{
 			return "cmd.exe";
@@ -86,11 +118,17 @@ namespace LibLoadTests
 
 		public static ConsoleCommandDto GetCopy1Job()
 		{
-			var cmdDto = new ConsoleCommandDto
+			var cmdExeDto = GetConsoleExecutorDto();
+
+            var cmdDto = new ConsoleCommandDto(cmdExeDto)
 			{
 				CommandDisplayName = "Copy1",
-				ComandType = ConsoleCommandType.Console,
-				ExecuteInDir = string.Empty,
+				CommandType = ConsoleCommandType.Console,
+				CommandOutputLogFilePathBaseName = cmdExeDto.DefaultCmdConsoleLogFilePathName,
+				ConsoleCommandExecutor = cmdExeDto.DefaultConsoleCommandExecutor,
+				ConsoleCommandExeArguments = cmdExeDto.DefaultConsoleCommandExeArgs,
+				CommandTimeOutInMinutes = 5.0M,
+                ExecuteInDir = string.Empty,
 				ExecutableTarget = "Copy",
 				CommandToExecute = string.Empty,
 				CommandModifier = string.Empty
@@ -103,10 +141,15 @@ namespace LibLoadTests
 
 		public static ConsoleCommandDto GetCopy2Job()
 		{
-			var cmdDto = new ConsoleCommandDto
+			var cmdExeDto = GetConsoleExecutorDto();
+            var cmdDto = new ConsoleCommandDto(cmdExeDto)
 			{
 				CommandDisplayName = "Copy2",
-				ComandType = ConsoleCommandType.Console,
+				CommandType = ConsoleCommandType.Console,
+				CommandOutputLogFilePathBaseName = cmdExeDto.DefaultCmdConsoleLogFilePathName,
+				ConsoleCommandExecutor = cmdExeDto.DefaultConsoleCommandExecutor,
+				ConsoleCommandExeArguments = cmdExeDto.DefaultConsoleCommandExeArgs,
+				CommandTimeOutInMinutes = 5.0M,
 				ExecuteInDir = string.Empty,
 				ExecutableTarget = "Copy",
 				CommandToExecute = string.Empty,
@@ -117,8 +160,6 @@ namespace LibLoadTests
 			cmdDto.CommandArguments = arg1 + " " + arg2;
 			return cmdDto;
 		}
-
-
 
 	}
 }

@@ -10,6 +10,8 @@ namespace LibLoader.Managers
 {
 	public class AppicationLogMgr
 	{
+		private bool _disposed;
+
 		private readonly string _appLogDir;
 
 		public static ErrorLogger ErrorMgr = new
@@ -31,9 +33,46 @@ namespace LibLoader.Managers
 			PurgeLogCmd = new PurgeLogCommand(LogRetentionInDays, LogDirectoryDto);
 		}
 
+		public void Dispose()
+		{
+			Dispose(true);
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			// Check to see if Dispose has already been called.
+			if (!_disposed)
+			{
+				// If disposing equals true, dispose all managed
+				// and unmanaged resources.
+				if (disposing)
+				{
+					// Dispose managed resources.
+					if (LogDirectoryDto != null)
+					{
+						LogDirectoryDto.Dispose();
+						LogDirectoryDto = null;
+					}
+				}
+
+
+				// Note disposing has been done.
+				_disposed = true;
+
+			}
+		}
+
+
 		public bool CreateApplicaitonLogDirectory()
 		{
-			if (LogDirectoryDto?.DirInfo == null)
+			if (LogDirectoryDto?.DirInfo == null 
+				|| !DirectoryHelper.IsDirectoryDtoValid(LogDirectoryDto))
 			{
 				var msg = "Application Log Directory Dto Invalid!";
 				var ex = new ArgumentException(msg);
@@ -53,10 +92,14 @@ namespace LibLoader.Managers
 				return false;
 			}
 
-			if (!LogDirectoryDto.DirInfo.Exists)
+			if (LogDirectoryDto.DirInfo.Exists)
 			{
-				LogDirectoryDto.DirInfo.Create();
+				return true;
 			}
+
+			DirectoryHelper.CreateDirectoryIfNecessary(LogDirectoryDto);
+
+			LogDirectoryDto.DirInfo.Refresh();
 
 			return LogDirectoryDto.DirInfo.Exists;
 		}

@@ -10,7 +10,9 @@ namespace LibLoadTests
 		[TestMethod]
 		public void VerifyTestXmlFileExists()
 		{
-			var fileDto = AppInfoHelper.GetDefaultXmlCommandFile();
+			var cmdExeDto = TestDirectories.GetConsoleExecutorDto();
+
+			var fileDto = cmdExeDto.XmlCmdFileDto;
 			Assert.IsNotNull(fileDto);
 			Assert.IsTrue(fileDto.DirDto.DirInfo.Exists);
 			Assert.IsTrue(fileDto.FileXinfo.Exists);
@@ -19,17 +21,16 @@ namespace LibLoadTests
 			Assert.IsTrue(fileDto.FileExtension == fileDto.FileXinfo.Extension);
 			Assert.IsTrue(fileDto.FilePath == fileDto.FileXinfo.DirectoryName);
 
+			fileDto.Dispose();
+
 		}
 
 		[TestMethod]
 		public void XmlCmdFileShouldParseSuccessfully()
 		{
-			var fileDto = AppInfoHelper.GetDefaultXmlCommandFile();
-			Assert.IsNotNull(fileDto);
-			Assert.IsNotNull(fileDto.FileXinfo);
-			Assert.IsTrue(fileDto.FileXinfo.Exists);
+			var cmdExeDto = TestDirectories.GetConsoleExecutorDto();
 
-			var builder = new XmlParameterBuilder(fileDto);
+			var builder = new XmlParameterBuilder(cmdExeDto);
 
 			var jobGroup = builder.BuildParmsFromXml();
 

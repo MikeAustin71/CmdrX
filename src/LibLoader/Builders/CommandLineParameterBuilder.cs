@@ -10,12 +10,19 @@ namespace LibLoader.Builders
 {
     public class CommandLineParameterBuilder
     {
+	    private readonly ConsoleExecutorDto _cmdExeDto;
+
 		public ErrorLogger ErrorMgr = new ErrorLogger(4000,
 			"CommandLineParameterBuilder",
 			AppConstants.LoggingStatus,
 			AppConstants.LoggingMode);
 
 		public Dictionary<string,string> CommandLineArguments { get; set; } = new Dictionary<string, string>();
+
+	    public CommandLineParameterBuilder(ConsoleExecutorDto cmdExeDto)
+	    {
+		    _cmdExeDto = cmdExeDto;
+	    }
 
         public bool BuildFileInfoParamters(string[] commandArgs)
         {
@@ -68,7 +75,7 @@ namespace LibLoader.Builders
 			    {
 				    var fileDto = new FileDto(pair.Value);
 
-				    if (!fileDto.FileXinfo.Exists)
+				    if (!FileHelper.IsFileDtoValid(fileDto) || !fileDto.FileXinfo.Exists)
 				    {
 						var err = new FileOpsErrorMessageDto
 						{
@@ -86,7 +93,8 @@ namespace LibLoader.Builders
 						return false;
 					}
 
-				    AppConstants.XmlCmdFileDto = fileDto;
+				    _cmdExeDto.XmlCmdFileDto = fileDto;
+
 				    result = true;
 			    }
 

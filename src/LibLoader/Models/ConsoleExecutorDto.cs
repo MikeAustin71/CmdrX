@@ -7,6 +7,7 @@ namespace LibLoader.Models
 {
 	public class ConsoleExecutorDto
 	{
+		private bool _disposed;
 
 		private string _defaultConsoleCommandExecutor;
 		private string _defaultConsoleCommandExeArgs;
@@ -52,6 +53,46 @@ namespace LibLoader.Models
 		}
 
 		public FileDto XmlCmdFileDto { get; set; }
+
+		public ConsoleCommandType DefaultConsoleCommandType { get; set; }
+
+		public void Dispose()
+		{
+			Dispose(true);
+			// This object will be cleaned up by the Dispose method.
+			// Therefore, you should call GC.SupressFinalize to
+			// take this object off the finalization queue
+			// and prevent finalization code for this object
+			// from executing a second time.
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			// Check to see if Dispose has already been called.
+			if (!_disposed)
+			{
+				// If disposing equals true, dispose all managed
+				// and unmanaged resources.
+				if (disposing)
+				{
+					// Dispose managed resources.
+					if (XmlCmdFileDto != null)
+					{
+						XmlCmdFileDto.Dispose();
+						XmlCmdFileDto = null;
+					}
+
+				}
+
+
+				// Note disposing has been done.
+				_disposed = true;
+
+			}
+		}
+
+
 
 	}
 }

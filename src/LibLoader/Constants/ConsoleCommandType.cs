@@ -2,6 +2,7 @@
 {
 	public enum ConsoleCommandType
 	{
+		None,
 		Console,
 		Copy,
 		Delete

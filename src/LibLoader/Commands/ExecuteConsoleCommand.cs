@@ -76,8 +76,8 @@ namespace LibLoader.Commands
 
 		public int Execute()
 		{
-			_logMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFileName);
-			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFileName);
+			_logMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFilePathBaseName);
+			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFilePathBaseName);
 
 			_executeCommand.ConfigureCommandExecutionSyntax();
 
@@ -160,7 +160,7 @@ namespace LibLoader.Commands
 				// error stream.
 				proc.BeginErrorReadLine();
 
-				procStatus = proc.WaitForExit(_consoleExecutor.NumberOfMiliSecondsToWaitForExecution);
+				procStatus = proc.WaitForExit(_executeCommand.CommandTimeOutInMiliseconds);
 
 				exitCode = proc.ExitCode;
 

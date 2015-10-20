@@ -27,13 +27,14 @@ namespace LibLoader
 				CommandMaxTimeOutInMinutes = AppConstants.CommandMaxTimeOutInMinutes,
 				CommandMinTimeOutInMinutes = AppConstants.CommandMinTimeOutInMinutes,
 				DefaultCmdConsoleLogFilePathName = AppConstants.DefaultCommandOutputLogFileName,
-				XmlCmdFileDto = AppInfoHelper.GetDefaultXmlCommandFile()
+				XmlCmdFileDto = AppInfoHelper.GetDefaultXmlCommandFile(),
+				DefaultConsoleCommandType = AppConstants.DefaultConsoleCommandType
 			};
 
 
 			if (!SetUpLogging()
-				|| !ProcessCmdArgs(args)
-				|| !ValidateXmlCommandFile()
+				|| !ProcessCmdArgs(cmdExeDto, args)
+				|| !ValidateXmlCommandFile(cmdExeDto)
 				|| !ParseCommandJobsFromXml(cmdExeDto, out cmdJobs))
 			{
 				return;
@@ -135,12 +136,12 @@ namespace LibLoader
 
 
 
-		private static void ExecuteConsoleCommands(JobsGroupDto cmdJobs, ConsoleExecutorDto cmdExe)
+		private static void ExecuteConsoleCommands(JobsGroupDto cmdJobs, ConsoleExecutorDto cmdExeDto)
 		{
 			try
 			{
 
-				var mgr = new CommandExecutionMgr(cmdJobs,cmdExe);
+				var mgr = new CommandExecutionMgr(cmdJobs,cmdExeDto);
 
 				mgr.ExecuteCommands();
 			}
@@ -164,9 +165,9 @@ namespace LibLoader
 			}
 		}
 
-		private static bool ValidateXmlCommandFile()
+		private static bool ValidateXmlCommandFile(ConsoleExecutorDto cmdExeDto)
 		{
-			if (!FileHelper.DoesFileExist(AppConstants.XmlCmdFileDto))
+			if (!FileHelper.DoesFileExist(cmdExeDto.XmlCmdFileDto))
 			{
 				var err = new FileOpsErrorMessageDto
 				{
@@ -189,14 +190,14 @@ namespace LibLoader
 			return true;
 		}
 
-		private static bool ProcessCmdArgs(string[] args)
+		private static bool ProcessCmdArgs(ConsoleExecutorDto cmdExeDto, string[] args)
 		{
 			if (args == null || args.Length < 1)
 			{
 				return true;
 			}
 
-			if (!new CommandLineParameterBuilder().BuildFileInfoParamters(args))
+			if (!new CommandLineParameterBuilder(cmdExeDto).BuildFileInfoParamters(args))
 			{
 				var err = new FileOpsErrorMessageDto
 				{

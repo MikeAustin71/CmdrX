@@ -21,6 +21,12 @@ namespace LibLoader.Helpers
 			return iVal;
 		}
 
+		public decimal ExtractDecimalValue(XmlTextReader reader, decimal defaultDecimal)
+		{
+			decimal dVal;
+
+			return !decimal.TryParse(reader.ReadString(), out dVal) ? defaultDecimal : dVal;
+		}
 
 		public string ExtractStringValue(XmlTextReader reader)
 		{
@@ -121,7 +127,12 @@ namespace LibLoader.Helpers
 				return ConsoleCommandType.Copy;
 			}
 
-			return strVal.Contains("delete") ? ConsoleCommandType.Delete : ConsoleCommandType.Console;
+			if (strVal.Contains("delete"))
+			{
+				return ConsoleCommandType.Delete;
+			}
+
+			return ConsoleCommandType.None;
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace LibLoader.GlobalConstants
 
 		public static AppicationLogMgr AppLogMgr { get; set; } = new AppicationLogMgr();
 
-		public static string DefaultCommandOutputLogFileName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFileName"];
+		public static string DefaultCommandOutputLogFileName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFilePathBaseName"];
 
 		public static Dictionary<string, string> CommandLineArguments = new Dictionary<string, string>();
 
@@ -30,6 +30,8 @@ namespace LibLoader.GlobalConstants
 		public static decimal CommandDefaultTimeOutInMinutes = decimal.Parse(ConfigurationManager.AppSettings["CommandDefaultTimeOutInMinutes"]);
 
 		public static string ConsoleErrorLogFileNameSuffix = "_Error";
+
+		public static ConsoleCommandType DefaultConsoleCommandType = ConsoleCommandType.Console;
 
 	}
 }
