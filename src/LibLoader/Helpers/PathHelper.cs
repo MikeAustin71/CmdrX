@@ -36,14 +36,21 @@ namespace LibLoader.Helpers
 			return directory;
 		}
 
-		public static string RemovePrefixDelimiter(string directory)
-		{
-			var fChar = directory[0];
 
-			if (fChar == '.')
+		public static string RemovePrefixDots(string directory)
+		{
+			while (directory[0] == '.')
 			{
 				directory = directory.Substring(1, directory.Length - 1);
 			}
+
+			return directory;
+		}
+
+		public static string RemovePrefixDelimiter(string directory)
+		{
+			directory = RemovePrefixDots(directory);
+			var fChar = directory[0];
 
 			if (fChar == PrimaryPathDelimiter || fChar == AlternatePathDelimiter)
 			{

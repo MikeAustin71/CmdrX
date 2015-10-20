@@ -46,6 +46,7 @@ namespace LibLoader.Models
 				return;
 			}
 
+
 			ConfigureDto(Path.Combine(dirDto.DirInfo.FullName, StringHelper.TrimStringEnds(fileNameAndExtension)));
 		}
 

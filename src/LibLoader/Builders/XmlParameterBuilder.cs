@@ -206,6 +206,7 @@ namespace LibLoader.Builders
 			// Command element closing
 			if (reader.Name == "ExectuteCommand")
 			{
+				_currentConsoleCommand.NormalizeCommandParameters();
 				_jobsGroupDto.Jobs.Add(_currentConsoleCommand);				
 				return;
 			}

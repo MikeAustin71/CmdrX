@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="ApplicationLogMgrTests.cs" />
     <Compile Include="CommandExecutionMgrTests.cs" />
+    <Compile Include="ConsoleCommandDtoTests.cs" />
     <Compile Include="ConsoleCommandLogMgrTests.cs" />
     <Compile Include="DateHelperTests.cs" />
     <Compile Include="DirectoryTests.cs" />
@@ -73,7 +74,7 @@
     <Content Include="TestFiles001\Test002.txt" />
     <Content Include="TestFiles002\Test020.txt" />
     <Content Include="TestFiles002\Test021.txt" />
-    <Content Include="XmlCmdFiles\CmdFile001.xml" />
+    <Content Include="XmlCmdFiles\CmdFile002.xml" />
     <Content Include="XmlCmdFiles\Test002.xml" />
   </ItemGroup>
   <ItemGroup>

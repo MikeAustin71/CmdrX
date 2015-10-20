@@ -212,6 +212,7 @@ namespace LibLoader.Models
 				CommandTimeOutInMinutes = _cmdExeDto.CommandDefaultTimeOutInMinutes;
 			}
 
+			ConfigureCommandExecutionSyntax();
 		}
 
 		public void ConfigureCommandExecutionSyntax()

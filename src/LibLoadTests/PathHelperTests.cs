@@ -103,5 +103,45 @@ namespace LibLoadTests
 			Assert.IsTrue(extComponent == expectedResult);
 		}
 
+		[TestMethod]
+		public void T201HelperShouldRemoveLeadingDotsFromDirectoryPath()
+		{
+			var testStr = "..\\SomDir\\SomFile.txt";
+			var expected = "\\SomDir\\SomFile.txt";
+			var result = PathHelper.RemovePrefixDots(testStr);
+
+			Assert.IsTrue(result == expected);
+		}
+
+		[TestMethod]
+		public void T202HelperShouldRemoveLeadingSingleDotFromDirectoryPath()
+		{
+			var testStr = ".\\SomDir\\SomFile.txt";
+			var expected = "\\SomDir\\SomFile.txt";
+			var result = PathHelper.RemovePrefixDots(testStr);
+
+			Assert.IsTrue(result == expected);
+		}
+
+		[TestMethod]
+		public void T203HelperShouldRemovePrefixDelimiterFromDirectoryPath()
+		{
+			var testStr = "..\\SomDir\\SomFile.txt";
+			var expected = "SomDir\\SomFile.txt";
+			var result = PathHelper.RemovePrefixDelimiter(testStr);
+
+			Assert.IsTrue(result == expected);
+		}
+
+		[TestMethod]
+		public void T204HelperShouldRemovePrefixSingleDotDelimiterFromDirectoryPath()
+		{
+			var testStr = ".\\SomDir\\SomFile.txt";
+			var expected = "SomDir\\SomFile.txt";
+			var result = PathHelper.RemovePrefixDelimiter(testStr);
+
+			Assert.IsTrue(result == expected);
+		}
+
 	}
 }

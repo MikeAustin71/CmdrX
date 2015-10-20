@@ -1,8 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Commands>
 	<ExectuteCommand>
+		D:\CSharp_Projects\LibLoader\src\LibLoader\Models\ConsoleCommandDto.cs
 		<CommandDisplayName>jshint and jscs</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor></DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments></ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>
 		<CommandToExecute>install</CommandToExecute>
@@ -12,6 +18,11 @@
 	<ExectuteCommand>
 		<CommandDisplayName>gulp util</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor></DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments></ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>
 		<CommandToExecute>install</CommandToExecute>
@@ -21,6 +32,11 @@
 	<ExectuteCommand>
 		<CommandDisplayName>gulp plumber</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor></DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments></ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>
 		<CommandToExecute>install</CommandToExecute>

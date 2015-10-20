@@ -1,6 +1,5 @@
 ﻿using System;
 using LibLoader.Constants;
-using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
 
 namespace LibLoader.Models
