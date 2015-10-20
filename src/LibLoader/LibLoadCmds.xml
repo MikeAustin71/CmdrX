@@ -3,6 +3,11 @@
 	<ExectuteCommand>
 		<CommandDisplayName>jshint and jscs</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes> 
+		<ConsoleCommandExecutor>cmd.exe</ConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>
 		<CommandToExecute>install</CommandToExecute>
@@ -12,6 +17,11 @@
 	<ExectuteCommand>
 		<CommandDisplayName>gulp util</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<ConsoleCommandExecutor>cmd.exe</ConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>
 		<CommandToExecute>install</CommandToExecute>
@@ -21,6 +31,11 @@
 	<ExectuteCommand>
 		<CommandDisplayName>gulp plumber</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<ConsoleCommandExecutor>cmd.exe</ConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>
 		<CommandToExecute>install</CommandToExecute>

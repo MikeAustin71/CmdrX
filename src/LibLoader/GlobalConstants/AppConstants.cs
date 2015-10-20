@@ -17,7 +17,7 @@ namespace LibLoader.GlobalConstants
 
 		public static AppicationLogMgr AppLogMgr { get; set; } = new AppicationLogMgr();
 
-		public static string CommandOutputLogFileBaseName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFile"];
+		public static string CommandOutputLogFileBaseName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFileName"];
 
 		public static Dictionary<string, string> CommandLineArguments = new Dictionary<string, string>();
 

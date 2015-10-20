@@ -12,7 +12,7 @@ namespace LibLoader.Commands
 	public class ExecuteConsoleCommand
 	{
 
-		public static ErrorLogger ErrorMgr = new
+		public ErrorLogger ErrorMgr = new
 			ErrorLogger(1456000,
 						"ExecuteConsoleCommand",
 						AppConstants.LoggingStatus,
@@ -76,10 +76,10 @@ namespace LibLoader.Commands
 
 		public int Execute()
 		{
-			_logMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName);
-			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.OutputCmdLogFileBaseName);
+			_logMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFileName);
+			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFileName);
 
-			_executeCommand.GetCommandExecutionSyntax(_consoleExecutor.ExeCmdArguments);
+			_executeCommand.ConfigureCommandExecutionSyntax();
 
 			if (_executeCommand.NumberOfCommandElements == 0)
 			{
@@ -121,8 +121,8 @@ namespace LibLoader.Commands
 				proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
 				// Commands are set on the following two lines
-				proc.StartInfo.FileName = _consoleExecutor.ExeCommand;
-				proc.StartInfo.Arguments =  _executeCommand.CommandLineExecutionSyntax;
+				proc.StartInfo.FileName = _executeCommand.ProcFileNameCommand;
+				proc.StartInfo.Arguments =  _executeCommand.ProcFileArguments;
 
 				// Shell Execute must be false in order to 
 				// set the Working directory below
