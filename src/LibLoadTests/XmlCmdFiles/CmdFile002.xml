@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Commands>
 	<ExectuteCommand>
-		D:\CSharp_Projects\LibLoader\src\LibLoader\Models\ConsoleCommandDto.cs
 		<CommandDisplayName>jshint and jscs</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
 		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>

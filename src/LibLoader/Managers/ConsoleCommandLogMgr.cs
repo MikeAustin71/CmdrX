@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 using LibLoader.Constants;
@@ -17,11 +16,19 @@ namespace LibLoader.Managers
 
 		private readonly string _cmdConsoleFileErrorSuffix;
 
+		private string _currentConsoleLogPathFileBaseName;
+
 		private FileDto _currentLogfileDto;
+
+		private readonly string _defaultConsoleLogPathFileBaseName;
 
 		private FileDto _defautlLogFileDto;
 
+		public string DefaultConsoleLogPathFileBaseName => _defaultConsoleLogPathFileBaseName;
+
 		public FileDto DefaultLogFileDto => _defautlLogFileDto;
+
+		public string CurrentConsoleLogPathFileBaseName => _currentConsoleLogPathFileBaseName;
 
 		public FileDto CurrentLogFileDto => _currentLogfileDto;
 
@@ -50,6 +57,7 @@ namespace LibLoader.Managers
 														_cmdConsoleFileErrorSuffix,
 															_logfileTimeStamp);
 
+			_defaultConsoleLogPathFileBaseName = defaultCmdConsoleLogPathFileName;
 
 			if (!FileHelper.IsFileDtoValid(_defautlLogFileDto))
 			{
@@ -77,6 +85,7 @@ namespace LibLoader.Managers
 
 				FileHelper.DeleteAFile(_defautlLogFileDto);
 
+				_currentConsoleLogPathFileBaseName = defaultCmdConsoleLogPathFileName;
 				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
 
 				CreateNewStreamWriter(_currentLogfileDto);
@@ -182,6 +191,11 @@ namespace LibLoader.Managers
 				return true;
 			}
 
+			if (commandLogFilePathName == _currentConsoleLogPathFileBaseName)
+			{
+				return true;
+			}
+
 			_currentLogfileDto.Dispose();
 
 			_currentLogfileDto = ExtractLogFileDto(commandLogFilePathName,
@@ -218,6 +232,8 @@ namespace LibLoader.Managers
 			CloseStreamWriter();
 
 			CreateNewStreamWriter(_currentLogfileDto);
+
+			_currentConsoleLogPathFileBaseName = commandLogFilePathName;
 
 			NumberOfLogLinesWritten = 0;
 
@@ -275,12 +291,16 @@ namespace LibLoader.Managers
 			return true;
 		}
 
+		public bool ResetToDefaultConsoleLogPathFileName()
+		{
+			return InitializeCmdConsoleLog(_defaultConsoleLogPathFileBaseName);
+		}
 
-		public FileDto ExtractLogFileDto(string defaultCmdConsoleLogPathFileName, 
+		public FileDto ExtractLogFileDto(string cmdConsoleLogPathFileName, 
 													string errorSuffix,
 														string logFileTimeStamp)
 		{
-			var filePath = new FilePathDto(defaultCmdConsoleLogPathFileName);
+			var filePath = new FilePathDto(cmdConsoleLogPathFileName);
 
 			var sb = new StringBuilder();
 

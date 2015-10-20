@@ -51,7 +51,7 @@ namespace LibLoader.Managers
 			{
 				foreach (var job in _commandJobs.Jobs)
 				{
-					var exeCmd = new ExecuteConsoleCommand(job,_consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
+					var exeCmd = new ExecuteConsoleCommand(job, _consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
 					var exitCode = exeCmd.Execute();
 
 					if (exitCode != 0)

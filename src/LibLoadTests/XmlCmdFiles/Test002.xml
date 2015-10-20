@@ -7,7 +7,7 @@
 		<ExecutableTarget>Copy</ExecutableTarget>
 		<CommandToExecute></CommandToExecute>
 		<CommandModifier></CommandModifier>
-		<CommandArguments>D:\T06\*.*</CommandArguments>
+		<CommandArguments>D:\T06\*.* D:\T08\</CommandArguments>
 	</ExectuteCommand>
 	<ExectuteCommand>
 		<CommandDisplayName>Copy2</CommandDisplayName>
@@ -16,6 +16,6 @@
 		<ExecutableTarget>Copy</ExecutableTarget>
 		<CommandToExecute></CommandToExecute>
 		<CommandModifier></CommandModifier>
-		<CommandArguments>D:\T06\*.*</CommandArguments>
+		<CommandArguments>D:\T07\*.* D:\T08\</CommandArguments>
 	</ExectuteCommand>
 </Commands>

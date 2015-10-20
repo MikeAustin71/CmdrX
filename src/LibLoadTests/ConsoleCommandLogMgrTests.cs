@@ -199,5 +199,70 @@ namespace LibLoadTests
 			Assert.IsTrue(result == expectedText);
 		}
 
+		[TestMethod]
+		public void LogMgrShouldCorrectlyHandleInitializeToDefaultLogger()
+		{
+			var dir1Dto = new DirectoryDto(".\\logdir");
+
+			DirectoryHelper.DeleteADirectory(dir1Dto);
+
+			var fileStamp = DateHelper.NowYearMthDayHrsSecs();
+
+			var defaultLogFileBaseName = ".\\logdir\\installLog.log";
+
+			var mgr = new ConsoleCommandLogMgr(defaultLogFileBaseName,
+												fileStamp,
+													string.Empty);
+
+			Assert.IsTrue(mgr.DefaultConsoleLogPathFileBaseName == defaultLogFileBaseName);
+
+			Assert.IsTrue(mgr.CurrentConsoleLogPathFileBaseName == defaultLogFileBaseName);
+
+			mgr.InitializeCmdConsoleLog(defaultLogFileBaseName);
+
+			Assert.IsTrue(mgr.DefaultConsoleLogPathFileBaseName == defaultLogFileBaseName);
+
+			Assert.IsTrue(mgr.CurrentConsoleLogPathFileBaseName == defaultLogFileBaseName);
+
+			mgr.Dispose();
+
+			DirectoryHelper.DeleteADirectory(dir1Dto);
+
+		}
+
+		[TestMethod]
+		public void LogMgrShouldCorrectlyHandleInitializeToDifferentLogger()
+		{
+			var dir1Dto = new DirectoryDto(".\\logdir");
+
+			DirectoryHelper.DeleteADirectory(dir1Dto);
+
+			var fileStamp = DateHelper.NowYearMthDayHrsSecs();
+
+			var defaultLogFileBaseName = ".\\logdir\\installLog.log";
+
+			var mgr = new ConsoleCommandLogMgr(defaultLogFileBaseName,
+												fileStamp,
+													string.Empty);
+
+			Assert.IsTrue(mgr.DefaultConsoleLogPathFileBaseName == defaultLogFileBaseName);
+
+			Assert.IsTrue(mgr.CurrentConsoleLogPathFileBaseName == defaultLogFileBaseName);
+
+			var newLogFileBaseName = ".\\logdir\\install2Log.log";
+
+			mgr.InitializeCmdConsoleLog(newLogFileBaseName);
+
+			Assert.IsTrue(mgr.DefaultConsoleLogPathFileBaseName == defaultLogFileBaseName);
+
+			Assert.IsTrue(mgr.CurrentConsoleLogPathFileBaseName == newLogFileBaseName);
+
+			mgr.Dispose();
+
+			DirectoryHelper.DeleteADirectory(dir1Dto);
+
+		}
+
+
 	}
 }

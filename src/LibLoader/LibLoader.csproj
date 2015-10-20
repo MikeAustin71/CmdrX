@@ -94,10 +94,9 @@
     <Content Include="LibLoadCmds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="XmlCmdFiles\Test102.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="XmlCmdFiles\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
