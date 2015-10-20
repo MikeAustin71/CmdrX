@@ -17,23 +17,30 @@ namespace LibLoader
 
 			JobsGroupDto cmdJobs;
 
+			var cmdExeDto = new ConsoleExecutorDto()
+			{
+				DefaultConsoleCommandExecutor = AppConstants.DefaultConsoleCommandExecutor,
+				DefaultConsoleCommandExeArgs = AppConstants.DefaultConsoleCommandExeArgs,
+				CmdConsoleLogFileErrorSuffix = AppConstants.ConsoleErrorLogFileNameSuffix,
+				CmdConsoleLogFileTimeStamp = DateHelper.NowYearMthDayHrsSecs(),
+				CommandDefaultTimeOutInMinutes = AppConstants.CommandDefaultTimeOutInMinutes,
+				CommandMaxTimeOutInMinutes = AppConstants.CommandMaxTimeOutInMinutes,
+				CommandMinTimeOutInMinutes = AppConstants.CommandMinTimeOutInMinutes,
+				DefaultCmdConsoleLogFilePathName = AppConstants.DefaultCommandOutputLogFileName,
+				XmlCmdFileDto = AppInfoHelper.GetDefaultXmlCommandFile()
+			};
+
+
 			if (!SetUpLogging()
 				|| !ProcessCmdArgs(args)
 				|| !ValidateXmlCommandFile()
-				|| !ParseCommandJobsFromXml(out cmdJobs))
+				|| !ParseCommandJobsFromXml(cmdExeDto, out cmdJobs))
 			{
 				return;
 			}
 
-			var cmdExe = new ConsoleExecutorDto(AppConstants.ConsoleCommandExecutor,
-								AppConstants.ConsoleCommandExeArgs,
-									AppConstants.NumberOfMinutesToWaitForExecution,
-										AppConstants.CommandOutputLogFileBaseName,
-											AppConstants.ConsoleErrorLogFileNameSuffix,
-												DateHelper.NowYearMthDayHrsSecs());
 
-
-			ExecuteConsoleCommands(cmdJobs, cmdExe);
+			ExecuteConsoleCommands(cmdJobs, cmdExeDto);
 
 		}
 
@@ -73,13 +80,13 @@ namespace LibLoader
 			return true;
 		}
 
-		private static bool ParseCommandJobsFromXml(out JobsGroupDto jobsGroupDto)
+		private static bool ParseCommandJobsFromXml(ConsoleExecutorDto cmdExeDto, out JobsGroupDto jobsGroupDto)
 		{
 			jobsGroupDto = null;
 
 			try
 			{
-				var xmlParser = new XmlParameterBuilder(AppConstants.XmlCmdFileDto);
+				var xmlParser = new XmlParameterBuilder(cmdExeDto);
 				jobsGroupDto = xmlParser.BuildParmsFromXml();
 
 				if (jobsGroupDto == null || jobsGroupDto.NumberOfJobs < 1)

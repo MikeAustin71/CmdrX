@@ -38,9 +38,11 @@ namespace LibLoader.Models
 
 		public decimal CommandTimeOutInMinutes { get; set; }
 
-#endregion CommandExeControl
+		public int CommandTimeOutInMiliseconds => (int) ((decimal) CommandTimeOutInMinutes*60000.0M);
 
-#region CommandElements
+		#endregion CommandExeControl
+
+		#region CommandElements
 
 		private string _consoleCommandExecutor = string.Empty;
 

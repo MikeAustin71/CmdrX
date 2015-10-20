@@ -8,31 +8,35 @@ namespace LibLoader.Models
 	public class ConsoleExecutorDto
 	{
 
-		private string _exeCommand;
-		private string _exeCmdArguments;
+		private string _defaultConsoleCommandExecutor;
+		private string _defaultConsoleCommandExeArgs;
 		private string _defaultCmdConsoleLogFilePathName;
 		private string _cmdConsoleLogFileErrorSuffix;
 		private string _cmdConsoleLogFileTimeStamp;
 
-		public string ExeCommand
+		public string DefaultConsoleCommandExecutor
 		{
-			get { return _exeCommand; }
-			private set { _exeCommand = StringHelper.TrimStringEnds(value); }
+			get { return _defaultConsoleCommandExecutor; }
+			set { _defaultConsoleCommandExecutor = StringHelper.TrimStringEnds(value); }
 		}
 
-		public string ExeCmdArguments
+		public string DefaultConsoleCommandExeArgs
 		{
-			get { return _exeCmdArguments; }
-			private set { _exeCmdArguments = StringHelper.TrimStringEnds(value); }
+			get { return _defaultConsoleCommandExeArgs; }
+			set { _defaultConsoleCommandExeArgs = StringHelper.TrimStringEnds(value); }
 		}
 
-		public int NumberOfMiliSecondsToWaitForExecution { get; private set; }
+		public decimal CommandMinTimeOutInMinutes { get; set; }
+
+		public decimal CommandMaxTimeOutInMinutes { get; set; }
+
+		public decimal CommandDefaultTimeOutInMinutes { get; set; }
 
 
 		public string DefaultCmdConsoleLogFilePathName
 		{
 			get { return _defaultCmdConsoleLogFilePathName; }
-			private set { _defaultCmdConsoleLogFilePathName = StringHelper.TrimStringEnds(value); }
+			set { _defaultCmdConsoleLogFilePathName = StringHelper.TrimStringEnds(value); }
 		}
 
 		public string CmdConsoleLogFileErrorSuffix
@@ -47,56 +51,7 @@ namespace LibLoader.Models
 			set { _cmdConsoleLogFileTimeStamp = StringHelper.TrimStringEnds(value); }
 		}
 
-		public ErrorLogger ErrorMgr = new
-			ErrorLogger(9148000,
-						"ConsoleExecutorDto",
-						AppConstants.LoggingStatus,
-						AppConstants.LoggingMode);
-
-
-		public ConsoleExecutorDto(
-					string exeCommand, 
-						string exeCmdArguments, 
-							int numberOfMinutesToWaitForExecution,
-								string defaultCmdConsoleLogFilePathName,
-									string cmdConsoleLogFileErrorSuffix,
-										string cmdConsoleLogFileTimeStamp)
-		{
-
-			if (string.IsNullOrWhiteSpace(exeCommand))
-			{
-				var ex = new Exception("Error: Console Exe Command is Empty!");
-
-				var err = new FileOpsErrorMessageDto
-				{
-					DirectoryPath = string.Empty,
-					ErrId = 10,
-					ErrorMessage = ex.Message,
-					ErrSourceMethod = "Constructor()",
-					ErrException = ex,
-					FileName = string.Empty,
-					LoggerLevel = LogLevel.FATAL
-				};
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-			}
-
-
-			ExeCommand = exeCommand;
-
-			ExeCmdArguments = exeCmdArguments;
-
-			NumberOfMiliSecondsToWaitForExecution = numberOfMinutesToWaitForExecution*60000;
-
-			_defaultCmdConsoleLogFilePathName = defaultCmdConsoleLogFilePathName;
-
-			_cmdConsoleLogFileErrorSuffix = cmdConsoleLogFileErrorSuffix;
-
-			_cmdConsoleLogFileTimeStamp = cmdConsoleLogFileTimeStamp;
-
-		}
+		public FileDto XmlCmdFileDto { get; set; }
 
 	}
 }

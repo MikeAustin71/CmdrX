@@ -24,10 +24,12 @@ namespace LibLoader.Builders
 
 		private XmlValueExtractor _xmlHlpr = new XmlValueExtractor();
 
-		public XmlParameterBuilder(FileDto xmlCommandFile)
+		private readonly ConsoleExecutorDto _cmdExeDto;
+
+		public XmlParameterBuilder(ConsoleExecutorDto cmdExeDto)
 		{
 
-			if (xmlCommandFile?.FileXinfo == null || !xmlCommandFile.FileXinfo.Exists)
+			if (cmdExeDto?.XmlCmdFileDto?.FileXinfo == null || !cmdExeDto.XmlCmdFileDto.FileXinfo.Exists)
 			{
 				var err = new FileOpsErrorMessageDto
 				{
@@ -48,7 +50,7 @@ namespace LibLoader.Builders
 
 			try
 			{
-				_xmlReader = new XmlTextReader(xmlCommandFile.FullPathAndFileName);
+				_xmlReader = new XmlTextReader(cmdExeDto.XmlCmdFileDto.FileXinfo.FullName);
             }
 			catch (Exception e)
 			{
@@ -70,7 +72,9 @@ namespace LibLoader.Builders
 
 			}
 
-			_jobsGroupDto = new JobsGroupDto(xmlCommandFile.FileXinfo.Name + " Commands");
+			_jobsGroupDto = new JobsGroupDto(cmdExeDto.XmlCmdFileDto.FileXinfo.Name + " Commands");
+
+			_cmdExeDto = cmdExeDto;
 		}
 
 		public JobsGroupDto BuildParmsFromXml()

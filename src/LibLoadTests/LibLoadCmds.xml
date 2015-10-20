@@ -6,7 +6,7 @@
 		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
 		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
-		<ConsoleCommandExecutor>cmd.exe</ConsoleCommandExecutor>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
 		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>
@@ -20,7 +20,7 @@
 		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
 		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
-		<ConsoleCommandExecutor>cmd.exe</ConsoleCommandExecutor>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
 		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>
@@ -34,7 +34,7 @@
 		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
 		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
-		<ConsoleCommandExecutor>cmd.exe</ConsoleCommandExecutor>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
 		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>npm</ExecutableTarget>

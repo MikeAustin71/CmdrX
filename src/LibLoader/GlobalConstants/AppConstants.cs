@@ -13,19 +13,21 @@ namespace LibLoader.GlobalConstants
 
 		public static ErrorLoggingMode LoggingMode { get; set; } = ErrorLoggingMode.Verbose;
 
-		public static FileDto XmlCmdFileDto { get; set; } = AppInfoHelper.GetDefaultXmlCommandFile();
-
 		public static AppicationLogMgr AppLogMgr { get; set; } = new AppicationLogMgr();
 
-		public static string CommandOutputLogFileBaseName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFileName"];
+		public static string DefaultCommandOutputLogFileName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFileName"];
 
 		public static Dictionary<string, string> CommandLineArguments = new Dictionary<string, string>();
 
-		public static string ConsoleCommandExecutor = ConfigurationManager.AppSettings["ConsoleCommandExecutor"];
+		public static string DefaultConsoleCommandExecutor = ConfigurationManager.AppSettings["DefaultConsoleCommandExecutor"];
 
-		public static string ConsoleCommandExeArgs = ConfigurationManager.AppSettings["ConsoleCommandExeArguments"];
+		public static string DefaultConsoleCommandExeArgs = ConfigurationManager.AppSettings["DefaultConsoleCommandExeArguments"];
 
-		public static int NumberOfMinutesToWaitForExecution = int.Parse(ConfigurationManager.AppSettings["NumberOfMinutesToWaitForExecution"]);
+		public static decimal CommandMinTimeOutInMinutes = decimal.Parse(ConfigurationManager.AppSettings["CommandMinTimeOutInMinutes"]);
+
+		public static decimal CommandMaxTimeOutInMinutes = decimal.Parse(ConfigurationManager.AppSettings["CommandMaxTimeOutInMinutes"]);
+
+		public static decimal CommandDefaultTimeOutInMinutes = decimal.Parse(ConfigurationManager.AppSettings["CommandDefaultTimeOutInMinutes"]);
 
 		public static string ConsoleErrorLogFileNameSuffix = "_Error";
 
