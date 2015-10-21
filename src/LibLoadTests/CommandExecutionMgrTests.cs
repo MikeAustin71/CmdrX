@@ -30,7 +30,7 @@ namespace LibLoadTests
 				CommandMaxTimeOutInMinutes = 45.0M,
 				CommandMinTimeOutInMinutes = 1.0M,
 				DefaultCmdConsoleLogFilePathName = ".\\logdir\\installLog.log",
-				XmlCmdFileDto = TestDirectories.GetXmlCmdFileDto(),
+				XmlCmdFileDto = TestDirectories.GetXmlCmdTest002FileDto(),
 				DefaultConsoleCommandType = ConsoleCommandType.Console
 			};
 

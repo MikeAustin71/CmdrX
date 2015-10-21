@@ -79,8 +79,6 @@ namespace LibLoader.Commands
 			_logMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFilePathBaseName);
 			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFilePathBaseName);
 
-			_executeCommand.ConfigureCommandExecutionSyntax();
-
 			if (_executeCommand.NumberOfCommandElements == 0)
 			{
 				var msg = "Console Command Execution Syntax Is Empty! Command Display Name: " + _executeCommand.CommandDisplayName + " - Skipping this command.";
@@ -108,7 +106,6 @@ namespace LibLoader.Commands
 		private int ExecuteCommand(ConsoleCommandDto cmdDto)
 		{
 			var thisMethod = "ExecuteCommand()";
-			cmdDto.CommandStartTime = DateTime.Now;
 			bool procStatus = false;
 			var proc = new Process();
 
@@ -163,6 +160,8 @@ namespace LibLoader.Commands
 				procStatus = proc.WaitForExit(_executeCommand.CommandTimeOutInMiliseconds);
 
 				exitCode = proc.ExitCode;
+
+				_executeCommand.CommandExitTime = DateTime.Now;
 
 			}
 			catch (Exception ex)

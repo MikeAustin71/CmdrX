@@ -34,6 +34,21 @@ namespace LibLoadTests
 			return dirDto;
 		}
 
+		public static FileDto GetXmlCmdTest002FileDto()
+		{
+			var fileName = "\\XmlCmdFiles\\Test002.xml";
+			var testDir = GetMainLibLoadTestDir();
+			var result = new FileDto(testDir.DirInfo.FullName + fileName);
+			if (!FileHelper.IsFileDtoValid(result) || !result.FileXinfo.Exists)
+			{
+				throw new Exception("Invalid FileDto created for XmlCmdFile: " + fileName);
+			}
+
+			return result;
+
+
+		}
+
 		public static FileDto GetXmlCmdFileDto()
 		{
 			var fileName = ConfigurationManager.AppSettings["DefaultXmlCmdFile"];
@@ -136,6 +151,7 @@ namespace LibLoadTests
 			var arg1 = GetTestDirectory001().DirInfo.FullName + "\\*.*";
 			var arg2 = GetTestDirectory003().DirInfo.FullName + "\\";
 			cmdDto.CommandArguments = arg1 + " " + arg2;
+			cmdDto.NormalizeCommandParameters();
 			return cmdDto;
 		}
 
@@ -158,6 +174,7 @@ namespace LibLoadTests
 			var arg1 = GetTestDirectory002().DirInfo.FullName + "\\*.*";
 			var arg2 = GetTestDirectory003().DirInfo.FullName + "\\";
 			cmdDto.CommandArguments = arg1 + " " + arg2;
+			cmdDto.NormalizeCommandParameters();
 			return cmdDto;
 		}
 

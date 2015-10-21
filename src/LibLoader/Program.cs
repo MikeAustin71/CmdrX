@@ -14,8 +14,15 @@ namespace LibLoader
 
 		static void Main(string[] args)
 		{
+			AppConstants.LoggingStatus = ErrorLoggingStatus.On;
+			AppConstants.LoggingMode = ErrorLoggingMode.Verbose;
+			_errorMgr = new
+				ErrorLogger(1000,
+					"Program",
+					AppConstants.LoggingStatus,
+					AppConstants.LoggingMode);
 
-			JobsGroupDto cmdJobs;
+			JobsGroupDto cmdJobs = null;
 
 			var cmdExeDto = new ConsoleExecutorDto()
 			{
@@ -31,32 +38,89 @@ namespace LibLoader
 				DefaultConsoleCommandType = AppConstants.DefaultConsoleCommandType
 			};
 
-
-			if (!SetUpLogging()
-				|| !ProcessCmdArgs(cmdExeDto, args)
-				|| !ValidateXmlCommandFile(cmdExeDto)
-				|| !ParseCommandJobsFromXml(cmdExeDto, out cmdJobs))
+			try
 			{
+				if (!SetUpLogging()
+				    || !ProcessCmdArgs(cmdExeDto, args)
+				    || !ValidateXmlCommandFile(cmdExeDto)
+				    || !ParseCommandJobsFromXml(cmdExeDto, out cmdJobs))
+				{
+					return;
+				}
+
+				LogUtil.JobGroupName = cmdJobs.JobGroupName;
+				LogUtil.ExpectedJobCount = cmdJobs.Jobs.Count;
+				LogUtil.WriteLogJobGroupStartUpMessage();
+
+                ExecuteConsoleCommands(cmdJobs, cmdExeDto);
+
+			}
+			catch (Exception ex)
+			{
+				if (Environment.ExitCode == 0)
+				{
+					Environment.ExitCode = -20;
+				}
+
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 10,
+					ErrorMessage = "Setup Failure: " + ex.Message,
+					ErrSourceMethod = "SetUpLogging()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.ERROR
+				};
+				AppShutdownAndCleanUp(cmdJobs, cmdExeDto);
+				Console.WriteLine(ex.Message);
+				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				_errorMgr.WriteErrorMsg(err);
+
 				return;
 			}
 
 
-			ExecuteConsoleCommands(cmdJobs, cmdExeDto);
+			AppShutdownAndCleanUp(cmdJobs, cmdExeDto);
 
+		}
+
+		private static void StartUpLogMsg()
+		{
+			var err = new FileOpsErrorMessageDto
+			{
+				DirectoryPath = string.Empty,
+				ErrId = 1010,
+				ErrorMessage = "Starting Command Jobs!",
+				ErrSourceMethod = "StartUpLogMsg()",
+				FileName = string.Empty,
+				LoggerLevel = LogLevel.INFO
+			};
+
+			_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
+			_errorMgr.WriteErrorMsg(err);
+
+		}
+
+		private static void AppShutdownAndCleanUp(JobsGroupDto jobs, ConsoleExecutorDto cmdExeDto)
+		{
+			try
+			{
+				jobs?.Dispose();
+				cmdExeDto?.Dispose();
+			}
+			catch
+			{
+				return;
+			}
 		}
 
 		private static bool SetUpLogging()
 		{
+
 			try
 			{
 				// Setup Application Logging
-				AppConstants.LoggingStatus = ErrorLoggingStatus.On;
-				AppConstants.LoggingMode = ErrorLoggingMode.Verbose;
-				_errorMgr = new
-					ErrorLogger(1000,
-						"Program",
-						AppConstants.LoggingStatus,
-						AppConstants.LoggingMode);
 
 				if (!AppConstants.AppLogMgr.CreateApplicaitonLogDirectory())
 				{
@@ -67,14 +131,30 @@ namespace LibLoader
 
 				LogUtil.ExeAssemblyVersionNo = AppInfoHelper.GetThisAssemblyVersion();
 
+				StartUpLogMsg();
+
 				AppConstants.AppLogMgr.PurgeLogCmd.Execute();
 
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 
 				Console.WriteLine("Application Log Setup Failure!");
 				Environment.ExitCode = -2;
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 10,
+					ErrorMessage = "Application Log Setup Failure!" + ex.Message,
+					ErrSourceMethod = "SetUpLogging()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.ERROR
+				};
+
+				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				_errorMgr.WriteErrorMsg(err);
+
 				return false;
 			}
 

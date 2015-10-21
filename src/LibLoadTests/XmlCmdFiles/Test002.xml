@@ -3,6 +3,11 @@
 	<ExectuteCommand>
 		<CommandDisplayName>Copy1</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>Copy</ExecutableTarget>
 		<CommandToExecute></CommandToExecute>
@@ -12,6 +17,11 @@
 	<ExectuteCommand>
 		<CommandDisplayName>Copy2</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
 		<ExecutableTarget>Copy</ExecutableTarget>
 		<CommandToExecute></CommandToExecute>

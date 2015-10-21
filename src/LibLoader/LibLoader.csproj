@@ -94,6 +94,7 @@
     <Content Include="LibLoadCmds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="XmlCmdFiles\LibLoadCmds002.xml" />
     <Content Include="XmlCmdFiles\Test102.xml" />
   </ItemGroup>
   <ItemGroup />

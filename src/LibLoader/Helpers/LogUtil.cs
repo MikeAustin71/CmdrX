@@ -10,9 +10,7 @@ namespace LibLoader.Helpers
     public static class LogUtil
     {
         public static string JobGroupName = string.Empty;
-        public const string CrRet = "\n";
-
-        public static bool IsFirstJobGroupLogMsg = true;
+        public static string CrRet = Environment.NewLine;
 
         public static bool IsFirstJobLogMsg;
         public static int ExpectedJobCount =1;
@@ -43,33 +41,26 @@ namespace LibLoader.Helpers
 
         public static void WriteLogJobGroupStartUpMessage()
         {
-            if (!IsFirstJobGroupLogMsg || ExpectedJobCount < 2)
-            {
-                return;
-            }
-
-            IsFirstJobGroupLogMsg = false;
-
             var banner = StringHelper.MakeSingleCharString('#', MaxBannerLen);
 
             var now = JobGroupStartTime;
             var sb = new StringBuilder();
-            sb.Append("\n");
+            sb.Append(CrRet);
             sb.Append(banner);
-            sb.Append("\n");
+            sb.Append(CrRet);
 
-            var s = "NeCollegeImageTrans Assembly Version " + ExeAssemblyVersionNo;
+            var s = "LibLoader.exe Assembly Version " + ExeAssemblyVersionNo;
             var cStr = StringHelper.CenterString(s, banner.Length);
             sb.Append(cStr);
-            sb.Append("\n");
+            sb.Append(CrRet);
 
 
             sb.Append(banner);
-            sb.Append("\n");
+            sb.Append(CrRet);
             if(!string.IsNullOrEmpty(JobGroupName))
             {
                 sb.Append(StringHelper.CenterString(JobGroupName, banner.Length));
-                sb.Append("\n");
+                sb.Append(CrRet);
             }
 
             if(ExpectedJobCount == 1)
@@ -83,27 +74,24 @@ namespace LibLoader.Helpers
 
             cStr = StringHelper.CenterString(s, banner.Length);
             sb.Append(cStr);
-            sb.Append("\n");
+            sb.Append(CrRet);
 
             s= $"Started Multiple Job Run: {now.ToLongDateString()} {now.ToLongTimeString()}\n";
 
             cStr = StringHelper.CenterString(s, banner.Length);
             sb.Append(cStr);
-            sb.Append("\n");
+            sb.Append(CrRet);
 
             sb.Append(banner);
-            sb.Append("\n");
+            sb.Append(CrRet);
             sb.Append(banner);
-            sb.Append("\n");
+            sb.Append(CrRet);
 
             Logger.Info(sb.ToString());
-
-
         }
+		
 
-
-
-        public static void WriteLog(FileOpsErrorMessageDto err)
+		public static void WriteLog(FileOpsErrorMessageDto err)
         {
 
             var sb = new StringBuilder();
@@ -171,12 +159,6 @@ namespace LibLoader.Helpers
         public static void WriteLog(LogLevel logLevel, string log)
         {
 
-            if (IsFirstJobLogMsg)
-            {
-                WriteLogJobStartUpMessage();
-                WriteLogCmdArgsMessage();
-            }
-
             if (logLevel.Equals(LogLevel.DEBUG))
             {
                 Logger.Debug(log);
@@ -200,30 +182,12 @@ namespace LibLoader.Helpers
 
         }
 
-        public static void WriteLogJobStartUpMessage()
+        public static void WriteLogJobStartUpMessage(ConsoleCommandDto job, ConsoleExecutorDto consoleExecutor)
         {
-            WriteLogJobGroupStartUpMessage();
 
-            if (CmdLineArguments == null)
-            {
-                CmdLineArguments = new Dictionary<string, string>();
-            }
+	        var jobName = job.CommandDisplayName;
 
-            var jobName = string.Empty;
-
-            if (CmdLineArguments.Count > 0)
-            {
-                if (!CmdLineArguments.TryGetValue("Job Name", out jobName))
-                {
-                    jobName = "Copy Job";
-                }
-                else
-                {
-                    CmdLineArguments.Remove("Job Name");
-                }
-            }
-
-            CurrentJobNo = "Job No: " + JobNumber++;
+			CurrentJobNo = "Job No: " + JobNumber++;
 
             if(!string.IsNullOrEmpty(jobName))
             {
@@ -239,75 +203,114 @@ namespace LibLoader.Helpers
             IsAnyLoggingActive = true;
             
             var banner = StringHelper.MakeSingleCharString('=', MaxBannerLen);
+			var subbanner = StringHelper.MakeSingleCharString('-', MaxBannerLen);
 
-            var now = JobStartTime;
+            var now = job.CommandStartTime;
             var sb = new StringBuilder();
-            sb.Append("\n");
-            sb.Append(banner);
-            sb.Append("\n");
+            sb.Append(CrRet);
+            sb.Append(banner + CrRet);
+            sb.Append(banner + CrRet);
 
             var s = "LibLoader Assembly Version " + ExeAssemblyVersionNo;
             var cStr = StringHelper.CenterString(s, banner.Length);
             sb.Append(cStr);
-            sb.Append("\n");
+            sb.Append(CrRet);
 
 
             cStr = StringHelper.CenterString(CurrentJobNo, banner.Length);
             sb.Append(cStr);
-            sb.Append("\n");
+            sb.Append(CrRet);
 
+			sb.Append(subbanner);
+            sb.Append(CrRet);
             if(!string.IsNullOrWhiteSpace(CurrentJobName))
             {
                 cStr = StringHelper.CenterString(CurrentJobName, banner.Length);
                 sb.Append(cStr);
-                sb.Append("\n");
+                sb.Append(CrRet);
                 
             }
 
-            sb.Append($"Started Run: {now.ToLongDateString()} {now.ToLongTimeString()}\n");
+            sb.Append($"Started Job: {now.ToLongDateString()} {now.ToLongTimeString()}\n");
+			sb.Append(subbanner);
+			sb.Append(CrRet);
 
-            sb.Append(banner);
-            sb.Append("\n");
+	        sb.Append("Process StartInfo FileName: " + job.ProcFileNameCommand);
+			sb.Append(CrRet);
+
+	        sb.Append("Process StartInfo Arguments: " + job.ProcFileArguments);
+			sb.Append(CrRet);
+			sb.Append(CrRet);
+
+			sb.Append(banner);
+            sb.Append(CrRet);
+
             WriteLog(LogLevel.INFO, sb.ToString());
         }
 
-        public static void WriteLogCmdArgsMessage()
+	    public static void WriteLogJobEndMessage(ConsoleCommandDto job, ConsoleExecutorDto consoleExecutor)
+	    {
+			var banner = StringHelper.MakeSingleCharString('=', MaxBannerLen);
+			var subbanner = StringHelper.MakeSingleCharString('-', MaxBannerLen);
+		    var startTime = job.CommandStartTime;
+		    var endTime = job.CommandExitTime;
+		    TimeSpan ts = endTime - startTime;
+			var sb = new StringBuilder();
+			sb.Append(banner);
+			sb.Append(CrRet);
+			var cStr = StringHelper.CenterString("Job Completed: " + job.CommandDisplayName, banner.Length);
+			sb.Append(cStr);
+			sb.Append(CrRet);
+
+			sb.Append(subbanner + CrRet);
+			sb.Append($"Start Time: {startTime.ToLongDateString()} {startTime.ToLongTimeString()}" + CrRet);
+			sb.Append($"End Time: {endTime.ToLongDateString()} {endTime.ToLongTimeString()}" + CrRet);
+		    sb.Append($"Elapsed Time: {ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:00}" + CrRet);
+		    sb.Append("Job Exit Code: " + job.CommandExitCode);
+
+			sb.Append(banner);
+			sb.Append(CrRet);
+			sb.Append(banner);
+			sb.Append(CrRet);
+		}
+
+
+		public static void WriteLogCmdArgsMessage()
         {
             var banner = StringHelper.MakeSingleCharString('-', MediumBannerLen);
 
             var sb = new StringBuilder();
-            sb.Append("\n");
-            sb.Append("\n");
+            sb.Append(CrRet);
+            sb.Append(CrRet);
             sb.Append(banner);
-            sb.Append("\n");
+            sb.Append(CrRet);
             var s = "Command Line Arguments " + CurrentJobNo;
             var cStr = StringHelper.CenterString(s, banner.Length);
             sb.Append(cStr);
-            sb.Append("\n");
+            sb.Append(CrRet);
 
             if(!string.IsNullOrEmpty(CurrentJobName))
             {
                 cStr = StringHelper.CenterString(CurrentJobName, banner.Length);
                 sb.Append(cStr);
-                sb.Append("\n");
+                sb.Append(CrRet);
             }
 
             sb.Append(banner);
-            sb.Append("\n");
+            sb.Append(CrRet);
             
             
             foreach (var cmdLineArgument in CmdLineArguments)
             {
                 sb.Append("-" + cmdLineArgument.Key + " " + cmdLineArgument.Value);
-                sb.Append("\n");
+                sb.Append(CrRet);
             }
             
-            sb.Append("\n");
+            sb.Append(CrRet);
             sb.Append(banner);
-            sb.Append("\n");
-            sb.Append("\n");
+            sb.Append(CrRet);
+            sb.Append(CrRet);
             WriteLog(LogLevel.INFO, sb.ToString());
-
 
         }
  

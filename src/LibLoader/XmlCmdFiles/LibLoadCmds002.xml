@@ -3,7 +3,7 @@
 	<ExectuteCommand>
 		<CommandDisplayName>jshint and jscs</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
-		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
+		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
 		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
 		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
@@ -43,3 +43,4 @@
 		<CommandArguments>del gulp-plumber</CommandArguments>
 	</ExectuteCommand>
 </Commands>
+

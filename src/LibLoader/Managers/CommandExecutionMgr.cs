@@ -51,6 +51,9 @@ namespace LibLoader.Managers
 			{
 				foreach (var job in _commandJobs.Jobs)
 				{
+					job.CommandStartTime = DateTime.Now;
+					LogUtil.WriteLogJobStartUpMessage(job, _consoleExecutor);
+
 					var exeCmd = new ExecuteConsoleCommand(job, _consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
 					var exitCode = exeCmd.Execute();
 
@@ -72,9 +75,13 @@ namespace LibLoader.Managers
 
 						ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 						ErrorMgr.WriteErrorMsg(err);
-						Console.WriteLine(msg);
+						LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
+                        Console.WriteLine(msg);
 						Environment.ExitCode = exitCode;
+						return false;
 					}
+
+					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
 				}
 
 				Environment.ExitCode = 0;

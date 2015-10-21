@@ -1,21 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Commands>
 	<ExectuteCommand>
-		<CommandDisplayName>jshint and jscs</CommandDisplayName>
-		<ConsoleCommandType>Console</ConsoleCommandType>
-		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
-		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
-		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes> 
-		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
-		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
-		<ExecuteInDir></ExecuteInDir>
-		<ExecutableTarget>npm</ExecutableTarget>
-		<CommandToExecute>install</CommandToExecute>
-		<CommandModifier>--save-dev</CommandModifier>
-		<CommandArguments>gulp-jshint gulp-jscs jshint-stylish</CommandArguments>
-	</ExectuteCommand>
-	<ExectuteCommand>
-		<CommandDisplayName>gulp util</CommandDisplayName>
+		<CommandDisplayName>Copy1</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
 		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
@@ -23,13 +9,13 @@
 		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
 		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
-		<ExecutableTarget>npm</ExecutableTarget>
-		<CommandToExecute>install</CommandToExecute>
-		<CommandModifier>--save-dev</CommandModifier>
-		<CommandArguments>yargs gulp-util gulp-load-plugins gulp-if</CommandArguments>
+		<ExecutableTarget>Copy</ExecutableTarget>
+		<CommandToExecute></CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>D:\T06\*.* D:\T08\</CommandArguments>
 	</ExectuteCommand>
 	<ExectuteCommand>
-		<CommandDisplayName>gulp plumber</CommandDisplayName>
+		<CommandDisplayName>Copy2</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
 		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
@@ -37,9 +23,9 @@
 		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
 		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
 		<ExecuteInDir></ExecuteInDir>
-		<ExecutableTarget>npm</ExecutableTarget>
-		<CommandToExecute>install</CommandToExecute>
-		<CommandModifier>--save-dev</CommandModifier>
-		<CommandArguments>del gulp-plumber</CommandArguments>
+		<ExecutableTarget>Copy</ExecutableTarget>
+		<CommandToExecute></CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>D:\T07\*.* D:\T08\</CommandArguments>
 	</ExectuteCommand>
 </Commands>
