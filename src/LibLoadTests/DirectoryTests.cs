@@ -151,6 +151,16 @@ namespace LibLoadTests
             Assert.IsTrue(result==expectedResult);
 		}
 
+		[TestMethod]
+		public void Test008DirectoryExtractionFromFileName()
+		{
+			var dirStr1 = @".\installLog\install.log"; // No trailing slash
+			var dirTestExe = TestDirectories.GetTestExeDir();
+			var expectedDto = new DirectoryDto(dirTestExe.DirInfo.FullName + "\\installLog");
+			var result = new DirectoryDto(dirStr1);
+            Assert.IsTrue(result.DirInfo.FullName == expectedDto.DirInfo.FullName);
+		}
+
 
 
 	}

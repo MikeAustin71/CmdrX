@@ -95,7 +95,18 @@ namespace LibLoadTests
 		}
 
 		[TestMethod]
-		public void T101HelperShouldCorrectlyExtractFileExtComponentFromFullPath()
+		public void T101HelperShouldCorrectlyExtractFileExtComponentWithoutLeadingDot()
+		{
+			var testStr = @"D:\Level1\Level2\SomefileName.txt";
+			var expectedResult = @"txt";
+			var extComponent = PathHelper.ExtractFileExtensionComponentWithoutLeadingDot(testStr);
+			Assert.IsTrue(extComponent == expectedResult);
+		}
+
+
+
+		[TestMethod]
+		public void T102HelperShouldCorrectlyExtractFileExtComponentFromFullPath()
 		{
 			var testStr = @"D:\Level1\Level2\.gitignore";
 			var expectedResult = @".gitignore";

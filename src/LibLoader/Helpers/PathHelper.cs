@@ -189,6 +189,11 @@ namespace LibLoader.Helpers
 			return Path.GetFileNameWithoutExtension(pathFileName);
 		}
 
+		public static string ExtractFileExtensionComponentWithoutLeadingDot(string pathFileName)
+		{
+			return RemovePrefixDots(ExtractFileExtensionComponent(pathFileName));
+		}
+
 		public static string ExtractFileExtensionComponent(string pathFileName)
 		{
 			return Path.GetExtension(pathFileName);

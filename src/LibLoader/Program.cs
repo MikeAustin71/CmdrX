@@ -1,4 +1,5 @@
 ﻿using System;
+using log4net.Config;
 using LibLoader.Builders;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
@@ -14,22 +15,28 @@ namespace LibLoader
 
 		static void Main(string[] args)
 		{
+			_errorMgr = new
+					ErrorLogger(1000,
+						"Program",
+						AppConstants.LoggingStatus,
+						AppConstants.LoggingMode, 
+						false);
+
 			AppConstants.LoggingStatus = ErrorLoggingStatus.On;
 			AppConstants.LoggingMode = ErrorLoggingMode.Verbose;
-			_errorMgr = new
-				ErrorLogger(1000,
-					"Program",
-					AppConstants.LoggingStatus,
-					AppConstants.LoggingMode);
-
 			JobsGroupDto cmdJobs = null;
 
+			var nowTimeStamp = DateHelper.NowYearMthDayHrsSecs();
+
 			var cmdExeDto = new ConsoleExecutorDto()
-			{
+			{   AppLogFileBaseNameOnly =
+					PathHelper.ExtractFileNameOnlyComponent(AppConstants.AppLogFileNameExtension),
+				AppLogFileExtensionWithoutLeadingDot = 
+					PathHelper.ExtractFileExtensionComponentWithoutLeadingDot(AppConstants.AppLogFileNameExtension),
 				DefaultConsoleCommandExecutor = AppConstants.DefaultConsoleCommandExecutor,
 				DefaultConsoleCommandExeArgs = AppConstants.DefaultConsoleCommandExeArgs,
 				CmdConsoleLogFileErrorSuffix = AppConstants.ConsoleErrorLogFileNameSuffix,
-				CmdConsoleLogFileTimeStamp = DateHelper.NowYearMthDayHrsSecs(),
+				CmdConsoleLogFileTimeStamp = nowTimeStamp,
 				CommandDefaultTimeOutInMinutes = AppConstants.CommandDefaultTimeOutInMinutes,
 				CommandMaxTimeOutInMinutes = AppConstants.CommandMaxTimeOutInMinutes,
 				CommandMinTimeOutInMinutes = AppConstants.CommandMinTimeOutInMinutes,
@@ -40,17 +47,19 @@ namespace LibLoader
 
 			try
 			{
-				if (!SetUpLogging()
-				    || !ProcessCmdArgs(cmdExeDto, args)
+				if (!ProcessCmdArgs(cmdExeDto, args)
 				    || !ValidateXmlCommandFile(cmdExeDto)
-				    || !ParseCommandJobsFromXml(cmdExeDto, out cmdJobs))
+				    || !ParseCommandJobsFromXml(cmdExeDto, out cmdJobs)
+					|| !SetUpLogging(cmdExeDto, cmdJobs))
 				{
 					return;
 				}
 
+
+
 				LogUtil.JobGroupName = cmdJobs.JobGroupName;
 				LogUtil.ExpectedJobCount = cmdJobs.Jobs.Count;
-				LogUtil.WriteLogJobGroupStartUpMessage();
+				LogUtil.WriteLogJobGroupStartUpMessage(cmdJobs);
 
                 ExecuteConsoleCommands(cmdJobs, cmdExeDto);
 
@@ -72,34 +81,14 @@ namespace LibLoader
 					FileName = string.Empty,
 					LoggerLevel = LogLevel.ERROR
 				};
-				AppShutdownAndCleanUp(cmdJobs, cmdExeDto);
+
 				Console.WriteLine(ex.Message);
 				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				_errorMgr.WriteErrorMsg(err);
 
-				return;
 			}
 
-
 			AppShutdownAndCleanUp(cmdJobs, cmdExeDto);
-
-		}
-
-		private static void StartUpLogMsg()
-		{
-			var err = new FileOpsErrorMessageDto
-			{
-				DirectoryPath = string.Empty,
-				ErrId = 1010,
-				ErrorMessage = "Starting Command Jobs!",
-				ErrSourceMethod = "StartUpLogMsg()",
-				FileName = string.Empty,
-				LoggerLevel = LogLevel.INFO
-			};
-
-			_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
-			_errorMgr.WriteErrorMsg(err);
-
 		}
 
 		private static void AppShutdownAndCleanUp(JobsGroupDto jobs, ConsoleExecutorDto cmdExeDto)
@@ -109,31 +98,37 @@ namespace LibLoader
 				jobs?.Dispose();
 				cmdExeDto?.Dispose();
 			}
+				// ReSharper disable once EmptyGeneralCatchClause
 			catch
 			{
-				return;
 			}
 		}
 
-		private static bool SetUpLogging()
+		private static bool SetUpLogging(ConsoleExecutorDto cmdExeDto, JobsGroupDto jobsGroup)
 		{
 
 			try
 			{
 				// Setup Application Logging
 
-				if (!AppConstants.AppLogMgr.CreateApplicaitonLogDirectory())
+				if (!cmdExeDto.AppLogMgr.CreateApplicaitonLogDirectory())
 				{
 					Console.WriteLine("Application Log Directory Invalid!");
 					Environment.ExitCode = -2;
 					return false;
 				}
 
+				log4net.GlobalContext.Properties["LogFileName"] = cmdExeDto.AppLogMgr.LogPathFileNameDto.FileXinfo.FullName;
+
+				XmlConfigurator.Configure();
+
+				_errorMgr.IsLoggingConfigured = true;
+
 				LogUtil.ExeAssemblyVersionNo = AppInfoHelper.GetThisAssemblyVersion();
 
-				StartUpLogMsg();
+				cmdExeDto.AppLogMgr.PurgeOldLogFiles();
 
-				AppConstants.AppLogMgr.PurgeLogCmd.Execute();
+				LogUtil.WriteLogJobGroupStartUpMessage(jobsGroup);
 
 			}
 			catch (Exception ex)
@@ -259,8 +254,7 @@ namespace LibLoader
 					LoggerLevel = LogLevel.FATAL
 				};
 
-				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				_errorMgr.WriteErrorMsg(err);
+				_errorMgr.WriteErrorMsgsToConsole(err);
 
 				AppInfoHelper.DisplayCmdLineParms();
 				Environment.ExitCode = -5;
@@ -277,23 +271,16 @@ namespace LibLoader
 				return true;
 			}
 
-			if (!new CommandLineParameterBuilder(cmdExeDto).BuildFileInfoParamters(args))
-			{
-				var err = new FileOpsErrorMessageDto
-				{
-					DirectoryPath = string.Empty,
-					ErrId = 2,
-					ErrorMessage = "Arg Parser Returned False. Args Invalid or Help Requested",
-					ErrSourceMethod = "Main()",
-					FileName = string.Empty,
-					LoggerLevel = LogLevel.INFO
-				};
+			var cmdLineParser = new CommandLineParameterBuilder(cmdExeDto);
 
-				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				_errorMgr.WriteErrorMsg(err);
+            if (!cmdLineParser.BuildFileInfoParamters(args))
+			{
+				cmdLineParser.ErrorMgr.WriteErrorMsgsToConsole();
 
 				AppInfoHelper.DisplayCmdLineParms();
+
 				Environment.ExitCode = 0;
+
 				return false;
 			}
 

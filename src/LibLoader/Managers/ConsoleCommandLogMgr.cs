@@ -321,7 +321,7 @@ namespace LibLoader.Managers
 			sb.Append("_" + logFileTimeStamp);
 
 
-			if (filePath.HasExtensinon)
+			if (filePath.HasExtension)
 			{
 				if (filePath.Extension.Contains("."))
 				{

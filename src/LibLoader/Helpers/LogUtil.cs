@@ -16,7 +16,9 @@ namespace LibLoader.Helpers
         public static int ExpectedJobCount =1;
 
         public static DateTime JobGroupStartTime = DateTime.Now;
-        public static DateTime JobStartTime = DateTime.Now;
+		public static DateTime JobGroupEndTime = DateTime.Now;
+	    public static TimeSpan JobGroupElapsedTime;
+
         public static bool IsAnyLoggingActive;
 
         public static Dictionary<string, string> CmdLineArguments;
@@ -36,55 +38,57 @@ namespace LibLoader.Helpers
 
         static LogUtil()
         {
-            XmlConfigurator.Configure();
+            //XmlConfigurator.Configure();
         }
-
-        public static void WriteLogJobGroupStartUpMessage()
+	
+        public static void WriteLogJobGroupStartUpMessage(JobsGroupDto jobsGroup)
         {
             var banner = StringHelper.MakeSingleCharString('#', MaxBannerLen);
+	        if (!string.IsNullOrWhiteSpace(jobsGroup.JobGroupName))
+	        {
+		        JobGroupName = "Execution Job Group: " + jobsGroup.JobGroupName;
+	        }
+	        else
+	        {
+		        JobGroupName = "Execution Job Group: Job Group # 1";
+	        }
 
-            var now = JobGroupStartTime;
+			JobGroupStartTime = DateTime.Now;
+	        ExpectedJobCount = jobsGroup.Jobs.Count;
+			var now = JobGroupStartTime;
             var sb = new StringBuilder();
             sb.Append(CrRet);
-            sb.Append(banner);
-            sb.Append(CrRet);
+            sb.Append(banner + CrRet);
 
             var s = "LibLoader.exe Assembly Version " + ExeAssemblyVersionNo;
             var cStr = StringHelper.CenterString(s, banner.Length);
-            sb.Append(cStr);
-            sb.Append(CrRet);
+            sb.Append(cStr + CrRet);
 
 
-            sb.Append(banner);
-            sb.Append(CrRet);
-            if(!string.IsNullOrEmpty(JobGroupName))
-            {
+            sb.Append(banner + CrRet);
                 sb.Append(StringHelper.CenterString(JobGroupName, banner.Length));
                 sb.Append(CrRet);
-            }
 
             if(ExpectedJobCount == 1)
             {
-                s = "Starting Execution of One Job!";
+                s = "Starting Execution of One Job.";
             }
             else
             {
-                s = "Starting Execution of " + ExpectedJobCount + " Jobs!";
+                s = $"Starting Execution of {ExpectedJobCount} Jobs.";
             }
 
             cStr = StringHelper.CenterString(s, banner.Length);
             sb.Append(cStr);
             sb.Append(CrRet);
 
-            s= $"Started Multiple Job Run: {now.ToLongDateString()} {now.ToLongTimeString()}\n";
+            s= $"Started Job Run: {now.ToLongDateString()} {now.ToLongTimeString()}" + CrRet;
 
             cStr = StringHelper.CenterString(s, banner.Length);
-            sb.Append(cStr);
-            sb.Append(CrRet);
+            sb.Append(cStr + CrRet);
 
-            sb.Append(banner);
-            sb.Append(CrRet);
-            sb.Append(banner);
+            sb.Append(banner + CrRet);
+            sb.Append(banner + CrRet);
             sb.Append(CrRet);
 
             Logger.Info(sb.ToString());

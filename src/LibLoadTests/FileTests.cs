@@ -52,5 +52,17 @@ namespace LibLoadTests
 			Assert.IsTrue(fileDto.FileXinfo.FullName == expectedResult);
 		}
 		 
+		[TestMethod]
+		public void Test005CreateFileDtoFromFileAndDirectoryCombination()
+		{
+			var testStr = @"D:\Level1\Level2";
+			var testDirDto = new DirectoryDto(testStr);
+			var fileComponent = @"SomefileName.txt";
+            var expectedResult = @"D:\Level1\Level2\SomefileName.txt";
+            var fileDto = new FileDto(testDirDto, fileComponent);
+			Assert.IsTrue(FileHelper.IsFileDtoValid(fileDto));
+			Assert.IsTrue(fileDto.FileXinfo.FullName == expectedResult);
+		}
+		 
 	}
 }

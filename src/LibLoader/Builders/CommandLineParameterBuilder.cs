@@ -15,7 +15,8 @@ namespace LibLoader.Builders
 		public ErrorLogger ErrorMgr = new ErrorLogger(4000,
 			"CommandLineParameterBuilder",
 			AppConstants.LoggingStatus,
-			AppConstants.LoggingMode);
+			AppConstants.LoggingMode,
+			false);
 
 		public Dictionary<string,string> CommandLineArguments { get; set; } = new Dictionary<string, string>();
 
@@ -110,7 +111,7 @@ namespace LibLoader.Builders
 				    int logRetentionDays;
 				    if (int.TryParse(pair.Value, out logRetentionDays))
 				    {
-					    AppConstants.AppLogMgr.LogRetentionInDays = logRetentionDays;
+						_cmdExeDto.AppLogMgr.LogRetentionInDays = logRetentionDays;
 					    result = true;
 				    }
 			    }

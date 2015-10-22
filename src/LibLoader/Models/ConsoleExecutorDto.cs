@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 using LibLoader.Constants;
 using LibLoader.Helpers;
+using LibLoader.Managers;
 
 namespace LibLoader.Models
 {
@@ -36,8 +39,19 @@ namespace LibLoader.Models
 		public string DefaultCmdConsoleLogFilePathName
 		{
 			get { return _defaultCmdConsoleLogFilePathName; }
-			set { _defaultCmdConsoleLogFilePathName = StringHelper.TrimStringEnds(value); }
+			set
+			{
+				_defaultCmdConsoleLogFilePathName = StringHelper.TrimStringEnds(value);
+			}
 		}
+
+		public int AppLogRetentionInDays { get; set; }
+
+		public string AppLogFileBaseNameOnly { get; set; }
+
+		public string AppLogFileExtensionWithoutLeadingDot { get; set; }
+
+		public string AppLogFileTimeStamp { get; set; }
 
 		public string CmdConsoleLogFileErrorSuffix
 		{
@@ -54,6 +68,13 @@ namespace LibLoader.Models
 		public FileDto XmlCmdFileDto { get; set; }
 
 		public ConsoleCommandType DefaultConsoleCommandType { get; set; }
+
+		public AppicationLogMgr AppLogMgr { get; private set; }
+
+		public void ConfigureParameters()
+		{
+			
+		}
 
 		public void Dispose()
 		{
@@ -89,6 +110,11 @@ namespace LibLoader.Models
 				_disposed = true;
 
 			}
+		}
+
+		private void SetLogFilePathName(string defaultCmdConsoleLogFilePathName)
+		{
+			
 		}
 
 

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Configuration;
+using System.Security.Permissions;
 using LibLoader.Constants;
-using LibLoader.GlobalConstants;
 using LibLoader.Models;
 
 namespace LibLoader.Helpers
@@ -11,23 +13,29 @@ namespace LibLoader.Helpers
 		private readonly string _thisClass;
 		public ErrorLoggingStatus LoggingStatus { get; set; }
 		public ErrorLoggingMode LoggingMode { get; set; }
+		public bool IsLoggingConfigured { get; set; } = false;
+
 		public List<FileOpsErrorMessageDto> ErrorList = new List<FileOpsErrorMessageDto>();
 
 
 		public ErrorLogger(int errBaseCode, 
 							string thisClass, 
 							ErrorLoggingStatus loggingStatus = ErrorLoggingStatus.On,
-							ErrorLoggingMode loggingMode = ErrorLoggingMode.Verbose)
+							ErrorLoggingMode loggingMode = ErrorLoggingMode.Verbose,
+							bool isLoggingConfigured = true)
 		{
 			_errBaseCode = errBaseCode;
 			_thisClass = thisClass;
 			LoggingStatus = loggingStatus;
 			LoggingMode = loggingMode;
+			IsLoggingConfigured = isLoggingConfigured;
 		}
 
 		public void WriteErrorMsg(FileOpsErrorMessageDto err)
 		{
-			if (LoggingStatus == ErrorLoggingStatus.Off)
+			ErrorList.Add(err);
+
+			if (!IsLoggingConfigured || LoggingStatus == ErrorLoggingStatus.Off)
 			{
 				return;
 			}
@@ -39,7 +47,27 @@ namespace LibLoader.Helpers
 			LogUtil.WriteLog(err);
 		}
 
+		public void WriteErrorMsgsToConsole(FileOpsErrorMessageDto err)
+		{
+			ErrorList.Add(err);
 
+			WriteErrorMsgsToConsole();
+		}
+		
+
+		public void WriteErrorMsgsToConsole()
+		{
+			foreach (var msg in ErrorList)
+			{
+				Console.WriteLine(msg.ErrSourceClass + ":" + msg.ErrSourceMethod + " ErrId " + msg.ErrId);
+				Console.WriteLine("    " + msg.ErrorMessage);
+				if (msg.ErrException != null)
+				{
+					Console.WriteLine(msg.ErrException.Message);
+				}
+				Console.WriteLine("");
+			}
+		}
 
 	}
 }

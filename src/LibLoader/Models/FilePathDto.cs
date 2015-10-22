@@ -1,29 +1,22 @@
-﻿using System.IO;
-using System.Security.Permissions;
-using LibLoader.Helpers;
+﻿using LibLoader.Helpers;
 
 namespace LibLoader.Models
 {
 	public class FilePathDto
 	{
-		public string DirectoryPath { get; private set; }
-		public string FileNameOnly { get; private set; }
-		public string Extension { get; private set; }
-		public string FileNameAndExtension { get; private set; }
-		public string FullPathAndFileName { get; private set; }
-		public bool HasExtensinon { get; private set; }
-		public bool HasFileNameAndExtension { get; private set; }
-		public bool HasDirectoryPath { get; private set; }
-		public bool HasFileNameOnly { get; private set; }
+		public string DirectoryPath { get; private set; } = string.Empty;
+		public string FileNameOnly { get; private set; } = string.Empty;
+		public string Extension { get; private set; } = string.Empty;
+		public string ExtensionWithoutLeadingDot { get; private set; } = string.Empty;
+		public string FileNameAndExtension { get; private set; } = string.Empty;
+		public string FullPathAndFileName { get; private set; } = string.Empty;
+		public bool HasExtension { get; private set; } = false;
+		public bool HasFileNameAndExtension { get; private set; } = false;
+		public bool HasDirectoryPath { get; private set; } = false;
+		public bool HasFileNameOnly { get; private set; } = false;
 
 		public FilePathDto(string filePath)
 		{
-			DirectoryPath = string.Empty;
-			FileNameOnly = string.Empty;
-			Extension = string.Empty;
-			FileNameAndExtension = string.Empty;
-			FullPathAndFileName = string.Empty;
-			HasExtensinon = false;
 
 			AnalyzeRawFilePath(StringHelper.TrimStringEnds(filePath));
 		}
@@ -38,12 +31,14 @@ namespace LibLoader.Models
 			DirectoryPath = PathHelper.ExtractDirectoryComponent(filePath);
 			FileNameOnly = PathHelper.ExtractFileNameOnlyComponent(filePath);
 			Extension = PathHelper.ExtractFileExtensionComponent(filePath);
+			ExtensionWithoutLeadingDot = PathHelper.ExtractFileExtensionComponentWithoutLeadingDot(filePath);
 			FileNameAndExtension = PathHelper.ExtractFileNameAndExtension(filePath);
 			FullPathAndFileName = PathHelper.ExtractFullPathAndFileName(filePath);
-			HasExtensinon = PathHelper.FilePathHasExtension(filePath);
+			
+			HasExtension = PathHelper.FilePathHasExtension(filePath);
 
 			if (!string.IsNullOrWhiteSpace(FileNameAndExtension)
-			    && HasExtensinon)
+			    && HasExtension)
 			{
 				HasFileNameAndExtension = true;
 			}

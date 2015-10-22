@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using LibLoader.Helpers;
 using LibLoader.Managers;
 using LibLoader.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,20 +12,30 @@ namespace LibLoadTests
 		[TestMethod]
 		public void InitializeLogMgrShouldFunctionCorrectly()
 		{
-			var appLogDirStr = ConfigurationManager.AppSettings["ApplicationLogDirectory"];
-            var dir1 = new DirectoryDto(appLogDirStr);
+			var appFileNameExt = ConfigurationManager.AppSettings["ApplicationLogFileNameExtension"];
+			var appLogFileNameOnly = PathHelper.ExtractFileNameOnlyComponent(appFileNameExt);
+			var appLogFileExtWithNoLeadingDot = 
+				PathHelper.ExtractFileExtensionComponentWithoutLeadingDot(appFileNameExt);
+			var appLogFileTimeStamp = DateHelper.NowYearMthDayHrsSecs();
+			var cmdOutputLogFilePath = ConfigurationManager.AppSettings["CommandOutputLogFilePathBaseName"];
+            var dir1 = new DirectoryDto(cmdOutputLogFilePath);
 			if (dir1.DirInfo.Exists)
 			{
 				dir1.DirInfo.Delete(true);
 			}
 
-			var logMgr = new AppicationLogMgr();
+			var logMgr = new AppicationLogMgr(dir1.DirInfo.FullName, 
+				appLogFileNameOnly,
+				appLogFileExtWithNoLeadingDot,
+				appLogFileTimeStamp);
 
 			logMgr.CreateApplicaitonLogDirectory();
 
-			var dir2 = new DirectoryDto(appLogDirStr);
+			Assert.IsTrue(logMgr.LogDirectoryDto.DirInfo.Exists);
 
-			Assert.IsTrue(dir2.DirInfo.Exists);
+			DirectoryHelper.DeleteADirectory(logMgr.LogDirectoryDto);
+
+			logMgr.Dispose();
 
 		}
 		

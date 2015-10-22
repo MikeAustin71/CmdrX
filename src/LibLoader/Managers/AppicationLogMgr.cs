@@ -12,25 +12,35 @@ namespace LibLoader.Managers
 	{
 		private bool _disposed;
 
-		private readonly string _appLogDir;
 
-		public static ErrorLogger ErrorMgr = new
+		public ErrorLogger ErrorMgr = new
 			ErrorLogger(708000,
 						"AppicationLogMgr",
 						AppConstants.LoggingStatus,
-						AppConstants.LoggingMode);
+						AppConstants.LoggingMode,
+						false);
 
-		public int LogRetentionInDays { get; set; } = int.Parse(ConfigurationManager.AppSettings["LogFileRetentionInDays"]);
+		public string LogFileNameOnly { get; set; }
+
+		public string LogFileExtensionWithNoLeadingDot { get; set; }
+
+		public int LogRetentionInDays { get; set; } 
+
+		public string LogFileTimeStamp { get; set; }
+
 		public DirectoryDto LogDirectoryDto { get; private set; }
-		public PurgeLogCommand PurgeLogCmd { get; private set; }
 
+		public FileDto LogPathFileNameDto { get; private set; }
 
-
-		public AppicationLogMgr()
+		public AppicationLogMgr(string logDirPath, 
+									string logFileNameOnly, 
+										string logFileExtensionWithoutLeadingDot, 
+											string logFileTimeStamp)
 		{
-			 _appLogDir = ConfigurationManager.AppSettings["ApplicationLogDirectory"];
-			LogDirectoryDto  = new DirectoryDto(_appLogDir);
-			PurgeLogCmd = new PurgeLogCommand(LogRetentionInDays, LogDirectoryDto);
+			LogFileNameOnly = logFileNameOnly;
+			LogFileExtensionWithNoLeadingDot = logFileExtensionWithoutLeadingDot;
+			LogFileTimeStamp = logFileTimeStamp;
+			SetNewLogFileDirectory(logDirPath);
 		}
 
 		public void Dispose()
@@ -59,6 +69,12 @@ namespace LibLoader.Managers
 						LogDirectoryDto.Dispose();
 						LogDirectoryDto = null;
 					}
+
+					if (LogPathFileNameDto != null)
+					{
+						LogPathFileNameDto.Dispose();
+						LogPathFileNameDto = null;
+					}
 				}
 
 
@@ -68,11 +84,81 @@ namespace LibLoader.Managers
 			}
 		}
 
+		public void SetNewLogFileDirectory(string dirPath)
+		{
+			LogDirectoryDto?.Dispose();
+			LogDirectoryDto = new DirectoryDto(dirPath);
+
+			if (!DirectoryHelper.IsDirectoryDtoValid(LogDirectoryDto))
+			{
+				var msg = "Application Log Directory Dto Invalid!";
+				var ex = new ArgumentException(msg);
+
+				var err = new FileOpsErrorMessageDto
+				{
+					ErrId = 35,
+					ErrorMessage = "Application Log Directory Dto Invalid!",
+					ErrSourceMethod = "CreateApplicaitonLogDirectory()",
+					ErrException = ex,
+					DirectoryPath = dirPath,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw ex;
+			}
+
+			SetLogFileDto();
+			
+		}
+
+		private void SetLogFileDto()
+		{
+			LogPathFileNameDto?.Dispose();
+
+			var fName = LogFileNameOnly + "_" + LogFileTimeStamp + "." + LogFileExtensionWithNoLeadingDot;
+            var fileDto = new FileDto(LogDirectoryDto, fName);
+
+			if (!FileHelper.IsFileDtoValid(fileDto))
+			{
+				var msg = "Application Log Directory Dto Invalid!";
+				var ex = new ArgumentException(msg);
+
+				var err = new FileOpsErrorMessageDto
+				{
+					ErrId = 35,
+					ErrorMessage = "Application Log Directory Dto Invalid!",
+					ErrSourceMethod = "CreateApplicaitonLogDirectory()",
+					ErrException = ex,
+					FileName = fName,
+					DirectoryPath = LogDirectoryDto?.DirInfo?.FullName,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw ex;
+
+			}
+
+			LogPathFileNameDto = fileDto;
+		}
+
+
+		public bool PurgeOldLogFiles()
+		{
+			var  purgeLogCmd = new PurgeLogCommand(LogRetentionInDays, LogDirectoryDto);
+
+			return purgeLogCmd.Execute();
+
+		}
 
 		public bool CreateApplicaitonLogDirectory()
 		{
-			if (LogDirectoryDto?.DirInfo == null 
-				|| !DirectoryHelper.IsDirectoryDtoValid(LogDirectoryDto))
+			if (!DirectoryHelper.IsDirectoryDtoValid(LogDirectoryDto))
 			{
 				var msg = "Application Log Directory Dto Invalid!";
 				var ex = new ArgumentException(msg);
@@ -83,13 +169,13 @@ namespace LibLoader.Managers
 					ErrorMessage = "Application Log Directory Dto Invalid!",
 					ErrSourceMethod = "CreateApplicaitonLogDirectory()",
 					ErrException = ex,
-					DirectoryPath = _appLogDir,
+					DirectoryPath = string.Empty,
 					LoggerLevel = LogLevel.FATAL
 				};
 
 				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				ErrorMgr.WriteErrorMsg(err);
-				return false;
+				throw  ex;
 			}
 
 			if (LogDirectoryDto.DirInfo.Exists)
@@ -101,7 +187,27 @@ namespace LibLoader.Managers
 
 			LogDirectoryDto.DirInfo.Refresh();
 
-			return LogDirectoryDto.DirInfo.Exists;
+			if (!LogDirectoryDto.DirInfo.Exists)
+			{
+				var msg = "Application Log Directory Creation Failed!";
+				var ex = new Exception(msg);
+
+				var err = new FileOpsErrorMessageDto
+				{
+					ErrId = 8,
+					ErrorMessage = msg,
+					ErrSourceMethod = "CreateApplicaitonLogDirectory()",
+					ErrException = ex,
+					DirectoryPath = LogDirectoryDto.DirInfo.FullName,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+				throw ex;
+			}
+
+			return true;
 		}
 	
 

@@ -11,9 +11,10 @@ namespace LibLoader.Builders
 	{
 		public static ErrorLogger ErrorMgr = new
 			ErrorLogger(925000,
-						"XmlParameterBuilder",
-						AppConstants.LoggingStatus,
-						AppConstants.LoggingMode);
+				"XmlParameterBuilder",
+				AppConstants.LoggingStatus,
+				AppConstants.LoggingMode,
+				false);
 
 
 		private readonly XmlTextReader _xmlReader;

@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using LibLoader.Constants;
-using LibLoader.Helpers;
-using LibLoader.Managers;
-using LibLoader.Models;
 
 namespace LibLoader.GlobalConstants
 {
@@ -13,7 +10,7 @@ namespace LibLoader.GlobalConstants
 
 		public static ErrorLoggingMode LoggingMode { get; set; } = ErrorLoggingMode.Verbose;
 
-		public static AppicationLogMgr AppLogMgr { get; set; } = new AppicationLogMgr();
+		public static string AppLogFileNameExtension { get; set; } = ConfigurationManager.AppSettings["ApplicationLogFileNameExtension"];
 
 		public static string DefaultCommandOutputLogFileName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFilePathBaseName"];
 
