@@ -91,12 +91,18 @@ namespace LibLoader
 		{
 			try
 			{
-				jobs?.Dispose();
-				cmdExeDto?.Dispose();
+				LogUtil.WriteLogJobGroupCompletionMessage(jobs);
+
 			}
 				// ReSharper disable once EmptyGeneralCatchClause
 			catch
 			{
+			}
+			finally
+			{
+				jobs?.Dispose();
+				cmdExeDto?.Dispose();
+
 			}
 		}
 
