@@ -1,5 +1,4 @@
 ﻿using System;
-using log4net.Config;
 using LibLoader.Builders;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
@@ -115,9 +114,7 @@ namespace LibLoader
 					return false;
 				}
 
-				log4net.GlobalContext.Properties["LogFileName"] = cmdExeDto.AppLogMgr.LogPathFileNameDto.FileXinfo.FullName;
-
-				XmlConfigurator.Configure();
+				LogUtil.ConfigureLogger(cmdExeDto.AppLogMgr.ConfigureLogger());
 
 				_errorMgr.IsLoggingConfigured = true;
 

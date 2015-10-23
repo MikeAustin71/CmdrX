@@ -62,6 +62,7 @@
     <Compile Include="PathHelperTests.cs" />
     <Compile Include="StringHelperTests.cs" />
     <Compile Include="TestDirectories.cs" />
+    <Compile Include="TestStringsSetup.cs" />
     <Compile Include="WorkingDirectoryMgrTests.cs" />
     <Compile Include="XmlFileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

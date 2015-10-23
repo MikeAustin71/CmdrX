@@ -208,7 +208,14 @@ namespace LibLoader.Managers
 
 			return true;
 		}
-	
 
+
+		public ApplicationLogger ConfigureLogger()
+		{
+			var logFilePathName = LogDirectoryDto.DirInfo.FullName + "\\" + LogFileNameOnly + "." +
+			                      LogFileExtensionWithNoLeadingDot;
+
+            return new ApplicationLogger(logFilePathName, LogFileTimeStamp);
+		}
 	}
 }

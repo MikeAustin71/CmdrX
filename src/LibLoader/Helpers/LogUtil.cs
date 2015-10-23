@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using log4net;
-using log4net.Config;
+using LibLoader.Managers;
 using LibLoader.Models;
 
 namespace LibLoader.Helpers
@@ -18,7 +17,7 @@ namespace LibLoader.Helpers
         public static DateTime JobGroupStartTime = DateTime.Now;
 		public static DateTime JobGroupEndTime = DateTime.Now;
 	    public static TimeSpan JobGroupElapsedTime;
-	    public static int JobGroupMessageCnt = 0;
+	    public static int JobGroupMessageCnt;
         public static bool IsAnyLoggingActive;
 
         public static Dictionary<string, string> CmdLineArguments;
@@ -29,7 +28,7 @@ namespace LibLoader.Helpers
 
         public const int MediumBannerLen = 59;
 
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(LogUtil));
+        private static ApplicationLogger _logger;
 
         public static int JobNumber = 1;
 
@@ -38,9 +37,14 @@ namespace LibLoader.Helpers
 
         static LogUtil()
         {
-            //XmlConfigurator.Configure();
+
         }
-	
+
+	    public static void ConfigureLogger(ApplicationLogger logger)
+	    {
+		    _logger = logger;
+	    }
+
         public static void WriteLogJobGroupStartUpMessage(JobsGroupDto jobsGroup)
         {
             var banner = StringHelper.MakeSingleCharString('#', MaxBannerLen);
@@ -92,10 +96,11 @@ namespace LibLoader.Helpers
             sb.Append(banner + CrRet);
             sb.Append(CrRet);
 
-            Logger.Info(sb.ToString());
-        }
+			WriteLog(LogLevel.MESSAGE, sb.ToString());
 
-	    public static void WriteLogJobGroupCompletionMessage(JobsGroupDto jobsGroup)
+		}
+
+		public static void WriteLogJobGroupCompletionMessage(JobsGroupDto jobsGroup)
 	    {
 			var banner = StringHelper.MakeSingleCharString('#', MaxBannerLen);
 			var subbanner = StringHelper.MakeSingleCharString('*', MaxBannerLen);
@@ -127,6 +132,7 @@ namespace LibLoader.Helpers
 			sb.Append($"JobGroup Elapsed Time: {ts.Hours:00}:{JobGroupElapsedTime.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:00}" + CrRet);
 			sb.Append(subbanner + CrRet);
 
+			WriteLog(LogLevel.MESSAGE, sb.ToString());
 		}
 
 
@@ -193,7 +199,7 @@ namespace LibLoader.Helpers
 			sb.Append(banner);
             sb.Append(CrRet);
 
-            WriteLog(LogLevel.INFO, sb.ToString());
+            WriteLog(LogLevel.MESSAGE, sb.ToString());
         }
 
 	    public static void WriteLogJobEndMessage(ConsoleCommandDto job, ConsoleExecutorDto consoleExecutor)
@@ -220,6 +226,8 @@ namespace LibLoader.Helpers
 			sb.Append(CrRet);
 			sb.Append(banner);
 			sb.Append(CrRet);
+
+			WriteLog(LogLevel.MESSAGE, sb.ToString());
 		}
 
 
@@ -258,7 +266,7 @@ namespace LibLoader.Helpers
             sb.Append(banner);
             sb.Append(CrRet);
             sb.Append(CrRet);
-            WriteLog(LogLevel.INFO, sb.ToString());
+            WriteLog(LogLevel.MESSAGE, sb.ToString());
 
         }
 
@@ -274,7 +282,7 @@ namespace LibLoader.Helpers
 			{
 				errId = (err.ErrId * -1);
 
-				sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod} Error Id:{errId} \n");
+				sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod} Error Id:{errId} MsgType: {err.LoggerLevel} \n");
 
 			}
 			else
@@ -282,7 +290,7 @@ namespace LibLoader.Helpers
 
 				errId = err.ErrId;
 
-				sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod}   Msg Id:{errId} \n");
+				sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod}   Msg Id:{errId} MsgType: {err.LoggerLevel} \n");
 
 			}
 
@@ -333,23 +341,28 @@ namespace LibLoader.Helpers
 
 			if (logLevel.Equals(LogLevel.DEBUG))
 			{
-				Logger.Debug(log);
+				_logger.LogWriteLine("DEBUG- " + log);
 			}
 			else if (logLevel.Equals(LogLevel.ERROR))
 			{
-				Logger.Error(log);
+				_logger.LogWriteLine("ERROR- " + log);
 			}
 			else if (logLevel.Equals(LogLevel.FATAL))
 			{
-				Logger.Fatal(log);
+				_logger.LogWriteLine("FATAL- " + log);
+
 			}
 			else if (logLevel.Equals(LogLevel.INFO))
 			{
-				Logger.Info(log);
+				_logger.LogWriteLine("INFO- " + log);
 			}
 			else if (logLevel.Equals(LogLevel.WARN))
 			{
-				Logger.Warn(log);
+				_logger.LogWriteLine("WARN- " + log);
+			}
+			else if (logLevel.Equals(LogLevel.MESSAGE))
+			{
+				_logger.LogWriteLine(log);
 			}
 
 		}

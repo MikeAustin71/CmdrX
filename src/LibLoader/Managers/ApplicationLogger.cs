@@ -8,56 +8,51 @@ using LibLoader.Models;
 
 namespace LibLoader.Managers
 {
-	public class ConsoleCommandLogMgr
+	public class ApplicationLogger
 	{
 		private bool _disposed;
 
 		private readonly string _logfileTimeStamp;
 
-		private readonly string _cmdConsoleFileErrorSuffix;
-
-		private string _currentConsoleLogPathFileBaseName;
+		private string _currentApplicationLogPathFileBaseName;
 
 		private FileDto _currentLogfileDto;
 
-		private readonly string _defaultConsoleLogPathFileBaseName;
+		private readonly string _defaultApplicationLogPathFileBaseName;
 
 		private FileDto _defautlLogFileDto;
 
-		public string DefaultConsoleLogPathFileBaseName => _defaultConsoleLogPathFileBaseName;
+		public string DefaultApplicationLogPathFileBaseName => _defaultApplicationLogPathFileBaseName;
 
 		public FileDto DefaultLogFileDto => _defautlLogFileDto;
 
-		public string CurrentConsoleLogPathFileBaseName => _currentConsoleLogPathFileBaseName;
+		public string CurrentApplicationLogPathFileBaseName => _currentApplicationLogPathFileBaseName;
 
 		public FileDto CurrentLogFileDto => _currentLogfileDto;
 
 		private StreamWriterDto _swDto;
 
 		public ErrorLogger ErrorMgr = new
-			ErrorLogger(7388000,
-						"ConsoleCommandLogMgr",
+			ErrorLogger(9999000,
+						"ApplicationLogger",
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
 
 		public int NumberOfLogLinesWritten { get; set; }
 
-		public ConsoleCommandLogMgr(
-				string defaultCmdConsoleLogPathFileName, 
-						string logFileTimeStamp,
-						string cmdConsoleFileErrorSuffix)
+		public ApplicationLogger(
+				string defaultApplicationLogPathFileName,
+						string logFileTimeStamp)
 		{
 
 			_logfileTimeStamp = StringHelper.TrimStringEnds(logFileTimeStamp);
 
-			_cmdConsoleFileErrorSuffix = StringHelper.TrimStringEnds(cmdConsoleFileErrorSuffix);
 
-			_defautlLogFileDto = ExtractLogFileDto(defaultCmdConsoleLogPathFileName,
-														_cmdConsoleFileErrorSuffix,
+			_defautlLogFileDto = ExtractLogFileDto(defaultApplicationLogPathFileName,
 															_logfileTimeStamp);
 
-			_defaultConsoleLogPathFileBaseName = defaultCmdConsoleLogPathFileName;
+			_defaultApplicationLogPathFileBaseName = defaultApplicationLogPathFileName;
 
 			if (!FileHelper.IsFileDtoValid(_defautlLogFileDto))
 			{
@@ -68,7 +63,7 @@ namespace LibLoader.Managers
 					ErrId = 1,
 					ErrorMessage = msg,
 					ErrSourceMethod = "Constructor()",
-					FileName = defaultCmdConsoleLogPathFileName,
+					FileName = defaultApplicationLogPathFileName,
 					LoggerLevel = LogLevel.FATAL
 				};
 
@@ -85,10 +80,8 @@ namespace LibLoader.Managers
 
 				FileHelper.DeleteAFile(_defautlLogFileDto);
 
-				_currentConsoleLogPathFileBaseName = defaultCmdConsoleLogPathFileName;
+				_currentApplicationLogPathFileBaseName = defaultApplicationLogPathFileName;
 				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
-
-				CreateNewStreamWriter(_currentLogfileDto);
 
 			}
 			catch (Exception ex)
@@ -100,7 +93,7 @@ namespace LibLoader.Managers
 					ErrId = 3,
 					ErrorMessage = msg,
 					ErrSourceMethod = "Constructor()",
-					FileName = defaultCmdConsoleLogPathFileName,
+					FileName = defaultApplicationLogPathFileName,
 					LoggerLevel = LogLevel.FATAL
 				};
 
@@ -114,13 +107,20 @@ namespace LibLoader.Managers
 		}
 
 		public void CreateNewStreamWriter(FileDto fileDto)
-		{
+		{	
+			CloseStreamWriter();
+
 			_swDto = new StreamWriterDto(_currentLogfileDto);
 
 		}
 
 		public void CloseStreamWriter()
 		{
+			if (_swDto == null)
+			{
+				return;
+			}
+
 			_swDto.Close();
 			_swDto = null;
 		}
@@ -174,7 +174,7 @@ namespace LibLoader.Managers
 			}
 		}
 
-		public bool InitializeCmdConsoleLog(string commandLogFilePathName)
+		public bool ConfigureLogger(string commandLogFilePathName)
 		{
 			if (_disposed)
 			{
@@ -185,38 +185,37 @@ namespace LibLoader.Managers
 			{
 				if (!IsStreamWriterValid())
 				{
-					CreateNewStreamWriter(_currentLogfileDto);						
+					CreateNewStreamWriter(_currentLogfileDto);
 				}
 
 				return true;
 			}
 
-			if (commandLogFilePathName == _currentConsoleLogPathFileBaseName)
+			if (commandLogFilePathName == _currentApplicationLogPathFileBaseName)
 			{
 				return true;
 			}
 
-			_currentLogfileDto.Dispose();
+			_currentLogfileDto?.Dispose();
 
 			_currentLogfileDto = ExtractLogFileDto(commandLogFilePathName,
-														_cmdConsoleFileErrorSuffix,
 															_logfileTimeStamp);
 
 			if (!FileHelper.IsFileDtoValid(_currentLogfileDto))
 			{
-				_currentLogfileDto.Dispose();
-				
+				_currentLogfileDto?.Dispose();
+
 				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
 			}
 
-			if (!DirectoryHelper.CreateDirectoryIfNecessary(_currentLogfileDto.DirDto) )
+			if (!DirectoryHelper.CreateDirectoryIfNecessary(_currentLogfileDto.DirDto))
 			{
-				var ex = new Exception("Failure Creating Command Console Log File Directory: " +_currentLogfileDto.DirDto.DirInfo.FullName);
+				var ex = new Exception("Failure Creating Command Console Log File Directory: " + _currentLogfileDto.DirDto.DirInfo.FullName);
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = _currentLogfileDto.FileXinfo.DirectoryName,
 					ErrId = 25,
-					ErrorMessage =ex.Message,
+					ErrorMessage = ex.Message,
 					ErrSourceMethod = "ConfigureLogger()",
 					FileName = _currentLogfileDto.FileXinfo.FullName,
 					LoggerLevel = LogLevel.FATAL
@@ -229,11 +228,9 @@ namespace LibLoader.Managers
 			}
 
 
-			CloseStreamWriter();
-
 			CreateNewStreamWriter(_currentLogfileDto);
 
-			_currentConsoleLogPathFileBaseName = commandLogFilePathName;
+			_currentApplicationLogPathFileBaseName = commandLogFilePathName;
 
 			NumberOfLogLinesWritten = 0;
 
@@ -293,11 +290,10 @@ namespace LibLoader.Managers
 
 		public bool ResetToDefaultConsoleLogPathFileName()
 		{
-			return InitializeCmdConsoleLog(_defaultConsoleLogPathFileBaseName);
+			return ConfigureLogger(_defaultApplicationLogPathFileBaseName);
 		}
 
-		public FileDto ExtractLogFileDto(string cmdConsoleLogPathFileName, 
-													string errorSuffix,
+		public FileDto ExtractLogFileDto(string cmdConsoleLogPathFileName,
 														string logFileTimeStamp)
 		{
 			var filePath = new FilePathDto(cmdConsoleLogPathFileName);
@@ -311,11 +307,6 @@ namespace LibLoader.Managers
 			else
 			{
 				sb.Append(filePath.FileNameOnly);
-			}
-
-			if (!string.IsNullOrWhiteSpace(errorSuffix))
-			{
-				sb.Append("_" + errorSuffix);
 			}
 
 			sb.Append("_" + logFileTimeStamp);
@@ -334,10 +325,8 @@ namespace LibLoader.Managers
 				}
 			}
 
-
 			return new FileDto(sb.ToString());
 		}
-
 
 	}
 }

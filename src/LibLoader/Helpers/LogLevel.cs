@@ -7,7 +7,8 @@ namespace LibLoader.Helpers
         ERROR,
         FATAL,
         INFO,
-        WARN    
+        WARN,
+		MESSAGE    
         
     }
 }

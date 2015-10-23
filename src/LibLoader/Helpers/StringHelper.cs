@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace LibLoader.Helpers
@@ -141,6 +142,43 @@ namespace LibLoader.Helpers
 
 		    return str.TrimStart().TrimEnd();
 
+	    }
+
+	    public static string[] BreakLineAtIndex(string rawStr, int lineLengthMax)
+	    {
+		    if (lineLengthMax < 10 || string.IsNullOrWhiteSpace(rawStr))
+		    {
+			    return null;
+		    }
+			
+		    var lineList = new List<string>();
+
+		    if (rawStr.Length <= lineLengthMax)
+		    {
+			    lineList.Add(rawStr);
+
+			    return lineList.ToArray();
+		    }
+
+		    var sChar = " ";
+
+		    var maxIdx = lineLengthMax - 1;
+
+		    do
+		    {
+				var lastSpaceIdx = rawStr.LastIndexOf(sChar, maxIdx, StringComparison.Ordinal);
+
+			    var strBreak = rawStr.Substring(0, lastSpaceIdx + 1);
+
+				lineList.Add(strBreak);
+
+			    rawStr = rawStr.Substring(++lastSpaceIdx);
+
+		    } while (rawStr.Length > lineLengthMax);
+
+
+
+		    return lineList.ToArray();
 	    }
     }
 }

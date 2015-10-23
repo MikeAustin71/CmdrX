@@ -29,5 +29,17 @@ namespace LibLoadTests
 			Assert.IsTrue(idx==-1);
 		}
 
+		[TestMethod]
+		public void HelperShouldApplyLineBreaksCorrectly90charline()
+		{
+			var testText = TestStringsSetup.IpsumString90Chars;
+
+
+			var strArray = StringHelper.BreakLineAtIndex(testText, 80);
+
+			Assert.IsNotNull(strArray);
+
+		}
+
 	}
 }
