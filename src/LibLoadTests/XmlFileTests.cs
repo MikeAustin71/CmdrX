@@ -1,5 +1,6 @@
 ﻿using LibLoader.Builders;
 using LibLoader.Helpers;
+using LibLoader.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LibLoadTests
@@ -42,6 +43,19 @@ namespace LibLoadTests
 
 			Assert.IsTrue(jobGroup.Jobs[2].CommandDisplayName == "gulp plumber");
 
+		}
+		[TestMethod]
+		public void XmlCmdFileShouldParseHeaderSuccessfully()
+		{
+			var cmdExeDto = TestDirectories.GetConsoleExecutorDto();
+
+			var builder = new XmlParameterBuilder(cmdExeDto);
+
+			builder.BuildParmsFromXml();
+			var expectedDirDto = new DirectoryDto(TestDirectories.GetTestExeDir().DirInfo.FullName + "\\installLog");
+
+            Assert.IsTrue(cmdExeDto.AppLogRetentionInDays == 0);
+			Assert.IsTrue(cmdExeDto.DefaultCommandExeDirectoryDto.DirInfo.FullName == expectedDirDto.DirInfo.FullName);
 		}
 
 	}

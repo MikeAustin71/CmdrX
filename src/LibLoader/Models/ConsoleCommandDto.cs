@@ -193,7 +193,7 @@ namespace LibLoader.Models
 		{
 			if (string.IsNullOrWhiteSpace(CommandOutputLogFilePathBaseName))
 			{
-				CommandOutputLogFilePathBaseName = _cmdExeDto.DefaultCmdConsoleLogFilePathName;
+				CommandOutputLogFilePathBaseName = _cmdExeDto.DefaultCommandOutputLogFilePathName;
 			}
 
 			if (CommandType == ConsoleCommandType.None)
@@ -203,7 +203,7 @@ namespace LibLoader.Models
 
 			if (string.IsNullOrWhiteSpace(CommandOutputLogFilePathBaseName))
 			{
-				CommandOutputLogFilePathBaseName = _cmdExeDto.DefaultCmdConsoleLogFilePathName;
+				CommandOutputLogFilePathBaseName = _cmdExeDto.DefaultCommandOutputLogFilePathName;
 			}
 
 			if (CommandTimeOutInMinutes < _cmdExeDto.CommandMinTimeOutInMinutes

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Security.Permissions;
 using LibLoader.Constants;
+using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
 using LibLoader.Managers;
 
@@ -13,9 +12,18 @@ namespace LibLoader.Models
 
 		private string _defaultConsoleCommandExecutor;
 		private string _defaultConsoleCommandExeArgs;
-		private string _defaultCmdConsoleLogFilePathName;
+		private string _defaultCommandOutputLogFilePathName;
 		private string _cmdConsoleLogFileErrorSuffix;
 		private string _cmdConsoleLogFileTimeStamp;
+
+		public ErrorLogger ErrorMgr = new
+			ErrorLogger(4281000,
+				"ConsoleExecutorDto",
+				AppConstants.LoggingStatus,
+				AppConstants.LoggingMode);
+
+
+		public DirectoryDto DefaultCommandExeDirectoryDto { get; set; }
 
 		public string DefaultConsoleCommandExecutor
 		{
@@ -36,16 +44,18 @@ namespace LibLoader.Models
 		public decimal CommandDefaultTimeOutInMinutes { get; set; }
 
 
-		public string DefaultCmdConsoleLogFilePathName
+		public string DefaultCommandOutputLogFilePathName
 		{
-			get { return _defaultCmdConsoleLogFilePathName; }
+			get { return _defaultCommandOutputLogFilePathName; }
 			set
 			{
-				_defaultCmdConsoleLogFilePathName = StringHelper.TrimStringEnds(value);
+				_defaultCommandOutputLogFilePathName = StringHelper.TrimStringEnds(value);
 			}
 		}
 
 		public int AppLogRetentionInDays { get; set; }
+
+		public string AppLogDirectory { get; set; }
 
 		public string AppLogFileBaseNameOnly { get; set; }
 
@@ -71,10 +81,6 @@ namespace LibLoader.Models
 
 		public AppicationLogMgr AppLogMgr { get; private set; }
 
-		public void ConfigureParameters()
-		{
-			
-		}
 
 		public void Dispose()
 		{
@@ -103,6 +109,11 @@ namespace LibLoader.Models
 						XmlCmdFileDto = null;
 					}
 
+					if (DefaultCommandExeDirectoryDto!=null)
+					{
+						DefaultCommandExeDirectoryDto.Dispose();
+						DefaultCommandExeDirectoryDto = null;
+					}
 				}
 
 
@@ -112,11 +123,71 @@ namespace LibLoader.Models
 			}
 		}
 
-		private void SetLogFilePathName(string defaultCmdConsoleLogFilePathName)
+		public void ConfigureParameters()
 		{
-			
+			AppLogDirectory = PathHelper.ExtractDirectoryComponent(DefaultCommandOutputLogFilePathName);
+
+			AppLogMgr = new AppicationLogMgr(AppLogDirectory, 
+												AppLogFileBaseNameOnly, 
+												AppLogFileExtensionWithoutLeadingDot, 
+												AppLogFileTimeStamp);
 		}
 
+
+		public void SetDefaultCommandOutputLogFilePathName(string filePath)
+		{
+			var dirDto = new DirectoryDto(filePath);
+
+			if (!DirectoryHelper.IsDirectoryDtoValid(dirDto))
+			{
+				dirDto.Dispose();
+				return;
+			}
+
+			DefaultCommandOutputLogFilePathName = filePath;
+
+			AppLogDirectory = PathHelper.ExtractDirectoryComponent(DefaultCommandOutputLogFilePathName);
+		}
+
+		public void SetDefaultCommandExeDirectory(string dir)
+		{
+			if (string.IsNullOrWhiteSpace(dir))
+			{
+				dir = ".";
+			}
+
+
+			DefaultCommandExeDirectoryDto?.Dispose();
+
+			DefaultCommandExeDirectoryDto = new DirectoryDto(dir);
+
+			if (!DirectoryHelper.IsDirectoryDtoValid(DefaultCommandExeDirectoryDto))
+			{
+				DefaultCommandExeDirectoryDto = DirectoryHelper.GetCurrentDirectory();
+
+				if (!DirectoryHelper.IsDirectoryDtoValid(DefaultCommandExeDirectoryDto))
+				{
+					var ex = new Exception("Default Command Execution Directory Dto is INVALID!");
+
+					var err = new FileOpsErrorMessageDto
+					{
+						DirectoryPath = string.Empty,
+						ErrId = 1,
+						ErrorMessage = ex.Message,
+						ErrSourceMethod = "SetDefaultCommandExeDirectory()",
+						ErrException = ex,
+						FileName = string.Empty,
+						LoggerLevel = LogLevel.FATAL
+					};
+
+					ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+					ErrorMgr.WriteErrorMsg(err);
+
+					throw ex;
+				}
+			}
+
+		}
 
 
 	}

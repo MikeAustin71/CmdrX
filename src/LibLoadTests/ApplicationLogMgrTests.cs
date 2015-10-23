@@ -17,7 +17,7 @@ namespace LibLoadTests
 			var appLogFileExtWithNoLeadingDot = 
 				PathHelper.ExtractFileExtensionComponentWithoutLeadingDot(appFileNameExt);
 			var appLogFileTimeStamp = DateHelper.NowYearMthDayHrsSecs();
-			var cmdOutputLogFilePath = ConfigurationManager.AppSettings["CommandOutputLogFilePathBaseName"];
+			var cmdOutputLogFilePath = ConfigurationManager.AppSettings["DefaultCommandOutputLogFilePathName"];
             var dir1 = new DirectoryDto(cmdOutputLogFilePath);
 			if (dir1.DirInfo.Exists)
 			{

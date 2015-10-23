@@ -12,7 +12,7 @@ namespace LibLoader.GlobalConstants
 
 		public static string AppLogFileNameExtension { get; set; } = ConfigurationManager.AppSettings["ApplicationLogFileNameExtension"];
 
-		public static string DefaultCommandOutputLogFileName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFilePathBaseName"];
+		public static string DefaultCommandOutputLogFilePathName { get; set; } = ConfigurationManager.AppSettings["CommandOutputLogFilePathBaseName"];
 
 		public static Dictionary<string, string> CommandLineArguments = new Dictionary<string, string>();
 

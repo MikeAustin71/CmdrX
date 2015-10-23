@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using LibLoader.Commands;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;

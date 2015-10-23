@@ -57,6 +57,7 @@
     <Compile Include="Constants\ErrorLoggingMode.cs" />
     <Compile Include="Constants\FileTransferMode.cs" />
     <Compile Include="Constants\JobParametersDeliveryMode.cs" />
+    <Compile Include="Constants\XmlElementType.cs" />
     <Compile Include="GlobalConstants\AppConstants.cs" />
     <Compile Include="Helpers\AppInfoHelper.cs" />
     <Compile Include="Helpers\DateHelper.cs" />
@@ -74,6 +75,9 @@
     <Compile Include="Managers\ConsoleCommandLogMgr.cs" />
     <Compile Include="Managers\CommandExecutionMgr.cs" />
     <Compile Include="Managers\WorkingDirectoryMgr.cs" />
+    <Compile Include="Managers\XmlElementParsers\IXmlElementParser.cs" />
+    <Compile Include="Managers\XmlElementParsers\ParseCmdFileHeaderElements.cs" />
+    <Compile Include="Managers\XmlElementParsers\ParseExecuteElements.cs" />
     <Compile Include="Models\ConsoleCommandDto.cs" />
     <Compile Include="Models\ConsoleExecutorDto.cs" />
     <Compile Include="Models\DirectoryDto.cs" />

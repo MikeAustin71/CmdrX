@@ -31,11 +31,11 @@ namespace LibLoader.Managers
 		{
 			_commandJobs = jobsGroup;
 
-			_cmdLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCmdConsoleLogFilePathName,
+			_cmdLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCommandOutputLogFilePathName,
 													consoleCmdDto.CmdConsoleLogFileTimeStamp,
 														string.Empty);
 
-			_errLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCmdConsoleLogFilePathName,
+			_errLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCommandOutputLogFilePathName,
                                                         consoleCmdDto.CmdConsoleLogFileTimeStamp,
 															consoleCmdDto.CmdConsoleLogFileErrorSuffix);
 			_wrkDirMgr = new WorkingDirectoryMgr();

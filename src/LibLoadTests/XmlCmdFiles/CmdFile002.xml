@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Commands>
+	<CommandFileHeader>
+		<DefaultLogFileRetentionInDays>0</DefaultLogFileRetentionInDays>
+		<DefaultCommandExeDirectory></DefaultCommandExeDirectory>
+		<DefaultCommandOutputLogFilePathName>./installLog/install.log</DefaultCommandOutputLogFilePathName>
+	</CommandFileHeader>
 	<ExectuteCommand>
 		<CommandDisplayName>jshint and jscs</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>

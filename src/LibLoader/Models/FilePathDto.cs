@@ -21,6 +21,48 @@ namespace LibLoader.Models
 			AnalyzeRawFilePath(StringHelper.TrimStringEnds(filePath));
 		}
 
+		public void SetFileNameOnly(string fNameOnly)
+		{
+			if (string.IsNullOrWhiteSpace(fNameOnly))
+			{
+				return;
+			}
+
+			FileNameOnly = PathHelper.ExtractFileNameOnlyComponent(fNameOnly);
+			FileNameAndExtension = FileNameOnly + Extension;
+			FullPathAndFileName = GetFilePathFullName();
+
+			SetPathFlags();
+		}
+
+		public void SetFileExtension(string fExtension)
+		{
+			if (string.IsNullOrWhiteSpace(fExtension))
+			{
+				return;
+			}
+
+			fExtension = PathHelper.RemovePrefixDots(fExtension);
+
+			Extension = "." + fExtension;
+
+			ExtensionWithoutLeadingDot = fExtension;
+
+			FileNameAndExtension = FileNameOnly + Extension;
+
+			FullPathAndFileName = GetFilePathFullName();
+
+			SetPathFlags();
+
+		}
+
+		public string GetFilePathFullName()
+		{
+			var dir = PathHelper.AddDefaultTrailingDelimiter(DirectoryPath);
+
+			return dir + FileNameAndExtension;
+		}
+
 		private void AnalyzeRawFilePath(string filePath)
 		{
 			if (string.IsNullOrWhiteSpace(filePath))
@@ -35,7 +77,12 @@ namespace LibLoader.Models
 			FileNameAndExtension = PathHelper.ExtractFileNameAndExtension(filePath);
 			FullPathAndFileName = PathHelper.ExtractFullPathAndFileName(filePath);
 			
-			HasExtension = PathHelper.FilePathHasExtension(filePath);
+			SetPathFlags();
+		}
+
+		private void SetPathFlags()
+		{
+			HasExtension = !string.IsNullOrWhiteSpace(Extension);
 
 			if (!string.IsNullOrWhiteSpace(FileNameAndExtension)
 			    && HasExtension)
@@ -52,15 +99,12 @@ namespace LibLoader.Models
 				}
 
 				dirDto.Dispose();
-				
 			}
 
 			if (!string.IsNullOrWhiteSpace(FileNameOnly))
 			{
 				HasFileNameOnly = true;
 			}
-
 		}
-
 	}
 }

@@ -102,7 +102,7 @@ namespace LibLoadTests
 				CommandDefaultTimeOutInMinutes = 5.0M,
 				CommandMaxTimeOutInMinutes = 45.0M,
 				CommandMinTimeOutInMinutes = 1.0M,
-				DefaultCmdConsoleLogFilePathName = 
+				DefaultCommandOutputLogFilePathName = 
 					ConfigurationManager.AppSettings["CommandOutputBaseLogFileName"],
 				XmlCmdFileDto = GetXmlCmdFileDto(),
 				DefaultConsoleCommandType = ConsoleCommandType.Console
@@ -139,7 +139,7 @@ namespace LibLoadTests
 			{
 				CommandDisplayName = "Copy1",
 				CommandType = ConsoleCommandType.Console,
-				CommandOutputLogFilePathBaseName = cmdExeDto.DefaultCmdConsoleLogFilePathName,
+				CommandOutputLogFilePathBaseName = cmdExeDto.DefaultCommandOutputLogFilePathName,
 				ConsoleCommandExecutor = cmdExeDto.DefaultConsoleCommandExecutor,
 				ConsoleCommandExeArguments = cmdExeDto.DefaultConsoleCommandExeArgs,
 				CommandTimeOutInMinutes = 5.0M,
@@ -162,7 +162,7 @@ namespace LibLoadTests
 			{
 				CommandDisplayName = "Copy2",
 				CommandType = ConsoleCommandType.Console,
-				CommandOutputLogFilePathBaseName = cmdExeDto.DefaultCmdConsoleLogFilePathName,
+				CommandOutputLogFilePathBaseName = cmdExeDto.DefaultCommandOutputLogFilePathName,
 				ConsoleCommandExecutor = cmdExeDto.DefaultConsoleCommandExecutor,
 				ConsoleCommandExeArguments = cmdExeDto.DefaultConsoleCommandExeArgs,
 				CommandTimeOutInMinutes = 5.0M,

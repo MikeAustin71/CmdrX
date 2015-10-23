@@ -39,6 +39,11 @@ namespace LibLoader.Helpers
 
 		public static string RemovePrefixDots(string directory)
 		{
+			if (string.IsNullOrWhiteSpace(directory) || directory.Length < 1)
+			{
+				return string.Empty;
+			}
+
 			while (directory[0] == '.')
 			{
 				directory = directory.Substring(1, directory.Length - 1);
@@ -50,6 +55,12 @@ namespace LibLoader.Helpers
 		public static string RemovePrefixDelimiter(string directory)
 		{
 			directory = RemovePrefixDots(directory);
+
+			if (string.IsNullOrWhiteSpace(directory) || directory.Length < 1)
+			{
+				return string.Empty;
+			}
+
 			var fChar = directory[0];
 
 			if (fChar == PrimaryPathDelimiter || fChar == AlternatePathDelimiter)

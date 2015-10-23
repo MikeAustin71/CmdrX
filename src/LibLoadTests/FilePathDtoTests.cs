@@ -74,6 +74,34 @@ namespace LibLoadTests
 			Assert.IsTrue(filePathDto.FullPathAndFileName == expectedDirPath);
 		}
 
+		[TestMethod]
+		public void Test007ChangeFileNameShouldProcessSuccessfully()
+		{
+			var testStr = @"D:\Level1\Level2\SomefileName.txt";
+            var filePathDto = new FilePathDto(testStr);
+			filePathDto.SetFileNameOnly("SomeOtherFileName");
+			var expectedDirPath = @"D:\Level1\Level2\SomeOtherFileName.txt";
+			Assert.IsTrue(filePathDto.FullPathAndFileName == expectedDirPath);
+			Assert.IsTrue(filePathDto.FileNameAndExtension == "SomeOtherFileName.txt");
+			Assert.IsTrue(filePathDto.Extension == ".txt");
+			Assert.IsTrue(filePathDto.ExtensionWithoutLeadingDot == "txt");
+		
+		}
+
+		[TestMethod]
+		public void Test008ChangeFileExtensionShouldProcessSuccessfully()
+		{
+			var testStr = @"D:\Level1\Level2\SomefileName.txt";
+            var filePathDto = new FilePathDto(testStr);
+			filePathDto.SetFileExtension("log");
+			var expectedDirPath = @"D:\Level1\Level2\SomefileName.log";
+			Assert.IsTrue(filePathDto.FullPathAndFileName == expectedDirPath);
+			Assert.IsTrue(filePathDto.FileNameAndExtension == "SomefileName.log");
+			Assert.IsTrue(filePathDto.Extension == ".log");
+			Assert.IsTrue(filePathDto.ExtensionWithoutLeadingDot == "log");
+		
+		}
+
 		
 
 	}

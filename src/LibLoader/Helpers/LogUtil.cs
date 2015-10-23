@@ -18,7 +18,7 @@ namespace LibLoader.Helpers
         public static DateTime JobGroupStartTime = DateTime.Now;
 		public static DateTime JobGroupEndTime = DateTime.Now;
 	    public static TimeSpan JobGroupElapsedTime;
-
+	    public static int JobGroupMessageCnt = 0;
         public static bool IsAnyLoggingActive;
 
         public static Dictionary<string, string> CmdLineArguments;
@@ -59,6 +59,7 @@ namespace LibLoader.Helpers
             var sb = new StringBuilder();
             sb.Append(CrRet);
             sb.Append(banner + CrRet);
+            sb.Append(banner + CrRet);
 
             var s = "LibLoader.exe Assembly Version " + ExeAssemblyVersionNo;
             var cStr = StringHelper.CenterString(s, banner.Length);
@@ -93,100 +94,43 @@ namespace LibLoader.Helpers
 
             Logger.Info(sb.ToString());
         }
-		
 
-		public static void WriteLog(FileOpsErrorMessageDto err)
-        {
+	    public static void WriteLogJobGroupCompletionMessage(JobsGroupDto jobsGroup)
+	    {
+			var banner = StringHelper.MakeSingleCharString('#', MaxBannerLen);
+			var subbanner = StringHelper.MakeSingleCharString('*', MaxBannerLen);
+			JobGroupEndTime = DateTime.Now;
+		    JobGroupElapsedTime = JobGroupEndTime - JobGroupStartTime;
+			var sb = new StringBuilder();
+			sb.Append(CrRet);
+			sb.Append(banner + CrRet);
+			sb.Append(banner + CrRet);
 
-            var sb = new StringBuilder();
-            int errId;
+			var s = "LibLoader.exe Assembly Version " + ExeAssemblyVersionNo;
+			var cStr = StringHelper.CenterString(s, banner.Length);
+			sb.Append(cStr + CrRet);
 
-            if(err.LoggerLevel == LogLevel.FATAL 
-                ||err.LoggerLevel == LogLevel.ERROR)
-            {
-                errId = (err.ErrId * -1);
+			sb.Append(banner + CrRet);
+			sb.Append(StringHelper.CenterString(JobGroupName, banner.Length));
+			sb.Append(CrRet);
+			sb.Append(banner + CrRet);
 
-                sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod} Error Id:{errId} \n");
+		    JobNumber--;
+		    var ts = JobGroupElapsedTime;
+			s = $"Completed Execution of {JobNumber} Jobs.";
+			sb.Append(s + CrRet);
+		    s = $"Number of messages logged: {JobGroupMessageCnt} ";
+			sb.Append(s + CrRet);
+			sb.Append(subbanner + CrRet);
+			sb.Append($"JobGroup   Start Time: {JobGroupStartTime.ToLongDateString()} {JobGroupStartTime.ToLongTimeString()}" + CrRet);
+			sb.Append($"JobGroup     End Time: {JobGroupEndTime.ToLongDateString()} {JobGroupEndTime.ToLongTimeString()}" + CrRet);
+			sb.Append($"JobGroup Elapsed Time: {ts.Hours:00}:{JobGroupElapsedTime.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:00}" + CrRet);
+			sb.Append(subbanner + CrRet);
 
-            }
-            else
-            {
-
-                errId = err.ErrId;
-
-                sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod}   Msg Id:{errId} \n");
-               
-            }
-
-
-
-            sb.Append($"-- Message: {err.ErrorMessage} \n");
-
-            if(err.ErrException != null)
-            {
-                sb.Append($"-- Exception: {err.ErrException.Message} \n");
-
-                if(err.ErrException.InnerException!=null)
-                {
-                    sb.Append($"-- Inner Exception: {err.ErrException.InnerException.Message} \n");
-                }
-                
-            }
-
-            if (!string.IsNullOrWhiteSpace(err.DirectoryPath))
-            {
-                sb.Append($"-- Directory: {err.DirectoryPath} \n");
-            }
-
-            if (!string.IsNullOrWhiteSpace(err.DirectoryPath2))
-            {
-                sb.Append($"-- Directory2: {err.DirectoryPath2} \n");
-            }
-
-            if (!string.IsNullOrWhiteSpace(err.FileName))
-            {
-                sb.Append($"-- File Name: {err.FileName} \n");
-            }
-
-	        if (!string.IsNullOrWhiteSpace(err.CommandName))
-	        {
-				sb.Append($"-- Command Name: {err.FileName} \n");
-			}
+		}
 
 
-            WriteLog(err.LoggerLevel, sb.ToString());
-            
-        }
-
-
-
-        public static void WriteLog(LogLevel logLevel, string log)
-        {
-
-            if (logLevel.Equals(LogLevel.DEBUG))
-            {
-                Logger.Debug(log);
-            }
-            else if (logLevel.Equals(LogLevel.ERROR))
-            {
-                Logger.Error(log);
-            }
-            else if (logLevel.Equals(LogLevel.FATAL))
-            {
-                Logger.Fatal(log);
-            }
-            else if (logLevel.Equals(LogLevel.INFO))
-            {
-                Logger.Info(log);
-            }
-            else if (logLevel.Equals(LogLevel.WARN))
-            {
-                Logger.Warn(log);
-            }
-
-        }
-
-        public static void WriteLogJobStartUpMessage(ConsoleCommandDto job, ConsoleExecutorDto consoleExecutor)
+		public static void WriteLogJobStartUpMessage(ConsoleCommandDto job, ConsoleExecutorDto consoleExecutor)
         {
 
 	        var jobName = job.CommandDisplayName;
@@ -317,6 +261,98 @@ namespace LibLoader.Helpers
             WriteLog(LogLevel.INFO, sb.ToString());
 
         }
- 
-    }
+
+		public static void WriteLog(FileOpsErrorMessageDto err)
+		{
+			JobGroupMessageCnt++;
+
+			var sb = new StringBuilder();
+			int errId;
+
+			if (err.LoggerLevel == LogLevel.FATAL
+				|| err.LoggerLevel == LogLevel.ERROR)
+			{
+				errId = (err.ErrId * -1);
+
+				sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod} Error Id:{errId} \n");
+
+			}
+			else
+			{
+
+				errId = err.ErrId;
+
+				sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod}   Msg Id:{errId} \n");
+
+			}
+
+
+
+			sb.Append($"-- Message: {err.ErrorMessage} \n");
+
+			if (err.ErrException != null)
+			{
+				sb.Append($"-- Exception: {err.ErrException.Message} \n");
+
+				if (err.ErrException.InnerException != null)
+				{
+					sb.Append($"-- Inner Exception: {err.ErrException.InnerException.Message} \n");
+				}
+
+			}
+
+			if (!string.IsNullOrWhiteSpace(err.DirectoryPath))
+			{
+				sb.Append($"-- Directory: {err.DirectoryPath} \n");
+			}
+
+			if (!string.IsNullOrWhiteSpace(err.DirectoryPath2))
+			{
+				sb.Append($"-- Directory2: {err.DirectoryPath2} \n");
+			}
+
+			if (!string.IsNullOrWhiteSpace(err.FileName))
+			{
+				sb.Append($"-- File Name: {err.FileName} \n");
+			}
+
+			if (!string.IsNullOrWhiteSpace(err.CommandName))
+			{
+				sb.Append($"-- Command Name: {err.FileName} \n");
+			}
+
+
+			WriteLog(err.LoggerLevel, sb.ToString());
+
+		}
+
+
+
+		public static void WriteLog(LogLevel logLevel, string log)
+		{
+
+			if (logLevel.Equals(LogLevel.DEBUG))
+			{
+				Logger.Debug(log);
+			}
+			else if (logLevel.Equals(LogLevel.ERROR))
+			{
+				Logger.Error(log);
+			}
+			else if (logLevel.Equals(LogLevel.FATAL))
+			{
+				Logger.Fatal(log);
+			}
+			else if (logLevel.Equals(LogLevel.INFO))
+			{
+				Logger.Info(log);
+			}
+			else if (logLevel.Equals(LogLevel.WARN))
+			{
+				Logger.Warn(log);
+			}
+
+		}
+
+	}
 }

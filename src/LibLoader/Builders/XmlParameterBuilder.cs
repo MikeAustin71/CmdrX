@@ -3,6 +3,7 @@ using System.Xml;
 using LibLoader.Constants;
 using LibLoader.GlobalConstants;
 using LibLoader.Helpers;
+using LibLoader.Managers.XmlElementParsers;
 using LibLoader.Models;
 
 namespace LibLoader.Builders
@@ -23,9 +24,9 @@ namespace LibLoader.Builders
 
 		private ConsoleCommandDto _currentConsoleCommand;
 
-		private XmlValueExtractor _xmlHlpr = new XmlValueExtractor();
+		private IXmlElementParser _elementParser;
 
-		private readonly ConsoleExecutorDto _cmdExeDto;
+		private ConsoleExecutorDto _cmdExeDto;
 
 		public XmlParameterBuilder(ConsoleExecutorDto cmdExeDto)
 		{
@@ -114,101 +115,37 @@ namespace LibLoader.Builders
 				return;
 			}
 
+			if (reader.Name == "CommandFileHeader")
+			{
+				_elementParser = new ParseCmdFileHeaderElements(XmlElementType.CommandsHeader);
+			}
+
+
 			if (reader.Name == "ExectuteCommand")
 			{
 				_currentConsoleCommand = new ConsoleCommandDto(_cmdExeDto);
-
-				return;
-			}
-
-			if (reader.Name == "CommandDisplayName")
-			{
-				_currentConsoleCommand.CommandDisplayName = _xmlHlpr.ExtractStringValue(reader);
-
-				return;
-			}
-
-			if (reader.Name == "ConsoleCommandType")
-			{
-				_currentConsoleCommand.CommandType = _xmlHlpr.ExtractConsoleCommandType(reader);
-
-				return;
-			}
-
-			if (reader.Name == "CommandOutputLogFilePathBaseName")
-			{
-				_currentConsoleCommand.CommandOutputLogFilePathBaseName = _xmlHlpr.ExtractStringValue(reader);
-
-				return;
-			}
-
-			if (reader.Name == "CommandTimeOutInMinutes")
-			{
-				_currentConsoleCommand.CommandTimeOutInMinutes = _xmlHlpr.ExtractDecimalValue(reader, 0.0M);
-
-				return;
-			}
-
-			if (reader.Name == "DefaultConsoleCommandExecutor")
-			{
-				_currentConsoleCommand.ConsoleCommandExecutor = _xmlHlpr.ExtractStringValue(reader);
-
-				return;
-			}
-			
-			if (reader.Name == "ConsoleCommandExeArguments")
-			{
-				_currentConsoleCommand.ConsoleCommandExeArguments = _xmlHlpr.ExtractStringValue(reader);
-
-				return;
-			}
-			
-			if (reader.Name == "ExecuteInDir")
-			{
-				_currentConsoleCommand.ExecuteInDir = _xmlHlpr.ExtractStringValue(reader);
-
-				return;
-			}
-
-			if (reader.Name == "ExecutableTarget")
-			{
-				_currentConsoleCommand.ExecutableTarget = _xmlHlpr.ExtractStringValue(reader);
-
-				return;
-			}
-
-			if (reader.Name == "CommandToExecute")
-			{
-				_currentConsoleCommand.CommandToExecute = _xmlHlpr.ExtractStringValue(reader);
-
-				return;
-			}
-
-			if (reader.Name == "CommandModifier")
-			{
-				_currentConsoleCommand.CommandModifier = _xmlHlpr.ExtractStringValue(reader);
-
-				return;
-			}
-
-			if (reader.Name == "CommandArguments")
-			{
-				_currentConsoleCommand.CommandArguments = _xmlHlpr.ExtractStringValue(reader);
+				_elementParser = new ParseExecuteElements(XmlElementType.ExecuteCommand);
 
 				return;
 			}
 
 
-
+			_elementParser?.ExtractElementInfo(reader,  ref _currentConsoleCommand, ref _cmdExeDto);
 		}
 
 		private void ProcessEndElement(XmlTextReader reader)
 		{
+			if (reader.Name == "CommandFileHeader")
+			{
+				_elementParser = null;
+			}
+
 			// Command element closing
 			if (reader.Name == "ExectuteCommand")
 			{
 				_currentConsoleCommand.NormalizeCommandParameters();
-				_jobsGroupDto.Jobs.Add(_currentConsoleCommand);				
+				_jobsGroupDto.Jobs.Add(_currentConsoleCommand);
+				_elementParser = null;			
 				return;
 			}
 

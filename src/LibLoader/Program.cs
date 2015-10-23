@@ -33,14 +33,15 @@ namespace LibLoader
 					PathHelper.ExtractFileNameOnlyComponent(AppConstants.AppLogFileNameExtension),
 				AppLogFileExtensionWithoutLeadingDot = 
 					PathHelper.ExtractFileExtensionComponentWithoutLeadingDot(AppConstants.AppLogFileNameExtension),
-				DefaultConsoleCommandExecutor = AppConstants.DefaultConsoleCommandExecutor,
+				AppLogDirectory = PathHelper.ExtractDirectoryComponent(AppConstants.DefaultCommandOutputLogFilePathName),
+                DefaultConsoleCommandExecutor = AppConstants.DefaultConsoleCommandExecutor,
 				DefaultConsoleCommandExeArgs = AppConstants.DefaultConsoleCommandExeArgs,
 				CmdConsoleLogFileErrorSuffix = AppConstants.ConsoleErrorLogFileNameSuffix,
 				CmdConsoleLogFileTimeStamp = nowTimeStamp,
 				CommandDefaultTimeOutInMinutes = AppConstants.CommandDefaultTimeOutInMinutes,
 				CommandMaxTimeOutInMinutes = AppConstants.CommandMaxTimeOutInMinutes,
 				CommandMinTimeOutInMinutes = AppConstants.CommandMinTimeOutInMinutes,
-				DefaultCmdConsoleLogFilePathName = AppConstants.DefaultCommandOutputLogFileName,
+				DefaultCommandOutputLogFilePathName = AppConstants.DefaultCommandOutputLogFilePathName,
 				XmlCmdFileDto = AppInfoHelper.GetDefaultXmlCommandFile(),
 				DefaultConsoleCommandType = AppConstants.DefaultConsoleCommandType
 			};
@@ -55,10 +56,6 @@ namespace LibLoader
 					return;
 				}
 
-
-
-				LogUtil.JobGroupName = cmdJobs.JobGroupName;
-				LogUtil.ExpectedJobCount = cmdJobs.Jobs.Count;
 				LogUtil.WriteLogJobGroupStartUpMessage(cmdJobs);
 
                 ExecuteConsoleCommands(cmdJobs, cmdExeDto);
