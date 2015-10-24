@@ -16,7 +16,7 @@ namespace CmdrXTests
 			Assert.IsNotNull(fileDto);
 			Assert.IsTrue(fileDto.DirDto.DirInfo.Exists);
 			Assert.IsTrue(fileDto.FileXinfo.Exists);
-			Assert.IsTrue(fileDto.FileNameAndExtension == "LibLoadCmds.xml");
+			Assert.IsTrue(fileDto.FileNameAndExtension == "CmdrXCmds.xml");
 			Assert.IsTrue(fileDto.FullPathAndFileName == fileDto.FileXinfo.FullName);
 			Assert.IsTrue(fileDto.FileExtension == fileDto.FileXinfo.Extension);
 			Assert.IsTrue(fileDto.FilePath == fileDto.FileXinfo.DirectoryName);

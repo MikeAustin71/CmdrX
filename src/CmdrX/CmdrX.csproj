@@ -107,10 +107,10 @@
     <None Include="LogExamples\LogSample001.text" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LibLoadCmds.xml">
+    <Content Include="CmdrXCmds.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="XmlCmdFiles\LibLoadCmds002.xml" />
+    <Content Include="XmlCmdFiles\CmdrXCmds002.xml" />
     <Content Include="XmlCmdFiles\Test102.xml" />
   </ItemGroup>
   <ItemGroup>
