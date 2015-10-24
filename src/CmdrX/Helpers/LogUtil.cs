@@ -126,7 +126,7 @@ namespace CmdrX.Helpers
 			var banner = StringHelper.MakeSingleCharString('#', MaxBannerLen);
 			var subbanner = StringHelper.MakeSingleCharString('*', MaxBannerLen);
 			JobGroupEndTime = DateTime.Now;
-		    JobGroupElapsedTime = JobGroupEndTime - JobGroupStartTime;
+		    JobGroupElapsedTime = JobGroupEndTime.Subtract(JobGroupStartTime);
 			var sb = new StringBuilder();
 
 			sb.Append(NewLine);
@@ -144,15 +144,15 @@ namespace CmdrX.Helpers
 			sb.Append(banner + NewLine);
 
 		    JobNumber--;
-		    var ts = JobGroupElapsedTime;
+		    
 			s = $"Completed Execution of {JobNumber} Jobs.";
 			sb.Append(s + NewLine);
 		    s = $"Number of messages logged: {JobGroupMessageCnt} ";
 			sb.Append(s + NewLine);
 			sb.Append(subbanner + NewLine);
-			sb.Append($"JobGroup   Start Time: {JobGroupStartTime.ToLongDateString()} {JobGroupStartTime.ToLongTimeString()}" + NewLine);
-			sb.Append($"JobGroup     End Time: {JobGroupEndTime.ToLongDateString()} {JobGroupEndTime.ToLongTimeString()}" + NewLine);
-			sb.Append($"JobGroup Elapsed Time: {ts.Hours:00}:{JobGroupElapsedTime.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}" + NewLine);
+			sb.Append("JobGroup   Start Time: " + DateHelper.DateTimeToMillisconds(JobGroupStartTime) + NewLine);
+			sb.Append("JobGroup     End Time: " + DateHelper.DateTimeToMillisconds(JobGroupEndTime) + NewLine);
+			sb.Append("JobGroup Elapsed Time: " + DateHelper.TimeSpanInMiliseconds(JobGroupElapsedTime) + NewLine);
 			sb.Append(subbanner + NewLine);
 
 			WriteLog(LogLevel.MESSAGE, sb.ToString());
@@ -255,7 +255,7 @@ namespace CmdrX.Helpers
 			var subbanner = StringHelper.MakeSingleCharString('-', MaxBannerLen);
 		    var startTime = job.CommandStartTime;
 		    var endTime = job.CommandExitTime;
-		    TimeSpan ts = endTime - startTime;
+		    TimeSpan ts = endTime.Subtract(startTime);
 			var sb = new StringBuilder();
 			sb.Append(NewLine);
 			sb.Append(NewLine);
@@ -265,9 +265,9 @@ namespace CmdrX.Helpers
 			sb.Append(NewLine);
 
 			sb.Append(subbanner + NewLine);
-			sb.Append($"Start Time: {startTime.ToLongDateString()} {startTime.ToLongTimeString()}" + NewLine);
-			sb.Append($"End Time: {endTime.ToLongDateString()} {endTime.ToLongTimeString()}" + NewLine);
-		    sb.Append($"Elapsed Time: {ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}" + NewLine);
+			sb.Append("Start Time:    " + DateHelper.DateTimeToMillisconds(startTime) + NewLine);
+			sb.Append("End Time:	  " + DateHelper.DateTimeToMillisconds(endTime) + NewLine);
+		    sb.Append("Elapsed Time:  " + DateHelper.TimeSpanInMiliseconds(ts) + NewLine);
 		    sb.Append("Job Exit Code: " + job.CommandExitCode + NewLine);
 
 			sb.Append(banner);
@@ -308,7 +308,6 @@ namespace CmdrX.Helpers
 
             sb.Append(banner);
             sb.Append(NewLine);
-            
             
             foreach (var cmdLineArgument in CmdLineArguments)
             {

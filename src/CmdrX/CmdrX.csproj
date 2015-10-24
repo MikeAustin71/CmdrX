@@ -75,12 +75,13 @@
     <Compile Include="Helpers\DirectoryHelper.cs" />
     <Compile Include="Helpers\ErrorLogger.cs" />
     <Compile Include="Helpers\FileHelper.cs" />
-    <Compile Include="Helpers\FileInfoCompareByName.cs" />
     <Compile Include="Helpers\LogLevel.cs" />
     <Compile Include="Helpers\LogUtil.cs" />
     <Compile Include="Helpers\ParseArgs.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
+    <Compile Include="Helpers\USDateFormats.cs" />
+    <Compile Include="Helpers\USTimeFormats.cs" />
     <Compile Include="Helpers\XmlValueExtractor.cs" />
     <Compile Include="Managers\ApplicationLogMgr.cs" />
     <Compile Include="Managers\ApplicationLogger.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="Models\ConsoleCommandDto.cs" />
     <Compile Include="Models\ConsoleExecutorDto.cs" />
     <Compile Include="Models\DirectoryDto.cs" />
-    <Compile Include="Models\ExecuteCommandDto.cs" />
     <Compile Include="Models\FileDto.cs" />
     <Compile Include="Models\FileOpsErrorMessageDto.cs" />
     <Compile Include="Models\FilePathDto.cs" />
