@@ -33,6 +33,7 @@ namespace LibLoader
 				AppLogFileExtensionWithoutLeadingDot = 
 					PathHelper.ExtractFileExtensionComponentWithoutLeadingDot(AppConstants.AppLogFileNameExtension),
 				AppLogDirectory = PathHelper.ExtractDirectoryComponent(AppConstants.DefaultCommandOutputLogFilePathName),
+				AppLogFileTimeStamp = nowTimeStamp,
                 DefaultConsoleCommandExecutor = AppConstants.DefaultConsoleCommandExecutor,
 				DefaultConsoleCommandExeArgs = AppConstants.DefaultConsoleCommandExeArgs,
 				CmdConsoleLogFileErrorSuffix = AppConstants.ConsoleErrorLogFileNameSuffix,
@@ -47,17 +48,28 @@ namespace LibLoader
 
 			try
 			{
-				if (!ProcessCmdArgs(cmdExeDto, args)
-				    || !ValidateXmlCommandFile(cmdExeDto)
-				    || !ParseCommandJobsFromXml(cmdExeDto, out cmdJobs)
-					|| !SetUpLogging(cmdExeDto, cmdJobs))
+				if (!ProcessCmdArgs(cmdExeDto, args))
 				{
 					return;
 				}
 
-				LogUtil.WriteLogJobGroupStartUpMessage(cmdJobs);
+				if (!ValidateXmlCommandFile(cmdExeDto))
+				{
+					return;
+				}
 
-                ExecuteConsoleCommands(cmdJobs, cmdExeDto);
+				if (!ParseCommandJobsFromXml(cmdExeDto, out cmdJobs))
+				{
+					return;
+				}
+
+				if (!SetUpLogging(cmdExeDto, cmdJobs))
+				{
+					return;
+				}
+
+				
+				ExecuteConsoleCommands(cmdJobs, cmdExeDto);
 
 			}
 			catch (Exception ex)
@@ -83,8 +95,11 @@ namespace LibLoader
 				_errorMgr.WriteErrorMsg(err);
 
 			}
-
-			AppShutdownAndCleanUp(cmdJobs, cmdExeDto);
+			finally
+			{
+				AppShutdownAndCleanUp(cmdJobs, cmdExeDto);
+			}
+			
 		}
 
 		private static void AppShutdownAndCleanUp(JobsGroupDto jobs, ConsoleExecutorDto cmdExeDto)
@@ -112,13 +127,7 @@ namespace LibLoader
 			try
 			{
 				// Setup Application Logging
-
-				if (!cmdExeDto.AppLogMgr.CreateApplicaitonLogDirectory())
-				{
-					Console.WriteLine("Application Log Directory Invalid!");
-					Environment.ExitCode = -2;
-					return false;
-				}
+				//cmdExeDto.AppLogMgr.PurgeOldLogFiles();
 
 				LogUtil.ConfigureLogger(cmdExeDto.AppLogMgr.ConfigureLogger());
 
@@ -126,9 +135,9 @@ namespace LibLoader
 
 				LogUtil.ExeAssemblyVersionNo = AppInfoHelper.GetThisAssemblyVersion();
 
-				cmdExeDto.AppLogMgr.PurgeOldLogFiles();
-
 				LogUtil.WriteLogJobGroupStartUpMessage(jobsGroup);
+
+				cmdExeDto.ErrorMgr.IsLoggingConfigured = true;
 
 			}
 			catch (Exception ex)
@@ -150,6 +159,7 @@ namespace LibLoader
 				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				_errorMgr.WriteErrorMsg(err);
 
+				Console.WriteLine(ex.Message);
 				return false;
 			}
 
@@ -191,7 +201,7 @@ namespace LibLoader
 				{
 					DirectoryPath = string.Empty,
 					ErrId = 37,
-					ErrorMessage = "Zero jobs were extracted from the XmlCommands file!",
+					ErrorMessage = ex.Message,
 					ErrSourceMethod = "ParseCommandJobsFromXml()",
 					ErrException = ex,
 					FileName = string.Empty,

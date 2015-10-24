@@ -42,8 +42,8 @@ namespace LibLoadTests
 			Assert.IsTrue(jobGroup.Jobs[0].CommandDisplayName== "jshint and jscs");
 
 			Assert.IsTrue(jobGroup.Jobs[2].CommandDisplayName == "gulp plumber");
-
 		}
+
 		[TestMethod]
 		public void XmlCmdFileShouldParseHeaderSuccessfully()
 		{
@@ -53,9 +53,9 @@ namespace LibLoadTests
 
 			builder.BuildParmsFromXml();
 			var expectedDirDto = new DirectoryDto(TestDirectories.GetTestExeDir().DirInfo.FullName + "\\installLog");
-
+			var dirDto = new DirectoryDto(cmdExeDto.DefaultCommandOutputLogFilePathName);
             Assert.IsTrue(cmdExeDto.AppLogRetentionInDays == 0);
-			Assert.IsTrue(cmdExeDto.DefaultCommandExeDirectoryDto.DirInfo.FullName == expectedDirDto.DirInfo.FullName);
+			Assert.IsTrue(dirDto.DirInfo.FullName == expectedDirDto.DirInfo.FullName);
 		}
 
 	}

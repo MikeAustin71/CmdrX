@@ -52,6 +52,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ApplicationLogMgrTests.cs" />
+    <Compile Include="AppLoggerTests.cs" />
     <Compile Include="CommandExecutionMgrTests.cs" />
     <Compile Include="ConsoleCommandDtoTests.cs" />
     <Compile Include="ConsoleCommandLogMgrTests.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="FilePathDtoTests.cs" />
     <Compile Include="FileTests.cs" />
     <Compile Include="PathHelperTests.cs" />
+    <Compile Include="StringHelperFormatTests.cs" />
     <Compile Include="StringHelperTests.cs" />
     <Compile Include="TestDirectories.cs" />
     <Compile Include="TestStringsSetup.cs" />

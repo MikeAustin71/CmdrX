@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Permissions;
 using LibLoader.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -114,6 +115,5 @@ namespace LibLoadTests
 			Assert.IsTrue(strArray.Length == 4);
 
 		}
-
 	}
 }

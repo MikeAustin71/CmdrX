@@ -1,123 +1,124 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace LibLoader.Helpers
 {
     public static class StringHelper
     {
-        public static string MakeSingleCharString(char c, int len)
-        {
-            if(c==0)
-            {
-                return String.Empty;
-            }
 
-            var sb = new StringBuilder();
+		public static string MakeSingleCharString(char c, int len)
+		{
+			if (c == 0)
+			{
+				return string.Empty;
+			}
 
-            for(int i=0; i < len; i++)
-            {
-                sb.Append(c);
-            }
+			var sb = new StringBuilder();
 
-            return sb.ToString();
-        }
+			for (int i = 0; i < len; i++)
+			{
+				sb.Append(c);
+			}
 
-        public static string RightJustifyString(string textIn, int totalFieldLen)
-        {
-            if (String.IsNullOrEmpty(textIn))
-            {
-                return String.Empty;
-            }
+			return sb.ToString();
+		}
 
-
-            if (textIn.Length >= totalFieldLen)
-            {
-                return textIn;
-            }
-
-            var sFmt = "{0," + totalFieldLen + "}";
-
-            string result;
-
-            try
-            {
-                result = String.Format(sFmt, textIn);
-
-            }
-            catch
-            {
-                result = String.Empty;
-            }
+		public static string RightJustifyString(string textIn, int totalFieldLen)
+		{
+			if (string.IsNullOrEmpty(textIn))
+			{
+				return string.Empty;
+			}
 
 
-            return result;
-        }
+			if (textIn.Length >= totalFieldLen)
+			{
+				return textIn;
+			}
 
-        public static string LeftJustifyString(string textIn, int totalFieldLen)
-        {
+			var sFmt = "{0," + totalFieldLen + "}";
 
-            if (String.IsNullOrEmpty(textIn))
-            {
-                return String.Empty;
-            }
+			string result;
 
-            if (textIn.Length >= totalFieldLen)
-            {
-                return textIn;
-            }
+			try
+			{
+				result = string.Format(sFmt, textIn);
 
-            var sFmt = "{0," + (totalFieldLen * -1) + "}";
-
-            string result;
-
-            try
-            {
-                result = String.Format(sFmt, textIn);
-
-            }
-            catch
-            {
-                result = String.Empty;
-            }
+			}
+			catch
+			{
+				result = string.Empty;
+			}
 
 
-            return result;
-        }
+			return result;
+		}
 
-        public static string CenterString(string textIn, int totalFieldLen)
-        {
-            if(String.IsNullOrEmpty(textIn))
-            {
-                return String.Empty;
-            }
+		public static string LeftJustifyString(string textIn, int totalFieldLen)
+		{
 
-            if ((textIn.Length - 1) >= totalFieldLen)
-            {
-                return textIn;
-            }
+			if (string.IsNullOrEmpty(textIn))
+			{
+				return string.Empty;
+			}
 
-            var sFmt = "{0," + (totalFieldLen * -1) + "}";
+			if (textIn.Length >= totalFieldLen)
+			{
+				return textIn;
+			}
 
-            string result;
+			var sFmt = "{0," + (totalFieldLen * -1) + "}";
 
-            try
-            {
-                result = String.Format(sFmt, String.Format("{{0," + ((totalFieldLen + textIn.Length) / 2) + "}}", textIn));
+			string result;
 
-            }
-            catch
-            {
-                result = String.Empty;
-            }
+			try
+			{
+				result = string.Format(sFmt, textIn);
+
+			}
+			catch
+			{
+				result = string.Empty;
+			}
 
 
-            return result;
-        }
+			return result;
+		}
 
-	    public static int GetLastCharIndex(string str, char c)
+		public static string CenterString(string textIn, int totalFieldLen)
+		{
+			if (string.IsNullOrEmpty(textIn))
+			{
+				return string.Empty;
+			}
+
+			if ((textIn.Length - 1) >= totalFieldLen)
+			{
+				return textIn;
+			}
+
+			var sFmt = "{0," + (totalFieldLen * -1) + "}";
+
+			string result;
+
+			try
+			{
+				// ReSharper disable once FormatStringProblem
+				result = string.Format(sFmt, string.Format("{0," + ((totalFieldLen + textIn.Length) / 2) + "}", textIn));
+
+			}
+			catch
+			{
+				result = string.Empty;
+			}
+
+
+			return result;
+		}
+
+
+		public static int GetLastCharIndex(string str, char c)
 	    {
 		    if (str == null || c == 0)
 		    {

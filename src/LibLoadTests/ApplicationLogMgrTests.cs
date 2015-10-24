@@ -24,7 +24,7 @@ namespace LibLoadTests
 				dir1.DirInfo.Delete(true);
 			}
 
-			var logMgr = new AppicationLogMgr(dir1.DirInfo.FullName, 
+			var logMgr = new ApplicationLogMgr(dir1.DirInfo.FullName, 
 				appLogFileNameOnly,
 				appLogFileExtWithNoLeadingDot,
 				appLogFileTimeStamp);

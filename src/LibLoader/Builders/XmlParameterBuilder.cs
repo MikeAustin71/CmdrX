@@ -145,6 +145,7 @@ namespace LibLoader.Builders
 			{
 				_currentConsoleCommand.NormalizeCommandParameters();
 				_jobsGroupDto.Jobs.Add(_currentConsoleCommand);
+				_cmdExeDto.ConfigureParameters();
 				_elementParser = null;			
 				return;
 			}

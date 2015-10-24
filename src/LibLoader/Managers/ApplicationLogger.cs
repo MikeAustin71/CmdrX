@@ -174,38 +174,31 @@ namespace LibLoader.Managers
 			}
 		}
 
-		public bool ConfigureLogger(string commandLogFilePathName)
+		public bool ConfigureLogger()
 		{
 			if (_disposed)
 			{
 				return false;
 			}
 
-			if (string.IsNullOrWhiteSpace(commandLogFilePathName))
-			{
-				if (!IsStreamWriterValid())
-				{
-					CreateNewStreamWriter(_currentLogfileDto);
-				}
-
-				return true;
-			}
-
-			if (commandLogFilePathName == _currentApplicationLogPathFileBaseName)
-			{
-				return true;
-			}
-
-			_currentLogfileDto?.Dispose();
-
-			_currentLogfileDto = ExtractLogFileDto(commandLogFilePathName,
-															_logfileTimeStamp);
-
 			if (!FileHelper.IsFileDtoValid(_currentLogfileDto))
 			{
-				_currentLogfileDto?.Dispose();
+				var ex = new Exception("Current Log File Dto is INVALID! - " + _currentLogfileDto.DirDto.DirInfo.FullName);
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = _currentLogfileDto.FileXinfo.DirectoryName,
+					ErrId = 24,
+					ErrorMessage = ex.Message,
+					ErrSourceMethod = "ConfigureLogger()",
+					FileName = _currentLogfileDto.FileXinfo.FullName,
+					LoggerLevel = LogLevel.FATAL
+				};
 
-				_currentLogfileDto = new FileDto(_defautlLogFileDto.FileXinfo.FullName);
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw ex;
+
 			}
 
 			if (!DirectoryHelper.CreateDirectoryIfNecessary(_currentLogfileDto.DirDto))
@@ -229,8 +222,6 @@ namespace LibLoader.Managers
 
 
 			CreateNewStreamWriter(_currentLogfileDto);
-
-			_currentApplicationLogPathFileBaseName = commandLogFilePathName;
 
 			NumberOfLogLinesWritten = 0;
 
@@ -288,10 +279,6 @@ namespace LibLoader.Managers
 			return true;
 		}
 
-		public bool ResetToDefaultConsoleLogPathFileName()
-		{
-			return ConfigureLogger(_defaultApplicationLogPathFileBaseName);
-		}
 
 		public FileDto ExtractLogFileDto(string cmdConsoleLogPathFileName,
 														string logFileTimeStamp)

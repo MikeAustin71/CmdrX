@@ -72,7 +72,7 @@ namespace LibLoader.Managers.XmlElementParsers
 			{
 				var filePath = _xmlHlpr.ExtractStringValue(reader);
 
-				cmdExeDto.SetDefaultCommandExeDirectory(filePath);
+				cmdExeDto.SetDefaultCommandOutputLogFilePathName(filePath);
 			}
 
 		}

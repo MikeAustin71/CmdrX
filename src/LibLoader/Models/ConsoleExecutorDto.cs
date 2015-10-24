@@ -19,8 +19,9 @@ namespace LibLoader.Models
 		public ErrorLogger ErrorMgr = new
 			ErrorLogger(4281000,
 				"ConsoleExecutorDto",
-				AppConstants.LoggingStatus,
-				AppConstants.LoggingMode);
+				ErrorLoggingStatus.On,
+				ErrorLoggingMode.Verbose,
+				false);
 
 
 		public DirectoryDto DefaultCommandExeDirectoryDto { get; set; }
@@ -79,7 +80,7 @@ namespace LibLoader.Models
 
 		public ConsoleCommandType DefaultConsoleCommandType { get; set; }
 
-		public AppicationLogMgr AppLogMgr { get; private set; }
+		public ApplicationLogMgr AppLogMgr { get; private set; }
 
 
 		public void Dispose()
@@ -125,9 +126,33 @@ namespace LibLoader.Models
 
 		public void ConfigureParameters()
 		{
+			if (string.IsNullOrWhiteSpace(DefaultCommandOutputLogFilePathName))
+			{
+				var ex = new Exception("DefaultCommandOutputLogFilePathName = Empty!");
+
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 1,
+					ErrorMessage = ex.Message,
+					ErrSourceMethod = "ConfigureParameters()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw ex;
+
+			}
+
 			AppLogDirectory = PathHelper.ExtractDirectoryComponent(DefaultCommandOutputLogFilePathName);
 
-			AppLogMgr = new AppicationLogMgr(AppLogDirectory, 
+
+
+			AppLogMgr = new ApplicationLogMgr(AppLogDirectory, 
 												AppLogFileBaseNameOnly, 
 												AppLogFileExtensionWithoutLeadingDot, 
 												AppLogFileTimeStamp);

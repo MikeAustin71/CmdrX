@@ -67,7 +67,7 @@
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\XmlValueExtractor.cs" />
-    <Compile Include="Managers\AppicationLogMgr.cs" />
+    <Compile Include="Managers\ApplicationLogMgr.cs" />
     <Compile Include="Managers\ApplicationLogger.cs" />
     <Compile Include="Managers\ConsoleCommandLogMgr.cs" />
     <Compile Include="Managers\CommandExecutionMgr.cs" />
@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="LogExamples\LogSample001.text" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="LibLoadCmds.xml">

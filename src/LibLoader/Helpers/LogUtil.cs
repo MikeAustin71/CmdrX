@@ -41,6 +41,15 @@ namespace LibLoader.Helpers
 	        IsLoggerConfigured = false;
         }
 
+	    public static void Dispose()
+	    {
+		    if (_logger != null)
+		    {
+			    IsLoggerConfigured = false;
+				_logger.Dispose();
+			    _logger = null;
+		    }
+	    }
 	    public static void ConfigureLogger(ApplicationLogger logger)
 	    {
 		    IsLoggerConfigured = true;
@@ -94,7 +103,7 @@ namespace LibLoader.Helpers
             sb.Append(cStr);
             sb.Append(NewLine);
 
-            s= $"Started Job Run: {now.ToLongDateString()} {now.ToLongTimeString()}" + NewLine;
+            s= $"Started Job Run: {now.ToLongDateString()} {now.ToLongTimeString()}";
 
             cStr = StringHelper.CenterString(s, banner.Length);
             sb.Append(cStr + NewLine);
@@ -119,6 +128,8 @@ namespace LibLoader.Helpers
 			JobGroupEndTime = DateTime.Now;
 		    JobGroupElapsedTime = JobGroupEndTime - JobGroupStartTime;
 			var sb = new StringBuilder();
+
+			sb.Append(NewLine);
 			sb.Append(NewLine);
 			sb.Append(banner + NewLine);
 			sb.Append(banner + NewLine);
@@ -141,10 +152,11 @@ namespace LibLoader.Helpers
 			sb.Append(subbanner + NewLine);
 			sb.Append($"JobGroup   Start Time: {JobGroupStartTime.ToLongDateString()} {JobGroupStartTime.ToLongTimeString()}" + NewLine);
 			sb.Append($"JobGroup     End Time: {JobGroupEndTime.ToLongDateString()} {JobGroupEndTime.ToLongTimeString()}" + NewLine);
-			sb.Append($"JobGroup Elapsed Time: {ts.Hours:00}:{JobGroupElapsedTime.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:00}" + NewLine);
+			sb.Append($"JobGroup Elapsed Time: {ts.Hours:00}:{JobGroupElapsedTime.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}" + NewLine);
 			sb.Append(subbanner + NewLine);
 
 			WriteLog(LogLevel.MESSAGE, sb.ToString());
+			_logger.LogFlushStreamWriter();
 		}
 
 
@@ -227,11 +239,7 @@ namespace LibLoader.Helpers
 				}
 			}
 
-			sb.Append(NewLine);
-			sb.Append(NewLine);
-
-			sb.Append(banner);
-            sb.Append(NewLine);
+			sb.Append(subbanner + NewLine);
 
             WriteLog(LogLevel.MESSAGE, sb.ToString());
         }
@@ -249,8 +257,9 @@ namespace LibLoader.Helpers
 		    var endTime = job.CommandExitTime;
 		    TimeSpan ts = endTime - startTime;
 			var sb = new StringBuilder();
-			sb.Append(banner);
 			sb.Append(NewLine);
+			sb.Append(NewLine);
+			sb.Append(subbanner + NewLine);
 			var cStr = StringHelper.CenterString("Job Completed: " + job.CommandDisplayName, banner.Length);
 			sb.Append(cStr);
 			sb.Append(NewLine);
@@ -258,8 +267,8 @@ namespace LibLoader.Helpers
 			sb.Append(subbanner + NewLine);
 			sb.Append($"Start Time: {startTime.ToLongDateString()} {startTime.ToLongTimeString()}" + NewLine);
 			sb.Append($"End Time: {endTime.ToLongDateString()} {endTime.ToLongTimeString()}" + NewLine);
-		    sb.Append($"Elapsed Time: {ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:00}" + NewLine);
-		    sb.Append("Job Exit Code: " + job.CommandExitCode);
+		    sb.Append($"Elapsed Time: {ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}.{ts.Milliseconds:000}" + NewLine);
+		    sb.Append("Job Exit Code: " + job.CommandExitCode + NewLine);
 
 			sb.Append(banner);
 			sb.Append(NewLine);
@@ -267,6 +276,7 @@ namespace LibLoader.Helpers
 			sb.Append(NewLine);
 
 			WriteLog(LogLevel.MESSAGE, sb.ToString());
+			_logger.LogFlushStreamWriter();
 		}
 
 

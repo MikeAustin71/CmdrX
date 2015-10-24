@@ -7,14 +7,14 @@ using LibLoader.Models;
 
 namespace LibLoader.Managers
 {
-	public class AppicationLogMgr
+	public class ApplicationLogMgr
 	{
 		private bool _disposed;
 
 
 		public ErrorLogger ErrorMgr = new
 			ErrorLogger(708000,
-						"AppicationLogMgr",
+						"ApplicationLogMgr",
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode,
 						false);
@@ -31,7 +31,7 @@ namespace LibLoader.Managers
 
 		public FileDto LogPathFileNameDto { get; private set; }
 
-		public AppicationLogMgr(string logDirPath, 
+		public ApplicationLogMgr(string logDirPath, 
 									string logFileNameOnly, 
 										string logFileExtensionWithoutLeadingDot, 
 											string logFileTimeStamp)
@@ -212,10 +212,16 @@ namespace LibLoader.Managers
 
 		public ApplicationLogger ConfigureLogger()
 		{
+			CreateApplicaitonLogDirectory();
+			
 			var logFilePathName = LogDirectoryDto.DirInfo.FullName + "\\" + LogFileNameOnly + "." +
 			                      LogFileExtensionWithNoLeadingDot;
 
-            return new ApplicationLogger(logFilePathName, LogFileTimeStamp);
+            var appLogger = new ApplicationLogger(logFilePathName, LogFileTimeStamp);
+
+			appLogger.ConfigureLogger();
+
+			return appLogger;
 		}
 	}
 }

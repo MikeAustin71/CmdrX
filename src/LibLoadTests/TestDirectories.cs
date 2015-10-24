@@ -103,7 +103,7 @@ namespace LibLoadTests
 				CommandMaxTimeOutInMinutes = 45.0M,
 				CommandMinTimeOutInMinutes = 1.0M,
 				DefaultCommandOutputLogFilePathName = 
-					ConfigurationManager.AppSettings["CommandOutputBaseLogFileName"],
+					ConfigurationManager.AppSettings["DefaultCommandOutputLogFilePathName"],
 				XmlCmdFileDto = GetXmlCmdFileDto(),
 				DefaultConsoleCommandType = ConsoleCommandType.Console
 
