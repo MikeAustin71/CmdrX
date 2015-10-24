@@ -230,5 +230,25 @@ namespace CmdrX.Helpers
 			return new string(chars.ToArray());
 		}
 
-	}
+	    public static string RemoveLeadingChar(string rawStr, char c)
+	    {
+		    if (string.IsNullOrWhiteSpace(rawStr))
+		    {
+			    return string.Empty;
+		    }
+
+		    var idx = 0;
+
+		    do
+		    {
+			    if (rawStr[idx] == c)
+			    {
+				    idx++;
+			    }
+
+		    } while (idx < rawStr.Length && rawStr[idx] == c);
+
+		    return idx >= rawStr.Length ? string.Empty : rawStr.Substring(idx);
+	    }
+    }
 }

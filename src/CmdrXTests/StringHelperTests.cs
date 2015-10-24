@@ -114,5 +114,52 @@ namespace CmdrXTests
 			Assert.IsTrue(strArray.Length == 4);
 
 		}
+
+		[TestMethod]
+		public void T101_HelperShouldApplyRemoveLeadingCharsCorrectly()
+		{
+			var testText = "_How now brown cow";
+
+			var result = StringHelper.RemoveLeadingChar(testText, '_');
+
+			Assert.IsTrue(!string.IsNullOrWhiteSpace(result));
+			Assert.IsTrue(result[0] != '_');
+
+		}
+
+		[TestMethod]
+		public void T102_HelperShouldApplyRemoveTwoLeadingCharsCorrectly()
+		{
+			var testText = "__How now brown cow";
+
+			var result = StringHelper.RemoveLeadingChar(testText, '_');
+
+			Assert.IsTrue(!string.IsNullOrWhiteSpace(result));
+			Assert.IsTrue(result == "How now brown cow");
+		}
+
+
+		[TestMethod]
+		public void T103_HelperShouldApplyRemoveTwoLeadingCharsCorrectly()
+		{
+			var testText = "___H";
+
+			var result = StringHelper.RemoveLeadingChar(testText, '_');
+
+			Assert.IsTrue(!string.IsNullOrWhiteSpace(result));
+			Assert.IsTrue(result == "H");
+		}
+
+		[TestMethod]
+		public void T104_HelperShouldApplyRemoveAllLeadingCharsCorrectly()
+		{
+			var testText = "___";
+
+			var result = StringHelper.RemoveLeadingChar(testText, '_');
+
+			Assert.IsTrue(result == string.Empty);
+		}
+
+
 	}
 }

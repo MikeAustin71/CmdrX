@@ -127,7 +127,7 @@ namespace CmdrX
 			try
 			{
 				// Setup Application Logging
-				//cmdExeDto.AppLogMgr.PurgeOldLogFiles();
+				cmdExeDto.AppLogMgr.PurgeOldLogFiles();
 
 				LogUtil.ConfigureLogger(cmdExeDto.AppLogMgr.ConfigureLogger());
 
@@ -159,7 +159,7 @@ namespace CmdrX
 				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				_errorMgr.WriteErrorMsg(err);
 
-				Console.WriteLine(ex.Message);
+				Console.WriteLine("SetupLogging() " + ex.Message);
 				return false;
 			}
 

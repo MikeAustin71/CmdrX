@@ -152,7 +152,7 @@ namespace CmdrX.Helpers
 			sb.Append(subbanner + NewLine);
 			sb.Append("JobGroup   Start Time: " + DateHelper.DateTimeToMillisconds(JobGroupStartTime) + NewLine);
 			sb.Append("JobGroup     End Time: " + DateHelper.DateTimeToMillisconds(JobGroupEndTime) + NewLine);
-			sb.Append("JobGroup Elapsed Time: " + DateHelper.TimeSpanInMiliseconds(JobGroupElapsedTime) + NewLine);
+			sb.Append("JobGroup Elapsed Time: " + DateHelper.TimeSpanDetailToMiliseconds(JobGroupElapsedTime) + NewLine);
 			sb.Append(subbanner + NewLine);
 
 			WriteLog(LogLevel.MESSAGE, sb.ToString());
@@ -265,10 +265,10 @@ namespace CmdrX.Helpers
 			sb.Append(NewLine);
 
 			sb.Append(subbanner + NewLine);
-			sb.Append("Start Time:    " + DateHelper.DateTimeToMillisconds(startTime) + NewLine);
-			sb.Append("End Time:	  " + DateHelper.DateTimeToMillisconds(endTime) + NewLine);
-		    sb.Append("Elapsed Time:  " + DateHelper.TimeSpanInMiliseconds(ts) + NewLine);
-		    sb.Append("Job Exit Code: " + job.CommandExitCode + NewLine);
+			sb.Append("Job   Start Time: " + DateHelper.DateTimeToDayMilliseconds(startTime) + NewLine);
+			sb.Append("Job     End Time: " + DateHelper.DateTimeToDayMilliseconds(endTime) + NewLine);
+		    sb.Append("Job Elapsed Time: " + DateHelper.TimeSpanDetailToMiliseconds(ts) + NewLine);
+		    sb.Append("Job    Exit Code: " + job.CommandExitCode + NewLine);
 
 			sb.Append(banner);
 			sb.Append(NewLine);
@@ -278,50 +278,6 @@ namespace CmdrX.Helpers
 			WriteLog(LogLevel.MESSAGE, sb.ToString());
 			_logger.LogFlushStreamWriter();
 		}
-
-
-		public static void WriteLogCmdArgsMessage()
-        {
-			if (!IsLoggerConfigured)
-			{
-				return;
-			}
-
-			var banner = StringHelper.MakeSingleCharString('-', MediumBannerLen);
-
-            var sb = new StringBuilder();
-            sb.Append(NewLine);
-            sb.Append(NewLine);
-            sb.Append(banner);
-            sb.Append(NewLine);
-            var s = "Command Line Arguments " + CurrentJobNo;
-            var cStr = StringHelper.CenterString(s, banner.Length);
-            sb.Append(cStr);
-            sb.Append(NewLine);
-
-            if(!string.IsNullOrEmpty(CurrentJobName))
-            {
-                cStr = StringHelper.CenterString(CurrentJobName, banner.Length);
-                sb.Append(cStr);
-                sb.Append(NewLine);
-            }
-
-            sb.Append(banner);
-            sb.Append(NewLine);
-            
-            foreach (var cmdLineArgument in CmdLineArguments)
-            {
-                sb.Append("-" + cmdLineArgument.Key + " " + cmdLineArgument.Value);
-                sb.Append(NewLine);
-            }
-            
-            sb.Append(NewLine);
-            sb.Append(banner);
-            sb.Append(NewLine);
-            sb.Append(NewLine);
-            WriteLog(LogLevel.MESSAGE, sb.ToString());
-
-        }
 
 		public static void WriteLog(FileOpsErrorMessageDto err)
 		{

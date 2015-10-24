@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using System.Reflection;
+using System.Linq;
 using CmdrX.Constants;
 using CmdrX.GlobalConstants;
 using CmdrX.Helpers;
@@ -29,121 +29,22 @@ namespace CmdrX.Commands
         {
 	        if (_logFileDirectoryDto?.DirInfo == null || ! _logFileDirectoryDto.DirInfo.Exists)
 	        {
-		        var msg = "Log File Directory Dto is INVALID!";
-
-				var ex = new ArgumentException(msg);
-				var err = new FileOpsErrorMessageDto
-				{
-					ErrId = 37,
-					ErrorMessage = "Application Log Directory Dto Invalid!",
-					ErrSourceMethod = "CreateApplicaitonLogDirectory()",
-					ErrException = ex,
-					DirectoryPath = string.Empty,
-					LoggerLevel = LogLevel.FATAL
-				};
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				throw ex;
-
-
-			}
+		        return true;
+	        }
 
 			return PurgeOldLogFiles(_logFileDirectoryDto.DirInfo.FullName);
         }
 
 
-        private bool GetValidLogFilesPath(out string logFilesPath)
-        {
-	        //var exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
-            //get the full location of the assembly with DaoTests in it
-            //string fullPath = System.Reflection.Assembly.GetAssembly(typeof(PurgeLogCommand)).Location;
-
-
-            //get the folder that's in
-            //string exeDir = Path.GetDirectoryName(fullPath);
-
-            var fullPath = (new Uri(Assembly.GetExecutingAssembly().CodeBase)).AbsolutePath;
-
-            var exeDir = Path.GetDirectoryName(fullPath);
-
-            if (string.IsNullOrEmpty(exeDir) || !Directory.Exists(exeDir))
-            {
-
-                if(SetAlternativeLogPath(out logFilesPath))
-                {
-                    return true;
-                }
-
-
-                var err = new FileOpsErrorMessageDto
-                {
-                    DirectoryPath = string.Empty,
-                    ErrId =  1,
-                    ErrorMessage = "Could not locate executing assembly directory",
-                    ErrSourceMethod = "PurgeOldLogs",
-                    FileName = string.Empty,
-                    LoggerLevel = LogLevel.FATAL
-                };
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				return false;
-
-            }
-
-            
-            exeDir = PathHelper.AddDefaultTrailingDelimiter(exeDir);
-
-            var logDir = exeDir + "log";
-
-            if (!Directory.Exists(logDir))
-            {
-                if (SetAlternativeLogPath(out logFilesPath))
-                {
-                    return true;
-                }
-                
-                var err = new FileOpsErrorMessageDto
-                {
-                    DirectoryPath = string.Empty,
-                    ErrId = 902,
-                    ErrorMessage = "Log Directory Does NOT Exist",
-                    ErrSourceMethod = "PurgeOldLogs",
-                    FileName = string.Empty,
-                    LoggerLevel = LogLevel.FATAL
-                };
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				return false;
-            }
-
-            logFilesPath = logDir;
-
-            return true;
-        }
-
-        private bool SetAlternativeLogPath(out string altLogPath)
-        {
-            altLogPath = @".\log";
-
-            if(!Directory.Exists(altLogPath))
-            {
-                return false;
-            }
-
-            return true;
-
-        }
-
-        private bool PurgeOldLogFiles(string logDir)
+	    private bool PurgeOldLogFiles(string logDir)
         {
 
-            string[] logFiles;
+			if (_logRetentionInDays > 365)
+			{
+				return true;
+			}
+
+			string[] logFiles;
 
             try
             {
@@ -175,11 +76,26 @@ namespace CmdrX.Commands
 
             }
 
-            return DeleteOldLogFiles(logFiles);
-
+	        return _logRetentionInDays < 1 ? DeleteAllLogFiles(logFiles) : DeleteOldLogFiles(logFiles);
         }
 
-        private bool DeleteOldLogFiles(string[] logFiles)
+	    private bool DeleteAllLogFiles(string[] logFiles)
+	    {
+			if (logFiles == null || logFiles.Length < 1)
+			{
+				return true;
+			}
+
+
+		    foreach (var fileDto in logFiles.Select(logFile => new FileDto(logFile)))
+		    {
+			    FileHelper.DeleteAFile(fileDto);
+		    }
+
+		    return true;
+	    }
+
+		private bool DeleteOldLogFiles(string[] logFiles)
         {
             if (logFiles == null || logFiles.Length < 1)
             {
@@ -190,21 +106,16 @@ namespace CmdrX.Commands
 
             DateTime threshold = DateTime.Now.Subtract(dif);
 
-            FileInfo fi;
-
-            foreach (var logFile in logFiles)
+			foreach (var logFile in logFiles)
             {
-
                 try
                 {
-                    fi = new FileInfo(logFile);
+	                var fileDto = new FileDto(logFile);
 
-                    if (fi.CreationTime < threshold)
+	                if (fileDto.FileXinfo.CreationTime < threshold)
                     {
-                        fi.Delete();
+	                    FileHelper.DeleteAFile(fileDto);
                     }
-
-
                 }
                 catch (Exception ex)
                 {

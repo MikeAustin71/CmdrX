@@ -66,7 +66,7 @@ namespace CmdrX.Models
 		public string CmdConsoleLogFileErrorSuffix
 		{
 			get { return _cmdConsoleLogFileErrorSuffix; }
-			set { _cmdConsoleLogFileErrorSuffix = StringHelper.TrimStringEnds(value); }
+			set { _cmdConsoleLogFileErrorSuffix = StringHelper.RemoveLeadingChar(StringHelper.TrimStringEnds(value), '_'); }
 		}
 
 		public string CmdConsoleLogFileTimeStamp
