@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
+<Commands>
+	<CommandFileHeader>
+		<DefaultLogFileRetentionInDays>0</DefaultLogFileRetentionInDays>
+		<DefaultCommandExeDirectory></DefaultCommandExeDirectory>
+		<DefaultCommandOutputLogFilePathName>./cmdrx/install.log</DefaultCommandOutputLogFilePathName>
+	</CommandFileHeader>
+	<ExectuteCommand>
+		<CommandDisplayName>Local Gulp</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>git://github.com/gulpjs/gulp#4.0</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>jshint jscs</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-jshint gulp-jscs jshint-stylish</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>yargs and plugins</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>yargs gulp-util gulp-load-plugins gulp-if</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Gulp css</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-less gulp-autoprefixer</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Html injection</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>wiredep gulp-inject</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Browser-Sync</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>browser-sync --msvs_version=2013</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Asset Management</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-task-listing gulp-imagemin</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Angular Template Cache</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-minify-html gulp-angular-templatecache</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Build Pipeline</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-useref</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Minification Tooling</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-filter gulp-uglify gulp-csso</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Angular Injection</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-ng-annotate</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Revision and Versioning</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>gulp-rev gulp-rev-replace gulp-bump</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Integration Testing</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>jquery lodash</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Global Node Notifier</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>-g</CommandModifier>
+		<CommandArguments>marked</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Local Node Notifier</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>node-notifier</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>font-awesome</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>bower</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>-save</CommandModifier>
+		<CommandArguments>font-awesome</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>moment</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>bower</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>-save</CommandModifier>
+		<CommandArguments>moment</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>toastr</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>bower</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>-save</CommandModifier>
+		<CommandArguments>toastr</CommandArguments>
+	</ExectuteCommand>
+</Commands>

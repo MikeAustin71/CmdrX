@@ -46,7 +46,8 @@ namespace CmdrX.Managers
 		public bool ExecuteCommands()
 		{
 			bool result;
-
+			int jobNo = 0;
+			Console.WriteLine("CmdrX.exe: Starting Job Execution...");
 			try
 			{
 				foreach (var job in _commandJobs.Jobs)
@@ -56,6 +57,9 @@ namespace CmdrX.Managers
 
 					var exeCmd = new ExecuteConsoleCommand(job, _consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
 					var exitCode = exeCmd.Execute();
+					jobNo++;
+					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
+					Console.WriteLine($"Completed Job No. {jobNo:#0} Exit Code: {job.CommandExitCode} Job Name: {job.CommandDisplayName}" );
 
 					if (exitCode != 0)
 					{
@@ -75,13 +79,11 @@ namespace CmdrX.Managers
 
 						ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 						ErrorMgr.WriteErrorMsg(err);
-						LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
                         Console.WriteLine(msg);
 						Environment.ExitCode = exitCode;
 						return false;
 					}
 
-					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
 				}
 
 				Environment.ExitCode = 0;

@@ -75,7 +75,6 @@ namespace CmdrX.Helpers
 
 			JobGroupStartTime = DateTime.Now;
 	        ExpectedJobCount = jobsGroup.Jobs.Count;
-			var now = JobGroupStartTime;
             var sb = new StringBuilder();
             sb.Append(NewLine);
             sb.Append(banner + NewLine);
@@ -103,7 +102,7 @@ namespace CmdrX.Helpers
             sb.Append(cStr);
             sb.Append(NewLine);
 
-            s= $"Started Job Run: {now.ToLongDateString()} {now.ToLongTimeString()}";
+            s= $"Started Job Run: " + DateHelper.DateTimeToDayMilliseconds(JobGroupStartTime);
 
             cStr = StringHelper.CenterString(s, banner.Length);
             sb.Append(cStr + NewLine);
@@ -113,6 +112,7 @@ namespace CmdrX.Helpers
             sb.Append(NewLine);
 
 			WriteLog(LogLevel.MESSAGE, sb.ToString());
+			_logger.LogFlushStreamWriter();
 
 		}
 
@@ -214,29 +214,26 @@ namespace CmdrX.Helpers
                 
             }
 
-            sb.Append($"Started Job: {now.ToLongDateString()} {now.ToLongTimeString()}\n");
+            sb.Append($"Started Job: {now.ToLongDateString()} {now.ToLongTimeString()}" + NewLine);
 			sb.Append(subbanner);
 			sb.Append(NewLine);
 
 	        sb.Append("Process StartInfo FileName: " + job.ProcFileNameCommand);
 			sb.Append(NewLine);
-			var args = StringHelper.BreakLineAtIndex(StringHelper.RemoveCarriageReturns(job.ProcFileArguments), 70);
-	        sb.Append("Process StartInfo Arguments: " );
-			if (args == null || args.Length == 0)
+			var args = StringHelper.BreakLineAtIndex(StringHelper.RemoveCarriageReturns(job.ProcFileArguments), 65);
+	        sb.Append("Process StartInfo Arguments: ");
+			if (args.Length > 0)
 			{
-				sb.Append("<NO ARGUMENTS>" + NewLine);
-			}
-			else if (args.Length == 1)
-			{
-				sb.Append(args[0] + NewLine);
+				sb.Append(NewLine);
+
+				for (int i = 0; i < args.Length; i++)
+				{
+					sb.Append("     " + args[i] + NewLine);
+				}
 			}
 			else
 			{
-				sb.Append(args[0] + NewLine);
-				for (int i = 1; i < args.Length; i++)
-				{
-					sb.Append("        " + args[i] + NewLine);
-				}
+				sb.Append("<NO ARGUMENTS>" + NewLine);
 			}
 
 			sb.Append(subbanner + NewLine);

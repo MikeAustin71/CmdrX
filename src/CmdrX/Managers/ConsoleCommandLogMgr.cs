@@ -161,7 +161,12 @@ namespace CmdrX.Managers
 
 					if (_currentLogfileDto != null)
 					{
-						_currentLogfileDto.Dispose();
+						if (!string.IsNullOrWhiteSpace(_cmdConsoleFileErrorSuffix))
+						{
+							FileHelper.DeleteFileWithZeroBytes(_currentLogfileDto);
+						}
+						
+                        _currentLogfileDto.Dispose();
 						_currentLogfileDto = null;
 					}
 

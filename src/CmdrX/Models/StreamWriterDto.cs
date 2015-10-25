@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using CmdrX.Constants;
 using CmdrX.GlobalConstants;
 using CmdrX.Helpers;
@@ -131,9 +132,9 @@ namespace CmdrX.Models
 				_fStream = new FileStream(StreamWriterFile.FileXinfo.FullName, 
 											FileMode.Append,
 												FileAccess.Write,
-													FileShare.Read);
+													FileShare.ReadWrite);
 
-				_swWriter = new StreamWriter(_fStream);
+				_swWriter = new StreamWriter(_fStream,Encoding.UTF8);
 			}
 			catch(Exception ex)
 			{

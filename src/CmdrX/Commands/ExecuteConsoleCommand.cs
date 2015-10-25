@@ -160,6 +160,7 @@ namespace CmdrX.Commands
 
 				exitCode = proc.ExitCode;
 
+				_executeCommand.CommandExitCode = exitCode;
 				_executeCommand.CommandExitTime = DateTime.Now;
 
 			}

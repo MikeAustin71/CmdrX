@@ -232,6 +232,16 @@ namespace CmdrX.Helpers
 
 	    }
 
+	    public static bool DeleteFileWithZeroBytes(FileDto fileDto)
+	    {
+		    if (!IsFileDtoValid(fileDto))
+		    {
+			    return false;
+		    }
+
+		    return fileDto.FileXinfo.Length != 0 || DeleteAFile(fileDto);
+	    }
+
 	    public static bool DeleteAFile(FileDto fileDto)
 	    {
 		    if (fileDto?.FileXinfo == null)

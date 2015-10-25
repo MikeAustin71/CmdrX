@@ -68,7 +68,19 @@ namespace CmdrX
 					return;
 				}
 
+			}
+			catch
+			{
+				if (Environment.ExitCode == 0)
+				{
+					Environment.ExitCode = -50;
+				}
 				
+				Console.WriteLine("CmdrX.exe Setup Operation Failed!");
+			}
+
+			try
+			{
 				ExecuteConsoleCommands(cmdJobs, cmdExeDto);
 
 			}
@@ -76,7 +88,7 @@ namespace CmdrX
 			{
 				if (Environment.ExitCode == 0)
 				{
-					Environment.ExitCode = -20;
+					Environment.ExitCode = -50;
 				}
 
 				var err = new FileOpsErrorMessageDto
@@ -117,6 +129,10 @@ namespace CmdrX
 			{
 				jobs?.Dispose();
 				cmdExeDto?.Dispose();
+
+				Console.WriteLine("*************************************************************");
+				Console.WriteLine("CmdrX.exe job run completed! Exit Code = " + Environment.ExitCode);
+				Console.WriteLine("*************************************************************");
 
 			}
 		}
