@@ -15,13 +15,20 @@ namespace CmdrX.Models
 						AppConstants.LoggingStatus,
 						AppConstants.LoggingMode);
 
+		private Encoding _streamWriterEncoding = Encoding.UTF8;
+
 		private FileStream _fStream;
 
 		private StreamWriter _swWriter;
 
 		public FileDto StreamWriterFile { get; private set; }
 
-		public StreamWriterDto(FileDto swFile)
+		public StreamWriterDto(FileDto swFile) : this(swFile, Encoding.UTF8)
+		{
+
+		}
+
+		public StreamWriterDto(FileDto swFile, Encoding streamWriterEncoding)
 		{
 			if (!FileHelper.IsFileDtoValid(swFile))
 			{
@@ -43,8 +50,12 @@ namespace CmdrX.Models
 
 			}
 
+			_streamWriterEncoding = streamWriterEncoding;
+
 			CreateStreamWriter(swFile.FileXinfo.FullName);
+
 		}
+
 
 		public void SetStreamWriter(FileDto swFile)
 		{
@@ -134,7 +145,7 @@ namespace CmdrX.Models
 												FileAccess.Write,
 													FileShare.ReadWrite);
 
-				_swWriter = new StreamWriter(_fStream,Encoding.UTF8);
+				_swWriter = new StreamWriter(_fStream,_streamWriterEncoding);
 			}
 			catch(Exception ex)
 			{
