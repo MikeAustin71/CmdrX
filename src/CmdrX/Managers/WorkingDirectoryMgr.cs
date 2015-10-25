@@ -22,11 +22,53 @@ namespace CmdrX.Managers
 		public DirectoryDto OriginalCurrentWorkingDirectory { get; private set; } 
 		public DirectoryDto TargetWorkingDirectory { get; set; }
 
-		public WorkingDirectoryMgr()
+		public WorkingDirectoryMgr() : this(string.Empty)
+		{
+		}
+
+		public WorkingDirectoryMgr(DirectoryDto targetDirDto)
+		{
+			SetCurrentWorkingDirectory();
+			if (!SetTargetDirectory(targetDirDto))
+			{
+				TargetWorkingDirectory = new DirectoryDto(OriginalCurrentWorkingDirectory.DirInfo.FullName);
+			}
+
+
+			if (!DirectoryHelper.IsDirectoryDtoValid(TargetWorkingDirectory))
+			{
+				var ex = new Exception("TargetWorkingDirectory Dto Invalid!");
+
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = OriginalCurrentWorkingDirectory.DirInfo.FullName,
+					ErrId = 2,
+					ErrorMessage = "Directory Deletion Failed!",
+					ErrSourceMethod = "Constructor()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+				ErrorMgr.WriteErrorMsg(err);
+
+				throw ex;
+
+			}
+
+
+		}
+
+		public WorkingDirectoryMgr(string targetDir)
 		{
 			SetCurrentWorkingDirectory();
 
-			TargetWorkingDirectory = new DirectoryDto(OriginalCurrentWorkingDirectory.DirInfo.FullName);
+			if (string.IsNullOrWhiteSpace(targetDir) || !SetTargetDirectory(targetDir))
+			{
+				TargetWorkingDirectory = new DirectoryDto(OriginalCurrentWorkingDirectory.DirInfo.FullName);
+			}
+
 
 			if (!DirectoryHelper.IsDirectoryDtoValid(TargetWorkingDirectory))
 			{
@@ -49,7 +91,6 @@ namespace CmdrX.Managers
 				throw ex;
 
 			}
-
 
 		}
 
@@ -166,26 +207,33 @@ namespace CmdrX.Managers
 			
 		}
 
-		public void SetTargetDirectory(string targetDir)
+		public bool SetTargetDirectory(string targetDir)
 		{
 			if (string.IsNullOrWhiteSpace(targetDir))
 			{
-				return;
+				return false;
 			}
 
-			TargetWorkingDirectory.Dispose();
-			TargetWorkingDirectory = new DirectoryDto(targetDir);
+			var dirDto = new DirectoryDto(targetDir);
+
+			var result = SetTargetDirectory(dirDto);
+
+			dirDto.Dispose();
+
+			return result;
 		}
 
-		public void SetTargetDirectory(DirectoryDto targetDto)
+		public bool SetTargetDirectory(DirectoryDto targetDto)
 		{
 			if (!DirectoryHelper.IsDirectoryDtoValid(targetDto))
 			{
-				return;
+				return false;
 			}
 
-			TargetWorkingDirectory.Dispose();
+			TargetWorkingDirectory?.Dispose();
 			TargetWorkingDirectory = new DirectoryDto(targetDto.DirInfo.FullName);
+
+			return true;
 		}
 
 	}

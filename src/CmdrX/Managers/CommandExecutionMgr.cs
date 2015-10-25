@@ -31,6 +31,8 @@ namespace CmdrX.Managers
 		{
 			_commandJobs = jobsGroup;
 
+			_consoleExecutor = consoleCmdDto;
+
 			_cmdLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCommandOutputLogFilePathName,
 													consoleCmdDto.CmdConsoleLogFileTimeStamp,
 														string.Empty);
@@ -38,9 +40,9 @@ namespace CmdrX.Managers
 			_errLogMgr = new ConsoleCommandLogMgr(consoleCmdDto.DefaultCommandOutputLogFilePathName,
                                                         consoleCmdDto.CmdConsoleLogFileTimeStamp,
 															consoleCmdDto.CmdConsoleLogFileErrorSuffix);
-			_wrkDirMgr = new WorkingDirectoryMgr();
+			
+			_wrkDirMgr = new WorkingDirectoryMgr(_consoleExecutor.DefaultCommandExeDirectoryDto);
 
-			_consoleExecutor = consoleCmdDto;
 		}
 
 		public bool ExecuteCommands()
@@ -59,7 +61,7 @@ namespace CmdrX.Managers
 					var exitCode = exeCmd.Execute();
 					jobNo++;
 					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
-					Console.WriteLine($"Completed Job No. {jobNo:#0} Exit Code: {job.CommandExitCode} Job Name: {job.CommandDisplayName}" );
+					Console.WriteLine($"Completed Job No. {jobNo,4:###0} Exit Code: {job.CommandExitCode} Job Name: {job.CommandDisplayName}" );
 
 					if (exitCode != 0)
 					{

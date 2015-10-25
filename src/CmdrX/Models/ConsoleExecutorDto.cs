@@ -177,7 +177,29 @@ namespace CmdrX.Models
 		{
 			if (string.IsNullOrWhiteSpace(dir))
 			{
-				dir = ".";
+				DefaultCommandExeDirectoryDto = DirectoryHelper.GetCurrentDirectory();
+
+				if (!DirectoryHelper.IsDirectoryDtoValid(DefaultCommandExeDirectoryDto))
+				{
+					var ex = new Exception("Default Command Execution Directory Dto is INVALID!");
+
+					var err = new FileOpsErrorMessageDto
+					{
+						DirectoryPath = string.Empty,
+						ErrId = 1,
+						ErrorMessage = ex.Message,
+						ErrSourceMethod = "SetDefaultCommandExeDirectory()",
+						ErrException = ex,
+						FileName = string.Empty,
+						LoggerLevel = LogLevel.FATAL
+					};
+
+					ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+					ErrorMgr.WriteErrorMsg(err);
+
+					throw ex;
+				}
+
 			}
 
 
@@ -196,7 +218,7 @@ namespace CmdrX.Models
 					var err = new FileOpsErrorMessageDto
 					{
 						DirectoryPath = string.Empty,
-						ErrId = 1,
+						ErrId = 2,
 						ErrorMessage = ex.Message,
 						ErrSourceMethod = "SetDefaultCommandExeDirectory()",
 						ErrException = ex,

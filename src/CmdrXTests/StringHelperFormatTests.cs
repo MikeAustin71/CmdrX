@@ -44,6 +44,17 @@ namespace CmdrXTests
 
 		}
 
+		[TestMethod]
+		public void T005_TestRightJustifyNumericFormat()
+		{
+			var x1 = 1;
+			var sX1 = $"This is right justify one digit {x1,3:##0}";
+			var x20 = 20;
+			var sX20 = $"This is right justify two digit {x20,3:##0}";
+			Assert.IsTrue(sX1.Length == sX20.Length);
+			Assert.IsTrue(sX1[sX1.Length-1] == '1');
+			Assert.IsTrue(sX20[sX20.Length-1] == '0');
+		}
 
 	}
 }
