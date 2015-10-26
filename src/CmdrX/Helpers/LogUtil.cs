@@ -170,7 +170,9 @@ namespace CmdrX.Helpers
 
 			var jobName = job.CommandDisplayName;
 
-			CurrentJobNo = "Job No: " + JobNumber++;
+			JobNumber = job.JobNumber;
+
+			CurrentJobNo = "Starting Job No: " + JobNumber;
 
             if(!string.IsNullOrEmpty(jobName))
             {
@@ -252,7 +254,7 @@ namespace CmdrX.Helpers
 			var subbanner = StringHelper.MakeSingleCharString('-', MaxBannerLen);
 		    var startTime = job.CommandStartTime;
 		    var endTime = job.CommandExitTime;
-		    TimeSpan ts = endTime.Subtract(startTime);
+		    var ts = job.CommandElapsedTime;
 			var sb = new StringBuilder();
 			sb.Append(NewLine);
 			sb.Append(NewLine);
@@ -262,6 +264,7 @@ namespace CmdrX.Helpers
 			sb.Append(NewLine);
 
 			sb.Append(subbanner + NewLine);
+			sb.Append("Job       Number: " + job.JobNumber + NewLine);
 			sb.Append("Job   Start Time: " + DateHelper.DateTimeToDayMilliseconds(startTime) + NewLine);
 			sb.Append("Job     End Time: " + DateHelper.DateTimeToDayMilliseconds(endTime) + NewLine);
 		    sb.Append("Job Elapsed Time: " + DateHelper.TimeSpanDetailToMiliseconds(ts) + NewLine);

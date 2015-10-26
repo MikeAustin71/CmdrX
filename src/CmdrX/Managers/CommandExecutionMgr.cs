@@ -54,13 +54,18 @@ namespace CmdrX.Managers
 			{
 				foreach (var job in _commandJobs.Jobs)
 				{
+					jobNo++;
+					job.JobNumber = jobNo;
 					job.CommandStartTime = DateTime.Now;
 					LogUtil.WriteLogJobStartUpMessage(job, _consoleExecutor);
-
+					_cmdLogMgr.LogWriteStartJobHeader(job);
+					_errLogMgr.LogWriteStartJobHeader(job);
 					var exeCmd = new ExecuteConsoleCommand(job, _consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
 					var exitCode = exeCmd.Execute();
-					jobNo++;
+
 					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
+					_cmdLogMgr.LogWriteEndJobFooter(job);
+					_errLogMgr.LogWriteEndJobFooter(job);
 					Console.WriteLine($"Completed Job No. {jobNo,4:###0} Exit Code: {job.CommandExitCode} Job Name: {job.CommandDisplayName}" );
 
 					if (exitCode != 0)

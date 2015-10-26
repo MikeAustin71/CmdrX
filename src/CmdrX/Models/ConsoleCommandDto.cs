@@ -12,6 +12,9 @@ namespace CmdrX.Models
 		private ConsoleExecutorDto _cmdExeDto;
 
 		#region CommandExeControl
+
+		public int JobNumber { get; set; }
+
 		private string _commandDisplayName = string.Empty;
 
 		public string CommandDisplayName
@@ -140,9 +143,26 @@ namespace CmdrX.Models
 
 		public int NumberOfCommandElements { get; set; }
 
-		public DateTime CommandStartTime { get; set; }
+		public DateTime CommandStartTime { get; set; } = DateTime.Now;
 
-		public DateTime CommandExitTime { get; set; }
+		private DateTime _commandExitTime = DateTime.Now.AddMinutes(10);
+
+		public DateTime CommandExitTime
+		{
+			get
+			{
+				return _commandExitTime;
+			}
+
+			set
+			{
+				_commandExitTime = value;
+
+				CommandElapsedTime = _commandExitTime.Subtract(CommandStartTime);
+			}
+		}
+
+		public TimeSpan CommandElapsedTime { get; private set; }
 
 		public int CommandExitCode { get; set; }
 

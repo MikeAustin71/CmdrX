@@ -10,7 +10,15 @@ namespace CmdrX.Managers
 {
 	public class ConsoleCommandLogMgr
 	{
+		private const int MaxBannerLen = 79;
+
 		private bool _disposed;
+		
+		private string  _banner = StringHelper.MakeSingleCharString('=', MaxBannerLen);
+		private string  _subbanner = StringHelper.MakeSingleCharString('-', MaxBannerLen);
+		private string _newLine = Environment.NewLine;
+
+		private readonly object _lockObject = new object();
 
 		private readonly string _logfileTimeStamp;
 
@@ -41,7 +49,9 @@ namespace CmdrX.Managers
 						AppConstants.LoggingMode);
 
 
-		public int NumberOfLogLinesWritten { get; set; }
+		public int NumberOfLogLinesWritten { get; private set; }
+
+		public int NumberOfJobLogLinesWritten { get; private set; }
 
 		public ConsoleCommandLogMgr(
 				string defaultCmdConsoleLogPathFileName, 
@@ -245,38 +255,101 @@ namespace CmdrX.Managers
 			return true;
 		}
 
+		public void LogWriteStartJobHeader(ConsoleCommandDto job)
+		{
+			var sb = new StringBuilder();
+			sb.Append(_newLine);
+			sb.Append(_newLine);
+			sb.Append(_banner + _newLine);
+			sb.Append(_banner + _newLine);
+			var s = StringHelper.CenterString("** CmdrX.exe Job Started **", MaxBannerLen);
+			sb.Append(s + _newLine);
+			s = StringHelper.CenterString($"No {job.JobNumber} Job Name: {job.CommandDisplayName}", MaxBannerLen);
+			sb.Append(s + _newLine);
+            sb.Append("Job Start Time: " + DateHelper.DateTimeToDayMilliseconds(job.CommandStartTime) + _newLine);
+			sb.Append("Process StartInfo FileName: " + job.ProcFileNameCommand + _newLine);
+			var args = StringHelper.BreakLineAtIndex(StringHelper.RemoveCarriageReturns(job.ProcFileArguments), MaxBannerLen - 6);
+			sb.Append("Process StartInfo Arguments: ");
+			if (args.Length > 0)
+			{
+				sb.Append(_newLine);
+
+				for (int i = 0; i < args.Length; i++)
+				{
+					sb.Append("     " + args[i] + _newLine);
+				}
+			}
+			else
+			{
+				sb.Append("<NO ARGUMENTS>" + _newLine);
+			}
+
+			sb.Append(_subbanner + _newLine);
+			sb.Append(_newLine);
+			sb.Append(_newLine);
+			LogWriteLine(sb.ToString());
+			NumberOfJobLogLinesWritten = 0;
+		}
+
+		public void LogWriteEndJobFooter(ConsoleCommandDto job)
+		{
+            var sb = new StringBuilder();
+			sb.Append(_newLine);
+			sb.Append(_newLine);
+			sb.Append(_subbanner + _newLine);
+			sb.Append(StringHelper.CenterString("!! CmdrX.exe Completed Job !!", MaxBannerLen));
+			sb.Append(_newLine);
+			sb.Append(StringHelper.CenterString($"Job No {job.JobNumber} Job Name: {job.CommandDisplayName}", MaxBannerLen));
+			sb.Append(_newLine);
+			sb.Append("Job       Number: " + job.JobNumber + _newLine);
+			sb.Append("Job   Start Time: " + DateHelper.DateTimeToDayMilliseconds(job.CommandStartTime) + _newLine);
+			sb.Append("Job     End Time: " + DateHelper.DateTimeToDayMilliseconds(job.CommandExitTime) + _newLine);
+			sb.Append("Job Elapsed Time: " + DateHelper.TimeSpanDetailToMiliseconds(job.CommandElapsedTime) + _newLine);
+			sb.Append("Job LogLines Out: " + NumberOfJobLogLinesWritten + _newLine);
+			sb.Append(_banner + _newLine);
+			sb.Append(_banner + _newLine);
+			sb.Append(_newLine);
+			sb.Append(_newLine);
+
+			LogWriteLine(sb.ToString());
+			LogFlushStreamWriter();
+		}
+
 		public void LogWriteLine(string outputLine)
 		{
-
-			if (!IsStreamWriterValid())
+			lock (_lockObject)
 			{
-				var msg = "Stream Writer Dto Invalid!";
-				var err = new FileOpsErrorMessageDto
+				if (!IsStreamWriterValid())
 				{
-					DirectoryPath = string.Empty,
-					ErrId = 30,
-					ErrorMessage = msg,
-					ErrSourceMethod = "LogWriteLine()",
-					FileName = _currentLogfileDto.FileXinfo.FullName,
-					LoggerLevel = LogLevel.FATAL
-				};
+					var msg = "Stream Writer Dto Invalid!";
+					var err = new FileOpsErrorMessageDto
+					{
+						DirectoryPath = string.Empty,
+						ErrId = 30,
+						ErrorMessage = msg,
+						ErrSourceMethod = "LogWriteLine()",
+						FileName = _currentLogfileDto.FileXinfo.FullName,
+						LoggerLevel = LogLevel.FATAL
+					};
 
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
+					ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
+					ErrorMgr.WriteErrorMsg(err);
 
-				throw new Exception(msg);
+					throw new Exception(msg);
+
+				}
+
+				if (string.IsNullOrWhiteSpace(outputLine))
+				{
+					return;
+				}
+
+				NumberOfLogLinesWritten++;
+				NumberOfJobLogLinesWritten++;
+
+				_swDto.GetStreamWriter().WriteLine(outputLine);
 
 			}
-
-			if (string.IsNullOrWhiteSpace(outputLine))
-			{
-				return;
-			}
-
-			NumberOfLogLinesWritten++;
-
-
-			_swDto.GetStreamWriter().WriteLine(outputLine);
 		}
 
 
