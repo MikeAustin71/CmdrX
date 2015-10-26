@@ -1,11 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<?xml version="1.0" encoding="utf-8" ?>
 <Commands>
+	<!--
+	Before Execution: Perform the following steps.
+	1. Create a package.json file (npm init)
+	2. Create a bower.json file (bower init)
+	3. If required, create a .bowerrc to specify
+		bower deployment directory.
+ -->
 	<CommandFileHeader>
 		<DefaultLogFileRetentionInDays>0</DefaultLogFileRetentionInDays>
 		<DefaultCommandExeDirectory></DefaultCommandExeDirectory>
 		<DefaultCommandOutputLogFilePathName>./cmdrx/install.log</DefaultCommandOutputLogFilePathName>
 	</CommandFileHeader>
+	<ExectuteCommand>
+		<CommandDisplayName>Local Bower</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save</CommandModifier>
+		<CommandArguments>bower</CommandArguments>
+	</ExectuteCommand>
 	<ExectuteCommand>
 		<CommandDisplayName>Local Gulp</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
@@ -189,6 +209,20 @@
 		<CommandArguments>jquery lodash</CommandArguments>
 	</ExectuteCommand>
 	<ExectuteCommand>
+		<CommandDisplayName>Testing</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>npm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>--save-dev</CommandModifier>
+		<CommandArguments>karma chai karma-chai karma-chai-sinon karma-chrome-launcher karma-coverage karma-growl-reporter karma-mocha karma-phantomjs-launcher karma-sinon  mocha mocha-clean sinon-chai sinon phantomjs --msvs_version=2013</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
 		<CommandDisplayName>Global Node Notifier</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
 		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
@@ -217,7 +251,35 @@
 		<CommandArguments>node-notifier</CommandArguments>
 	</ExectuteCommand>
 	<ExectuteCommand>
+		<CommandDisplayName>bower jquery</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>bower</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>-save</CommandModifier>
+		<CommandArguments>jquery</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
 		<CommandDisplayName>font-awesome</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>bower</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier>-save</CommandModifier>
+		<CommandArguments>font-awesome</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>bootstrap</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
 		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
@@ -257,5 +319,61 @@
 		<CommandToExecute>install</CommandToExecute>
 		<CommandModifier>-save</CommandModifier>
 		<CommandArguments>toastr</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Copy jscs</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>Copy</ExecutableTarget>
+		<CommandToExecute></CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>D:\DevOps\JSCS_StyleChecker\MikeRapp\deploy\*.* D:\Angular2\006_Mike\</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Copy jsHint</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>Copy</ExecutableTarget>
+		<CommandToExecute></CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>D:\DevOps\JSHint\MikeRapp\deploy\*.* D:\Angular2\006_Mike\</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Copy gitignore</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>Copy</ExecutableTarget>
+		<CommandToExecute></CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>D:\Mike\001_StandardSetup\gitignore\deploy\*.* D:\Angular2\006_Mike\</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Copy editorconfig</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>Copy</ExecutableTarget>
+		<CommandToExecute></CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>D:\Mike\001_StandardSetup\editorconfig\deploy\*.* D:\Angular2\006_Mike\</CommandArguments>
 	</ExectuteCommand>
 </Commands>
