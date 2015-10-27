@@ -14,9 +14,9 @@ namespace CmdrX.Managers
 
 		private bool _disposed;
 		
-		private string  _banner = StringHelper.MakeSingleCharString('=', MaxBannerLen);
-		private string  _subbanner = StringHelper.MakeSingleCharString('-', MaxBannerLen);
-		private string _newLine = Environment.NewLine;
+		private readonly string  _banner = StringHelper.MakeSingleCharString('=', MaxBannerLen);
+		private readonly string  _subbanner = StringHelper.MakeSingleCharString('-', MaxBannerLen);
+		private readonly string _newLine = Environment.NewLine;
 
 		private readonly object _lockObject = new object();
 
@@ -305,6 +305,7 @@ namespace CmdrX.Managers
 			sb.Append("Job   Start Time: " + DateHelper.DateTimeToDayMilliseconds(job.CommandStartTime) + _newLine);
 			sb.Append("Job     End Time: " + DateHelper.DateTimeToDayMilliseconds(job.CommandExitTime) + _newLine);
 			sb.Append("Job Elapsed Time: " + DateHelper.TimeSpanDetailToMiliseconds(job.CommandElapsedTime) + _newLine);
+			sb.Append("Job    Exit Code: " + job.CommandExitCode + _newLine);
 			sb.Append("Job LogLines Out: " + NumberOfJobLogLinesWritten + _newLine);
 			sb.Append(_banner + _newLine);
 			sb.Append(_banner + _newLine);

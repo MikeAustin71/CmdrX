@@ -165,6 +165,26 @@ namespace CmdrX.Helpers
 
 	    }
 
+	    public static StringBuilder AddBreakLinesAtIndex(string rawStr, int lineLengthMax, StringBuilder sb, bool addNewLine)
+	    {
+		    var strs = BreakLineAtIndex(rawStr, lineLengthMax);
+		    if (strs == null || strs.Length == 0)
+		    {
+			    return sb;
+		    }
+
+		    foreach (var str in strs)
+		    {
+			    sb.Append(str);
+			    if (addNewLine)
+			    {
+				    sb.Append(Environment.NewLine);
+			    }
+		    }
+
+		    return sb;
+	    }
+
 	    public static string[] BreakLineAtIndex(string rawStr, int lineLengthMax)
 	    {
 		    if (lineLengthMax < 2 || string.IsNullOrWhiteSpace(rawStr))

@@ -1,7 +1,6 @@
 #CmdrX.exe
 
-This windows application is designed to execute multiple
-console commands.
+CmdrX is a command 'runner'. This c# windows application is designed to execute multiple console commands.
 
 ## Command Execution
 The commands are executed in sequence as specified in a

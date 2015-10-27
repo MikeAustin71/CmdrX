@@ -289,58 +289,59 @@ namespace CmdrX.Helpers
 			JobGroupMessageCnt++;
 
 			var sb = new StringBuilder();
-			int errId;
 
 			if (err.LoggerLevel == LogLevel.FATAL
 				|| err.LoggerLevel == LogLevel.ERROR)
 			{
-				errId = (err.ErrId * -1);
-
-				sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod} Error Id:{errId} MsgType: {err.LoggerLevel} \n");
-
+				err.ErrId = (err.ErrId * -1);
 			}
-			else
+
+			sb.Append($"Msg Id: {err.ErrId}  MsgType: {err.LoggerLevel}  ");
+			if (!string.IsNullOrWhiteSpace(err.JobName))
 			{
-
-				errId = err.ErrId;
-
-				sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod}   Msg Id:{errId} MsgType: {err.LoggerLevel} \n");
-
+				sb.Append("Job Name: " + err.JobName);
 			}
 
+			sb.Append(NewLine);
 
+			sb.Append($"Class: {err.ErrSourceClass}  Method: {err.ErrSourceMethod}" + NewLine);
 
-			sb.Append($"-- Message: {err.ErrorMessage} \n");
+			if (!string.IsNullOrWhiteSpace(err.ErrorMessage))
+			{
+				sb = StringHelper.AddBreakLinesAtIndex("Error Message: " + err.ErrorMessage, MaxBannerLen - 1, sb, true);
+			}
+			
+
 
 			if (err.ErrException != null)
 			{
-				sb.Append($"-- Exception: {err.ErrException.Message} \n");
+				sb = StringHelper.AddBreakLinesAtIndex("Exception: " + err.ErrException.Message, MaxBannerLen - 1, sb, true);
 
 				if (err.ErrException.InnerException != null)
 				{
-					sb.Append($"-- Inner Exception: {err.ErrException.InnerException.Message} \n");
+					sb = StringHelper.AddBreakLinesAtIndex("Inner Exception: " + err.ErrException.InnerException.Message, MaxBannerLen - 1, sb, true);
 				}
 
 			}
 
 			if (!string.IsNullOrWhiteSpace(err.DirectoryPath))
 			{
-				sb.Append($"-- Directory: {err.DirectoryPath} \n");
+				sb.Append($"-- Directory: {err.DirectoryPath}" + NewLine);
 			}
 
 			if (!string.IsNullOrWhiteSpace(err.DirectoryPath2))
 			{
-				sb.Append($"-- Directory2: {err.DirectoryPath2} \n");
+				sb.Append($"-- Directory2: {err.DirectoryPath2}" + NewLine);
 			}
 
 			if (!string.IsNullOrWhiteSpace(err.FileName))
 			{
-				sb.Append($"-- File Name: {err.FileName} \n");
+				sb.Append($"-- File Name: {err.FileName}" + NewLine);
 			}
 
 			if (!string.IsNullOrWhiteSpace(err.CommandName))
 			{
-				sb.Append($"-- Command Name: {err.FileName} \n");
+				sb.Append($"-- Command Name: {err.FileName}" + NewLine);
 			}
 
 

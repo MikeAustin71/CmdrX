@@ -112,6 +112,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="XmlCmdFiles\CmdrXCmds002.xml" />
+    <Content Include="XmlCmdFiles\CmdrXCmds003.xml" />
     <Content Include="XmlCmdFiles\npmsetup001.xml" />
     <Content Include="XmlCmdFiles\Test102.xml" />
   </ItemGroup>

@@ -63,20 +63,20 @@ namespace CmdrX.Managers
 					var exeCmd = new ExecuteConsoleCommand(job, _consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
 					var exitCode = exeCmd.Execute();
 
-					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
 					_cmdLogMgr.LogWriteEndJobFooter(job);
 					_errLogMgr.LogWriteEndJobFooter(job);
 					Console.WriteLine($"Completed Job No. {jobNo,4:###0} Exit Code: {job.CommandExitCode} Job Name: {job.CommandDisplayName}" );
 
 					if (exitCode != 0)
 					{
-						var msg = "Command Returned Failed Exit Code: " 
-							+ exitCode + " Job Name: " + job.CommandDisplayName;
+						var msg = "Command Returned Non-Zero Exit Code: " 
+							+ exitCode ;
 
                         Environment.ExitCode = exitCode;
 						var err = new FileOpsErrorMessageDto
 						{
-							DirectoryPath = string.Empty,
+							JobName = job.CommandDisplayName,
+                            DirectoryPath = string.Empty,
 							ErrId = 10,
 							ErrorMessage = msg,
 							ErrSourceMethod = "ExecuteCommands()",
@@ -88,6 +88,9 @@ namespace CmdrX.Managers
 						ErrorMgr.WriteErrorMsg(err);
 					}
 
+					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
+
+					_wrkDirMgr.ChangeBackToOriginalWorkingDirectory();
 				}
 
 				Environment.ExitCode = 0;

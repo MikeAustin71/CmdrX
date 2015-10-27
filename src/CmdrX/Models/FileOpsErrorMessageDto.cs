@@ -8,6 +8,7 @@ namespace CmdrX.Models
 	    public string ErrorMessage { get; set; } = string.Empty;
         public string ErrSourceClass { get; set; } = string.Empty;
 		public string ErrSourceMethod { get; set; } = string.Empty;
+	    public string JobName { get; set; } = string.Empty;
 		public string FileName { get; set; } = string.Empty;
 	    public string CommandName { get; set; } = string.Empty;
 		public string DirectoryPath { get; set; } = string.Empty;
