@@ -82,6 +82,7 @@
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\USDateFormats.cs" />
     <Compile Include="Helpers\USTimeFormats.cs" />
+    <Compile Include="Helpers\XmlParameterConverter.cs" />
     <Compile Include="Helpers\XmlValueExtractor.cs" />
     <Compile Include="Managers\ApplicationLogMgr.cs" />
     <Compile Include="Managers\ApplicationLogger.cs" />

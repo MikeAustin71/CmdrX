@@ -81,14 +81,11 @@ namespace CmdrX.Managers
 							ErrorMessage = msg,
 							ErrSourceMethod = "ExecuteCommands()",
 							FileName = string.Empty,
-							LoggerLevel = LogLevel.ERROR
+							LoggerLevel = LogLevel.WARN
 						};
 
 						ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 						ErrorMgr.WriteErrorMsg(err);
-                        Console.WriteLine(msg);
-						Environment.ExitCode = exitCode;
-						return false;
 					}
 
 				}

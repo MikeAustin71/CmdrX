@@ -49,6 +49,9 @@ namespace CmdrX.Managers.XmlElementParsers
 											ref ConsoleCommandDto consoleCommand,
 												ref	ConsoleExecutorDto cmdExeDto)
 		{
+			var parmHlpr = new XmlParameterConverter(cmdExeDto);
+			
+
 			if (reader.Name == "CommandDisplayName")
 			{
 				consoleCommand.CommandDisplayName = _xmlHlpr.ExtractStringValue(reader);
@@ -79,14 +82,14 @@ namespace CmdrX.Managers.XmlElementParsers
 
 			if (reader.Name == "DefaultConsoleCommandExecutor")
 			{
-				consoleCommand.ConsoleCommandExecutor = _xmlHlpr.ExtractStringValue(reader);
+				consoleCommand.ConsoleCommandExecutor = parmHlpr.RunConversion(_xmlHlpr.ExtractStringValue(reader));
 
 				return;
 			}
 
 			if (reader.Name == "ConsoleCommandExeArguments")
 			{
-				consoleCommand.ConsoleCommandExeArguments = _xmlHlpr.ExtractStringValue(reader);
+				consoleCommand.ConsoleCommandExeArguments = parmHlpr.RunConversion(_xmlHlpr.ExtractStringValue(reader));
 
 				return;
 			}
@@ -100,28 +103,28 @@ namespace CmdrX.Managers.XmlElementParsers
 
 			if (reader.Name == "ExecutableTarget")
 			{
-				consoleCommand.ExecutableTarget = _xmlHlpr.ExtractStringValue(reader);
+				consoleCommand.ExecutableTarget = parmHlpr.RunConversion(_xmlHlpr.ExtractStringValue(reader));
 
 				return;
 			}
 
 			if (reader.Name == "CommandToExecute")
 			{
-				consoleCommand.CommandToExecute = _xmlHlpr.ExtractStringValue(reader);
+				consoleCommand.CommandToExecute = parmHlpr.RunConversion(_xmlHlpr.ExtractStringValue(reader));
 
 				return;
 			}
 
 			if (reader.Name == "CommandModifier")
 			{
-				consoleCommand.CommandModifier = _xmlHlpr.ExtractStringValue(reader);
+				consoleCommand.CommandModifier = parmHlpr.RunConversion(_xmlHlpr.ExtractStringValue(reader));
 
 				return;
 			}
 
 			if (reader.Name == "CommandArguments")
 			{
-				consoleCommand.CommandArguments = _xmlHlpr.ExtractStringValue(reader);
+				consoleCommand.CommandArguments = parmHlpr.RunConversion(_xmlHlpr.ExtractStringValue(reader));
 			}
 
 

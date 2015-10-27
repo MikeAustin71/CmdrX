@@ -68,6 +68,7 @@
     <Compile Include="WorkingDirectoryMgrTests.cs" />
     <Compile Include="XmlFileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlParameterConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CmdrXCmds.xml">
