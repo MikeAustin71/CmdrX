@@ -3,26 +3,30 @@
 	<CommandFileHeader>
 		<DefaultLogFileRetentionInDays>0</DefaultLogFileRetentionInDays>
 		<DefaultCommandExeDirectory></DefaultCommandExeDirectory>
-		<DefaultCommandOutputLogFilePathName>./installLog/install.log</DefaultCommandOutputLogFilePathName>
+		<DefaultCommandOutputLogFilePathName>./cmdrx/install.log</DefaultCommandOutputLogFilePathName>
 	</CommandFileHeader>
 	<ExectuteCommand>
-		<CommandDisplayName>Copy Job 1</CommandDisplayName>
+		<CommandDisplayName>Copy1</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
-		<CommandOutputLogFileName>./installLog/install.log</CommandOutputLogFileName>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
 		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
 		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
 		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
-		<ExecuteInDir></ExecuteInDir>
+		<ExecuteInDir>D:\T08\</ExecuteInDir>
 		<ExecutableTarget>Copy</ExecutableTarget>
 		<CommandToExecute></CommandToExecute>
 		<CommandModifier></CommandModifier>
-		<CommandArguments>D:\T06\*.* D:\T08\</CommandArguments>
+		<CommandArguments>D:\T06\*.*</CommandArguments>
 	</ExectuteCommand>
 	<ExectuteCommand>
-		<CommandDisplayName>Copy Job 2</CommandDisplayName>
+		<CommandDisplayName>Copy2</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
-		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
 		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
 		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
@@ -31,6 +35,6 @@
 		<ExecutableTarget>Copy</ExecutableTarget>
 		<CommandToExecute></CommandToExecute>
 		<CommandModifier></CommandModifier>
-		<CommandArguments>D:\T06\*.* D:\T08\</CommandArguments>
+		<CommandArguments>D:\T07\*.*</CommandArguments>
 	</ExectuteCommand>
 </Commands>

@@ -113,8 +113,10 @@
     </Content>
     <Content Include="XmlCmdFiles\CmdrXCmds002.xml" />
     <Content Include="XmlCmdFiles\CmdrXCmds003.xml" />
+    <Content Include="XmlCmdFiles\CmdrXCmds004.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="XmlCmdFiles\npmsetup001.xml" />
-    <Content Include="XmlCmdFiles\Test102.xml" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">

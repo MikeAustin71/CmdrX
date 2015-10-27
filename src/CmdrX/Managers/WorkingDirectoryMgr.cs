@@ -211,7 +211,7 @@ namespace CmdrX.Managers
 		{
 			if (string.IsNullOrWhiteSpace(targetDir))
 			{
-				return false;
+				return SetTargetDirectory(OriginalCurrentWorkingDirectory);
 			}
 
 			var dirDto = new DirectoryDto(targetDir);
