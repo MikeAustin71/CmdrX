@@ -24,8 +24,8 @@
 	<ExectuteCommand>
 		<CommandDisplayName>gulp util</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
-		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
-		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<KillJobsRunOnExitCodeGreaterThan>50</KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan>-50</KillJobsRunOnExitCodeLessThan>
 		<CommandOutputLogFilePathBaseName>./installLog/install.log</CommandOutputLogFilePathBaseName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
 		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>

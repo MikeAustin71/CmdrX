@@ -43,6 +43,10 @@ namespace CmdrX.Models
 
 		public decimal CommandDefaultTimeOutInMinutes { get; set; }
 
+		public int DefaultKillJobsRunOnExitCodeGreaterThan { get; set; }
+
+		public int DefaultKillJobsRunOnExitCodeLessThan { get; set; }
+
 
 		public string DefaultCommandOutputLogFilePathName
 		{

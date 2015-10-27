@@ -8,7 +8,7 @@ namespace CmdrXTests
 	public class XmlFileTests
 	{
 		[TestMethod]
-		public void VerifyTestXmlFileExists()
+		public void T001_VerifyTestXmlFileExists()
 		{
 			var cmdExeDto = TestDirectories.GetConsoleExecutorDto();
 
@@ -26,7 +26,7 @@ namespace CmdrXTests
 		}
 
 		[TestMethod]
-		public void XmlCmdFileShouldParseSuccessfully()
+		public void T002_XmlCmdFileShouldParseSuccessfully()
 		{
 			var cmdExeDto = TestDirectories.GetConsoleExecutorDto();
 
@@ -44,7 +44,31 @@ namespace CmdrXTests
 		}
 
 		[TestMethod]
-		public void XmlCmdFileShouldParseHeaderSuccessfully()
+		public void T003_XmlParserShouldParseExitCodeLimitsCorrectly()
+		{
+			var cmdExeDto = TestDirectories.GetConsoleExecutorDto();
+			var defaultUpperLimit = 9999;
+			var defaultLowerLimit = -9999;
+
+			Assert.IsTrue(cmdExeDto.DefaultKillJobsRunOnExitCodeGreaterThan == defaultUpperLimit);
+			Assert.IsTrue(cmdExeDto.DefaultKillJobsRunOnExitCodeLessThan == defaultLowerLimit);
+
+			var builder = new XmlParameterBuilder(cmdExeDto);
+
+			var jobGroup = builder.BuildParmsFromXml();
+
+			Assert.IsNotNull(jobGroup);
+
+			Assert.IsTrue(jobGroup.Jobs.Count == 3);
+			Assert.IsTrue(jobGroup.Jobs[1].KillJobsRunOnExitCodeGreaterThan == 50);
+			Assert.IsTrue(jobGroup.Jobs[1].KillJobsRunOnExitCodeLessThan == -50);
+
+			Assert.IsTrue(jobGroup.Jobs[2].KillJobsRunOnExitCodeGreaterThan == defaultUpperLimit);
+			Assert.IsTrue(jobGroup.Jobs[2].KillJobsRunOnExitCodeLessThan == defaultLowerLimit);
+		}
+
+		[TestMethod]
+		public void T004_XmlCmdFileShouldParseHeaderSuccessfully()
 		{
 			var cmdExeDto = TestDirectories.GetConsoleExecutorDto();
 
@@ -56,6 +80,7 @@ namespace CmdrXTests
             Assert.IsTrue(cmdExeDto.AppLogRetentionInDays == 0);
 			Assert.IsTrue(dirDto.DirInfo.FullName == expectedDirDto.DirInfo.FullName);
 		}
+
 
 	}
 }

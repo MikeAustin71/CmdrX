@@ -73,7 +73,7 @@ namespace CmdrX.Commands
 
 		// http://www.codeproject.com/Articles/25983/How-to-Execute-a-Command-in-C
 
-		public int Execute()
+		public void Execute()
 		{
 			_logMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFilePathBaseName);
 			_errLogMgr.InitializeCmdConsoleLog(_executeCommand.CommandOutputLogFilePathBaseName);
@@ -83,6 +83,7 @@ namespace CmdrX.Commands
 				var msg = "Console Command Execution Syntax Is Empty! Command Display Name: " + _executeCommand.CommandDisplayName + " - Skipping this command.";
 				var err = new FileOpsErrorMessageDto
 				{
+					JobName = _executeCommand.CommandDisplayName,
 					DirectoryPath = string.Empty,
 					ErrId = 21,
 					ErrorMessage = msg,
@@ -93,16 +94,14 @@ namespace CmdrX.Commands
 
 				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				ErrorMgr.WriteErrorMsg(err);
-
-				return 0;
 			}
 
 			_wrkDirectoryMgr.SetTargetDirectory(_executeCommand.ExecuteInDir);
 			
-			return ExecuteCommand(_executeCommand);
+			ExecuteCommand(_executeCommand);
 		}
 
-		private int ExecuteCommand(ConsoleCommandDto cmdDto)
+		private void ExecuteCommand(ConsoleCommandDto cmdDto)
 		{
 			var thisMethod = "ExecuteCommand()";
 			bool procStatus = false;
@@ -158,9 +157,8 @@ namespace CmdrX.Commands
 
 				procStatus = proc.WaitForExit(_executeCommand.CommandTimeOutInMiliseconds);
 
-				exitCode = proc.ExitCode;
+				_executeCommand.CommandExitCode = proc.ExitCode;
 
-				_executeCommand.CommandExitCode = exitCode;
 				_executeCommand.CommandExitTime = DateTime.Now;
 
 			}
@@ -206,7 +204,6 @@ namespace CmdrX.Commands
 
 			}
 
-			return exitCode;
 		}
 
 		private void CmdOutputDataHandler(object sendingProcess,

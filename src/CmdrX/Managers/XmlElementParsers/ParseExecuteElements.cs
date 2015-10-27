@@ -9,7 +9,7 @@ namespace CmdrX.Managers.XmlElementParsers
 {
 	public class ParseExecuteElements : IXmlElementParser
 	{
-		private XmlValueExtractor _xmlHlpr = new XmlValueExtractor();
+		private readonly XmlValueExtractor _xmlHlpr = new XmlValueExtractor();
 
 		public ErrorLogger ErrorMgr = new
 			ErrorLogger(1043000,
@@ -62,6 +62,38 @@ namespace CmdrX.Managers.XmlElementParsers
 			if (reader.Name == "ConsoleCommandType")
 			{
 				consoleCommand.CommandType = _xmlHlpr.ExtractConsoleCommandType(reader);
+
+				return;
+			}
+
+			if (reader.Name == "KillJobsRunOnExitCodeGreaterThan")
+			{
+				var userEntry = _xmlHlpr.ExtractStringValue(reader);
+
+				int exitCodeLimit;
+
+				if (string.IsNullOrWhiteSpace(userEntry) || !int.TryParse(userEntry, out exitCodeLimit))
+				{
+					return;
+				}
+
+				consoleCommand.KillJobsRunOnExitCodeGreaterThan = exitCodeLimit;
+
+				return;
+			}
+
+			if (reader.Name == "KillJobsRunOnExitCodeLessThan")
+			{
+				var userEntry = _xmlHlpr.ExtractStringValue(reader);
+
+				int exitCodeLimit;
+
+				if (string.IsNullOrWhiteSpace(userEntry) || !int.TryParse(userEntry, out exitCodeLimit))
+				{
+					return;
+				}
+
+				consoleCommand.KillJobsRunOnExitCodeLessThan = exitCodeLimit;
 
 				return;
 			}

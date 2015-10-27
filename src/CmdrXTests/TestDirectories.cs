@@ -102,6 +102,10 @@ namespace CmdrXTests
 				CommandDefaultTimeOutInMinutes = 5.0M,
 				CommandMaxTimeOutInMinutes = 45.0M,
 				CommandMinTimeOutInMinutes = 1.0M,
+				DefaultKillJobsRunOnExitCodeGreaterThan =
+						int.Parse(ConfigurationManager.AppSettings["DefaultKillJobsRunOnExitCodeGreaterThan"]),
+				DefaultKillJobsRunOnExitCodeLessThan =
+				int.Parse(ConfigurationManager.AppSettings["DefaultKillJobsRunOnExitCodeLessThan"]),
 				DefaultCommandOutputLogFilePathName = 
 					ConfigurationManager.AppSettings["DefaultCommandOutputLogFilePathName"],
 				XmlCmdFileDto = GetXmlCmdFileDto(),

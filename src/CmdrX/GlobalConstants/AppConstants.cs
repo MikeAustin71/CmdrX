@@ -12,6 +12,10 @@ namespace CmdrX.GlobalConstants
 
 		public static string AppLogFileNameExtension { get; set; } = ConfigurationManager.AppSettings["ApplicationLogFileNameExtension"];
 
+		public static int DefaultKillJobsRunOnExitCodeGreaterThan { get; set; } = int.Parse(ConfigurationManager.AppSettings["DefaultKillJobsRunOnExitCodeGreaterThan"]);
+
+		public static int DefaultKillJobsRunOnExitCodeLessThan { get; set; } = int.Parse(ConfigurationManager.AppSettings["DefaultKillJobsRunOnExitCodeLessThan"]);
+
 		public static string DefaultCommandOutputLogFilePathName { get; set; } = ConfigurationManager.AppSettings["DefaultCommandOutputLogFilePathName"];
 
 		public static Dictionary<string, string> CommandLineArguments = new Dictionary<string, string>();

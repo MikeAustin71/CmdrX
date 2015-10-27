@@ -41,7 +41,9 @@ namespace CmdrX
 				CommandDefaultTimeOutInMinutes = AppConstants.CommandDefaultTimeOutInMinutes,
 				CommandMaxTimeOutInMinutes = AppConstants.CommandMaxTimeOutInMinutes,
 				CommandMinTimeOutInMinutes = AppConstants.CommandMinTimeOutInMinutes,
-				DefaultCommandOutputLogFilePathName = AppConstants.DefaultCommandOutputLogFilePathName,
+				DefaultKillJobsRunOnExitCodeGreaterThan = AppConstants.DefaultKillJobsRunOnExitCodeGreaterThan,
+				DefaultKillJobsRunOnExitCodeLessThan = AppConstants.DefaultKillJobsRunOnExitCodeLessThan,
+                DefaultCommandOutputLogFilePathName = AppConstants.DefaultCommandOutputLogFilePathName,
 				XmlCmdFileDto = AppInfoHelper.GetDefaultXmlCommandFile(),
 				DefaultConsoleCommandType = AppConstants.DefaultConsoleCommandType
 			};

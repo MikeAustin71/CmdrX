@@ -30,6 +30,10 @@ namespace CmdrX.Models
 
 		public ConsoleCommandType CommandType { get; set; } = ConsoleCommandType.None;
 
+		public int KillJobsRunOnExitCodeGreaterThan { get; set; }
+
+		public int KillJobsRunOnExitCodeLessThan { get; set; }
+
 		private string _commandOutputLogFilePathBaseName = string.Empty;
 
 		public string CommandOutputLogFilePathBaseName
@@ -177,6 +181,9 @@ namespace CmdrX.Models
 		public ConsoleCommandDto(ConsoleExecutorDto cmdExeDto)
 		{
 			_cmdExeDto = cmdExeDto;
+
+			KillJobsRunOnExitCodeGreaterThan = _cmdExeDto.DefaultKillJobsRunOnExitCodeGreaterThan;
+			KillJobsRunOnExitCodeLessThan = _cmdExeDto.DefaultKillJobsRunOnExitCodeLessThan;
 		}
 
 

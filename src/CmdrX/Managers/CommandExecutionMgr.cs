@@ -61,18 +61,22 @@ namespace CmdrX.Managers
 					_cmdLogMgr.LogWriteStartJobHeader(job);
 					_errLogMgr.LogWriteStartJobHeader(job);
 					var exeCmd = new ExecuteConsoleCommand(job, _consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
-					var exitCode = exeCmd.Execute();
+					exeCmd.Execute();
 
 					_cmdLogMgr.LogWriteEndJobFooter(job);
 					_errLogMgr.LogWriteEndJobFooter(job);
 					Console.WriteLine($"Completed Job No. {jobNo,4:###0} Exit Code: {job.CommandExitCode} Job Name: {job.CommandDisplayName}" );
 
-					if (exitCode != 0)
+					if (job.CommandExitCode > job.KillJobsRunOnExitCodeGreaterThan
+						|| job.CommandExitCode < job.KillJobsRunOnExitCodeLessThan)
 					{
-						var msg = "Command Returned Non-Zero Exit Code: " 
-							+ exitCode ;
+						var msg = $"Command Exit Code Is Out-Of-Bounds! Job Exit Code = {job.CommandExitCode}  " 
+							+ $"Max Exit Code = {job.KillJobsRunOnExitCodeGreaterThan}  " 
+							+ $"Mininimum Exit Code = {job.KillJobsRunOnExitCodeLessThan}  "
+							+ "Terminating Job Group Command Execution!";
 
-                        Environment.ExitCode = exitCode;
+						var ex = new Exception(msg);
+                        Environment.ExitCode = job.CommandExitCode;
 						var err = new FileOpsErrorMessageDto
 						{
 							JobName = job.CommandDisplayName,
@@ -80,12 +84,14 @@ namespace CmdrX.Managers
 							ErrId = 10,
 							ErrorMessage = msg,
 							ErrSourceMethod = "ExecuteCommands()",
+							ErrException = ex,
 							FileName = string.Empty,
-							LoggerLevel = LogLevel.WARN
+							LoggerLevel = LogLevel.FATAL
 						};
 
 						ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 						ErrorMgr.WriteErrorMsg(err);
+						throw ex;
 					}
 
 					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);

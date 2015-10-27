@@ -10,7 +10,7 @@ namespace CmdrX.Managers.XmlElementParsers
 	public class ParseCmdFileHeaderElements : IXmlElementParser
 	{
 
-		private XmlValueExtractor _xmlHlpr = new XmlValueExtractor();
+		private readonly XmlValueExtractor _xmlHlpr = new XmlValueExtractor();
 
 		public ErrorLogger ErrorMgr = new
 			ErrorLogger(2153000,
