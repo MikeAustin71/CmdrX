@@ -29,7 +29,7 @@ namespace CmdrX.Builders
         {
             if(commandArgs==null || commandArgs.Length < 1)
             {
-                return false;
+                return true;
             }
 
             return ProcessCommandArgs(commandArgs);
@@ -42,21 +42,7 @@ namespace CmdrX.Builders
 
 		    if (parser.Arguments.Count == 0)
 		    {
-
-			    var err = new FileOpsErrorMessageDto
-			    {
-				    DirectoryPath = String.Empty,
-				    ErrId = 2,
-				    ErrorMessage = "Command Line Arguments Contained No Valid Commands!",
-				    ErrSourceMethod = "ProcessCommandArgs",
-				    FileName = string.Empty,
-				    LoggerLevel = LogLevel.FATAL
-			    };
-
-				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				ErrorMgr.WriteErrorMsg(err);
-
-				return false;
+				return true;
 		    }
 
 		    CommandLineArguments = parser.Arguments;
@@ -82,14 +68,15 @@ namespace CmdrX.Builders
 						{
 							DirectoryPath = String.Empty,
 							ErrId = 3,
-							ErrorMessage = "Command Line Xml File spec does NOT exist!",
+							ErrorMessage = "Command Line Xml File spec does NOT exist! Option -xml INVALID!",
 							ErrSourceMethod = "ProcessCommandArgs",
 							FileName = string.Empty,
 							LoggerLevel = LogLevel.FATAL
 						};
 
-						ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
-						ErrorMgr.WriteErrorMsg(err);
+						_cmdExeDto.ApplicationExitStatus.OpsError = ErrorMgr.FormatErrorDto(err);
+					    _cmdExeDto.ApplicationExitStatus.IsFatalError = true;
+						_cmdExeDto.ApplicationExitStatus.WriteExitConsoleMessage();
 
 						return false;
 					}
@@ -129,9 +116,30 @@ namespace CmdrX.Builders
 				return false;
 			}
 
-			return dictArgs
+			var result = dictArgs
 				.Any(pair => pair.Key.ToLower().Contains("help") 
 				|| pair.Key.ToLower().Contains("?"));
+
+			if (result)
+			{
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 57,
+					ErrorMessage = "User Requested Command Line Options",
+					ErrSourceMethod = "ResquestForHelp()",
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.INFO
+				};
+
+				_cmdExeDto.ApplicationExitStatus.IsDisplayCmdLineArgs = true;
+				_cmdExeDto.ApplicationExitStatus.OpsError = ErrorMgr.FormatErrorDto(err);
+				Environment.ExitCode = 0;
+				_cmdExeDto.ApplicationExitStatus.WriteExitConsoleMessage();
+
+			}
+
+			return result;
 		}
 
 

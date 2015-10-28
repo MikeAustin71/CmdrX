@@ -19,8 +19,6 @@ namespace CmdrX.Commands
 
 		private readonly ConsoleCommandDto _executeCommand;
 
-		private readonly ConsoleExecutorDto _consoleExecutor;
-
 		private readonly ConsoleCommandLogMgr _logMgr;
 
 		private readonly ConsoleCommandLogMgr _errLogMgr;
@@ -29,7 +27,6 @@ namespace CmdrX.Commands
 
 
 		public ExecuteConsoleCommand(ConsoleCommandDto cmdDto,
-										ConsoleExecutorDto consoleExecutor,
 											ConsoleCommandLogMgr logMgr,
 												ConsoleCommandLogMgr errLogMgr,
 													WorkingDirectoryMgr wrkDirectoryMgr)
@@ -56,7 +53,6 @@ namespace CmdrX.Commands
 
 
 			_executeCommand = cmdDto;
-			_consoleExecutor = consoleExecutor;
 			_logMgr = logMgr;
 			_errLogMgr = errLogMgr;
 			_wrkDirectoryMgr = wrkDirectoryMgr;
@@ -106,9 +102,6 @@ namespace CmdrX.Commands
 			var thisMethod = "ExecuteCommand()";
 			bool procStatus = false;
 			var proc = new Process();
-
-			// ReSharper disable once RedundantAssignment
-			var exitCode = -1;
 
 			try
 			{
@@ -194,6 +187,7 @@ namespace CmdrX.Commands
 				}
 				catch
 				{
+					// ReSharper disable once EmptyStatement
 					;
 				}
 				

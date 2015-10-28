@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using CmdrX.Constants;
 using CmdrX.Models;
 
@@ -27,6 +28,15 @@ namespace CmdrX.Helpers
 			LoggingStatus = loggingStatus;
 			LoggingMode = loggingMode;
 			IsLoggingConfigured = isLoggingConfigured;
+		}
+
+		public FileOpsErrorMessageDto FormatErrorDto(FileOpsErrorMessageDto err)
+		{
+			err.ErrSourceClass = _thisClass;
+
+			err.ErrId = _errBaseCode + err.ErrId;
+
+			return err;
 		}
 
 		public void WriteErrorMsg(FileOpsErrorMessageDto err)

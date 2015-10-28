@@ -60,7 +60,7 @@ namespace CmdrX.Managers
 					LogUtil.WriteLogJobStartUpMessage(job, _consoleExecutor);
 					_cmdLogMgr.LogWriteStartJobHeader(job);
 					_errLogMgr.LogWriteStartJobHeader(job);
-					var exeCmd = new ExecuteConsoleCommand(job, _consoleExecutor, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
+					var exeCmd = new ExecuteConsoleCommand(job, _cmdLogMgr, _errLogMgr, _wrkDirMgr);
 					exeCmd.Execute();
 
 					_cmdLogMgr.LogWriteEndJobFooter(job);
@@ -70,12 +70,15 @@ namespace CmdrX.Managers
 					if (job.CommandExitCode > job.KillJobsRunOnExitCodeGreaterThan
 						|| job.CommandExitCode < job.KillJobsRunOnExitCodeLessThan)
 					{
-						var msg = $"Command Exit Code Is Out-Of-Bounds! Job Exit Code = {job.CommandExitCode}  " 
-							+ $"Max Exit Code = {job.KillJobsRunOnExitCodeGreaterThan}  " 
+						var msg = $"Job No. {job.JobNumber} Job Name: {job.CommandDisplayName}"
+							+ Environment.NewLine
+							+ $"Command Exit Code Is Out-Of-Bounds! Job Exit Code = {job.CommandExitCode}  " 
+							+ Environment.NewLine
+							+ $"Maximum Exit Code = {job.KillJobsRunOnExitCodeGreaterThan}  " 
 							+ $"Mininimum Exit Code = {job.KillJobsRunOnExitCodeLessThan}  "
+							+ Environment.NewLine
 							+ "Terminating Job Group Command Execution!";
 
-						var ex = new Exception(msg);
                         Environment.ExitCode = job.CommandExitCode;
 						var err = new FileOpsErrorMessageDto
 						{
@@ -84,14 +87,17 @@ namespace CmdrX.Managers
 							ErrId = 10,
 							ErrorMessage = msg,
 							ErrSourceMethod = "ExecuteCommands()",
-							ErrException = ex,
 							FileName = string.Empty,
 							LoggerLevel = LogLevel.FATAL
 						};
 
+						_consoleExecutor.ApplicationExitStatus.OpsError =
+							ErrorMgr.FormatErrorDto(err);
+						_consoleExecutor.ApplicationExitStatus.IsFatalError = true;
 						ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 						ErrorMgr.WriteErrorMsg(err);
-						throw ex;
+						LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
+						return false;
 					}
 
 					LogUtil.WriteLogJobEndMessage(job, _consoleExecutor);
@@ -100,6 +106,7 @@ namespace CmdrX.Managers
 				}
 
 				Environment.ExitCode = 0;
+				_consoleExecutor.ApplicationExitStatus.IsSuccessfulCompletion = true;
 				result = true;
 			}
 			catch (Exception ex)
@@ -108,16 +115,23 @@ namespace CmdrX.Managers
 				{
 					DirectoryPath = string.Empty,
 					ErrId = 20,
-					ErrorMessage = "Exception thrown while executing commands! " + ex.Message,
+					ErrorMessage = "Exception thrown while executing commands! ",
 					ErrSourceMethod = "ExecuteCommands()",
 					ErrException = ex,
 					FileName = string.Empty,
-					LoggerLevel = LogLevel.ERROR
+					LoggerLevel = LogLevel.FATAL
 				};
 
 				ErrorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				ErrorMgr.WriteErrorMsg(err);
-				Environment.ExitCode = -8;
+				_consoleExecutor.ApplicationExitStatus.IsExceptionThrown = true;
+				_consoleExecutor.ApplicationExitStatus.OpsError = ErrorMgr.FormatErrorDto(err);
+
+				if (Environment.ExitCode == 0)
+				{
+					Environment.ExitCode = -8;
+				}
+
 				result = false;
 			}
 			finally

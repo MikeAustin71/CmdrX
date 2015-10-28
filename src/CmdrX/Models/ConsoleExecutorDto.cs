@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Permissions;
 using CmdrX.Constants;
 using CmdrX.Helpers;
 using CmdrX.Managers;
@@ -85,6 +86,12 @@ namespace CmdrX.Models
 
 		public ApplicationLogMgr AppLogMgr { get; private set; }
 
+		public ApplicationExitStatusDto ApplicationExitStatus { get; set; }
+
+		public ConsoleExecutorDto()
+		{
+			ApplicationExitStatus = new ApplicationExitStatusDto();
+		}
 
 		public void Dispose()
 		{

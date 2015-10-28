@@ -48,11 +48,11 @@ namespace CmdrX
 				DefaultConsoleCommandType = AppConstants.DefaultConsoleCommandType
 			};
 
+
 			try
 			{
 				if (!ProcessCmdArgs(cmdExeDto, args))
 				{
-					return;
 				}
 
 				if (!ValidateXmlCommandFile(cmdExeDto))
@@ -71,14 +71,27 @@ namespace CmdrX
 				}
 
 			}
-			catch
+			catch(Exception ex)
 			{
 				if (Environment.ExitCode == 0)
 				{
 					Environment.ExitCode = -50;
 				}
-				
-				Console.WriteLine("CmdrX.exe Setup Operation Failed!");
+				var err = new FileOpsErrorMessageDto
+				{
+					DirectoryPath = string.Empty,
+					ErrId = 10,
+					ErrorMessage = "Exception Thrown On Setup",
+					ErrSourceMethod = "Main()",
+					ErrException = ex,
+					FileName = string.Empty,
+					LoggerLevel = LogLevel.FATAL
+				};
+
+				cmdExeDto.ApplicationExitStatus.IsExceptionThrown = true;
+				cmdExeDto.ApplicationExitStatus.OpsError = _errorMgr.FormatErrorDto(err);
+				cmdExeDto.ApplicationExitStatus.WriteExitConsoleMessage();
+				return;
 			}
 
 			try
@@ -96,17 +109,16 @@ namespace CmdrX
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = string.Empty,
-					ErrId = 10,
-					ErrorMessage = "Setup Failure: " + ex.Message,
+					ErrId = 150,
+					ErrorMessage = "Command Execution Exception Thrown: ",
 					ErrSourceMethod = "SetUpLogging()",
 					ErrException = ex,
 					FileName = string.Empty,
 					LoggerLevel = LogLevel.ERROR
 				};
 
-				Console.WriteLine(ex.Message);
-				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				_errorMgr.WriteErrorMsg(err);
+				cmdExeDto.ApplicationExitStatus.IsExceptionThrown = true;
+				cmdExeDto.ApplicationExitStatus.OpsError = _errorMgr.FormatErrorDto(err);
 
 			}
 			finally
@@ -130,11 +142,8 @@ namespace CmdrX
 			finally
 			{
 				jobs?.Dispose();
+				cmdExeDto?.ApplicationExitStatus.WriteExitConsoleMessage();
 				cmdExeDto?.Dispose();
-
-				Console.WriteLine("*************************************************************");
-				Console.WriteLine("CmdrX.exe job run completed! Exit Code = " + Environment.ExitCode);
-				Console.WriteLine("*************************************************************");
 
 			}
 		}
@@ -161,23 +170,22 @@ namespace CmdrX
 			catch (Exception ex)
 			{
 
-				Console.WriteLine("Application Log Setup Failure!");
 				Environment.ExitCode = -2;
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = string.Empty,
 					ErrId = 10,
-					ErrorMessage = "Application Log Setup Failure!" + ex.Message,
+					ErrorMessage = "Application Log Setup Failure!",
 					ErrSourceMethod = "SetUpLogging()",
 					ErrException = ex,
 					FileName = string.Empty,
 					LoggerLevel = LogLevel.ERROR
 				};
 
-				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
-				_errorMgr.WriteErrorMsg(err);
+				cmdExeDto.ApplicationExitStatus.IsExceptionThrown = true;
+				cmdExeDto.ApplicationExitStatus.OpsError = _errorMgr.FormatErrorDto(err);
+				cmdExeDto.ApplicationExitStatus.WriteExitConsoleMessage();
 
-				Console.WriteLine("SetupLogging() " + ex.Message);
 				return false;
 			}
 
@@ -205,10 +213,10 @@ namespace CmdrX
 						LoggerLevel = LogLevel.FATAL
 					};
 
-					_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
-					_errorMgr.WriteErrorMsg(err);
+					cmdExeDto.ApplicationExitStatus.OpsError = _errorMgr.FormatErrorDto(err);
+					cmdExeDto.ApplicationExitStatus.IsTerminateApp = true;
+					cmdExeDto.ApplicationExitStatus.WriteExitConsoleMessage();
 					Environment.ExitCode = -3;
-					Console.WriteLine(err.ErrorMessage);
 					return false;
 				}
 
@@ -218,7 +226,7 @@ namespace CmdrX
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = string.Empty,
-					ErrId = 37,
+					ErrId = 137,
 					ErrorMessage = ex.Message,
 					ErrSourceMethod = "ParseCommandJobsFromXml()",
 					ErrException = ex,
@@ -228,9 +236,11 @@ namespace CmdrX
 
 				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				_errorMgr.WriteErrorMsg(err);
-
-				Console.WriteLine(err.ErrorMessage);
 				Environment.ExitCode = -3;
+				cmdExeDto.ApplicationExitStatus.OpsError = _errorMgr.FormatErrorDto(err);
+				cmdExeDto.ApplicationExitStatus.IsExceptionThrown = true;
+				cmdExeDto.ApplicationExitStatus.WriteExitConsoleMessage();
+
 				return false;
 			}
 
@@ -253,18 +263,20 @@ namespace CmdrX
 				var err = new FileOpsErrorMessageDto
 				{
 					DirectoryPath = string.Empty,
-					ErrId = 45,
+					ErrId = 345,
 					ErrorMessage = "Command Job Execution Failed!",
-					ErrSourceMethod = "Main()",
+					ErrSourceMethod = "ExecuteConsoleCommands()",
 					ErrException = ex,
 					FileName = string.Empty,
 					LoggerLevel = LogLevel.FATAL
 				};
 
+				Environment.ExitCode = -4;
 				_errorMgr.LoggingStatus = ErrorLoggingStatus.On;
 				_errorMgr.WriteErrorMsg(err);
-				Environment.ExitCode = -4;
-				Console.WriteLine(err.ErrorMessage);
+				cmdExeDto.ApplicationExitStatus.OpsError = _errorMgr.FormatErrorDto(err);
+				cmdExeDto.ApplicationExitStatus.IsExceptionThrown = true;
+				cmdExeDto.ApplicationExitStatus.WriteExitConsoleMessage();
 			}
 		}
 
@@ -277,15 +289,15 @@ namespace CmdrX
 					DirectoryPath = string.Empty,
 					ErrId = 3,
 					ErrorMessage = "Could Not Locate a valid Xml Commands file!",
-					ErrSourceMethod = "Main()",
+					ErrSourceMethod = "ValidateXmlCommandFile()",
 					FileName = string.Empty,
 					LoggerLevel = LogLevel.FATAL
 				};
 
-				_errorMgr.WriteErrorMsgsToConsole(err);
-
-				AppInfoHelper.DisplayCmdLineParms();
+				cmdExeDto.ApplicationExitStatus.IsFatalError = true;
+				cmdExeDto.ApplicationExitStatus.OpsError = _errorMgr.FormatErrorDto(err);
 				Environment.ExitCode = -5;
+				cmdExeDto.ApplicationExitStatus.WriteExitConsoleMessage();
 				return false;
 			}
 
@@ -302,13 +314,7 @@ namespace CmdrX
 			var cmdLineParser = new CommandLineParameterBuilder(cmdExeDto);
 
             if (!cmdLineParser.BuildFileInfoParamters(args))
-			{
-				cmdLineParser.ErrorMgr.WriteErrorMsgsToConsole();
-
-				AppInfoHelper.DisplayCmdLineParms();
-
-				Environment.ExitCode = 0;
-
+            {
 				return false;
 			}
 

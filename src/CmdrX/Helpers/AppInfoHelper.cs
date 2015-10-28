@@ -75,13 +75,5 @@ namespace CmdrX.Helpers
 				+ AppConstants.DefaultCommandOutputLogFilePathName);
 		}
 
-		public static void DisplayCmdLineParms()
-		{
-			Console.WriteLine("-xml=Source Directory");
-			Console.WriteLine("-l=logging On|Off (Default On)");
-			Console.WriteLine("-lr=Log Retention in Days (Example -lr=90) (Default 5)");
-
-		}
-
 	}
 }
