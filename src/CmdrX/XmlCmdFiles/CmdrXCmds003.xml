@@ -28,7 +28,7 @@ The last series of commands peforms repository updates with 'git'
 	<ExectuteCommand>
 		<CommandDisplayName>Copy Atom Config Files</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
-		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeGreaterThan>15</KillJobsRunOnExitCodeGreaterThan>
 		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
 		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
@@ -76,7 +76,7 @@ The last series of commands peforms repository updates with 'git'
 	<ExectuteCommand>
 		<CommandDisplayName>Save Atom Config Backup Dir</CommandDisplayName>
 		<ConsoleCommandType>Console</ConsoleCommandType>
-		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeGreaterThan>15</KillJobsRunOnExitCodeGreaterThan>
 		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
 		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
 		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->

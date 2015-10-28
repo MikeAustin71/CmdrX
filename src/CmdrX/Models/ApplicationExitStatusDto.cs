@@ -105,7 +105,7 @@ namespace CmdrX.Models
 			}
 		}
 
-		public StringBuilder WriteSuccessfulExitConsoleMessage(StringBuilder sb)
+		private StringBuilder WriteSuccessfulExitConsoleMessage(StringBuilder sb)
 		{
 			sb.Append(_newLine);
 			sb.Append(_banner1 + _newLine);
@@ -144,6 +144,7 @@ namespace CmdrX.Models
 			}
 
 			Console.Write(sb);
+			Console.WriteLine();
 		}
 
 		private StringBuilder WriteExceptionExitMsg(StringBuilder sb)

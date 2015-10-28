@@ -47,8 +47,8 @@ namespace CmdrXTests
 		public void T003_XmlParserShouldParseExitCodeLimitsCorrectly()
 		{
 			var cmdExeDto = TestDirectories.GetConsoleExecutorDto();
-			var defaultUpperLimit = 9999;
-			var defaultLowerLimit = -9999;
+			var defaultUpperLimit = 99999;
+			var defaultLowerLimit = -99999;
 
 			Assert.IsTrue(cmdExeDto.DefaultKillJobsRunOnExitCodeGreaterThan == defaultUpperLimit);
 			Assert.IsTrue(cmdExeDto.DefaultKillJobsRunOnExitCodeLessThan == defaultLowerLimit);
