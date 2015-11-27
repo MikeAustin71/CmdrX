@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Commands>
+<!--
+	Before Execution, create a package.json file (npm init)
+ -->
+	<CommandFileHeader>
+		<DefaultLogFileRetentionInDays>0</DefaultLogFileRetentionInDays>
+		<DefaultCommandExeDirectory></DefaultCommandExeDirectory>
+		<DefaultCommandOutputLogFilePathName>./cmdrx/install.log</DefaultCommandOutputLogFilePathName>
+	</CommandFileHeader>
+	<ExectuteCommand>
+		<CommandDisplayName>Extend jspm npm timeout</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>5.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>config</CommandToExecute>
+		<CommandModifier>registries.npm.timeouts.lookup</CommandModifier>
+		<CommandArguments>120</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install babel-cli</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>5.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-cli</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install Babel Core</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-core</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install babel-runtime</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-runtime</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install Babel preset react</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-preset-react</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install Babel preset es2015</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-preset-es2015</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install babel-es2015-modules-commonjs</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-plugin-transform-es2015-modules-commonjs</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install babel-plugin-transform-es2015-modules-amd</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-plugin-transform-es2015-modules-amd</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install babel-plugin-transform-es2015-modules-systemjs</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-plugin-transform-es2015-modules-systemjs</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install babel transform-react-jsx</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-plugin-transform-react-jsx</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install babel-preset-stage-0</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:babel-preset-stage-0</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install github:systemjs/plugin-css</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>css=github:systemjs/plugin-css</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install React</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:react</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install ReactDom</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>npm:react-dom</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install jquery</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>jquery</CommandArguments>
+	</ExectuteCommand>
+	<ExectuteCommand>
+		<CommandDisplayName>Install lodash</CommandDisplayName>
+		<ConsoleCommandType>Console</ConsoleCommandType>
+		<KillJobsRunOnExitCodeGreaterThan></KillJobsRunOnExitCodeGreaterThan>
+		<KillJobsRunOnExitCodeLessThan></KillJobsRunOnExitCodeLessThan>
+		<CommandOutputLogFilePathBaseName></CommandOutputLogFilePathBaseName>
+		<!--Time out expressed in decimal fractions of a minute. Example: 10.0 minutes -->
+		<CommandTimeOutInMinutes>15.0</CommandTimeOutInMinutes>
+		<DefaultConsoleCommandExecutor>cmd.exe</DefaultConsoleCommandExecutor>
+		<ConsoleCommandExeArguments>/c</ConsoleCommandExeArguments>
+		<ExecuteInDir></ExecuteInDir>
+		<ExecutableTarget>jspm</ExecutableTarget>
+		<CommandToExecute>install</CommandToExecute>
+		<CommandModifier></CommandModifier>
+		<CommandArguments>lodash</CommandArguments>
+	</ExectuteCommand>
+</Commands>
